@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment & Secret Keys
+.env
+.gemini_key
+
+# Database & Generated Files
+service.db
+outputs/
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Cache & Logs
+.logs/
+.brain/
+.tools/
+.uv_cache/
+.DS_Store
+Thumbs.db
+node_modules/

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumina AI - 초고화질 AI 이미지 생성 SaaS</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- 상단 네비게이션 헤더 -->
+    <header class="navbar">
+      <div class="brand">
+        <span class="brand-icon">✨</span>
+        <span class="brand-name">Lumina AI <span class="badge-pro" id="header-plan-badge">FREE</span></span>
+      </div>
+
+      <div class="nav-status">
+        <div id="comfy-status-badge" class="status-pill status-offline">
+          <span class="dot"></span>
+          <span id="comfy-status-text">ComfyUI 연결 확인 중...</span>
+        </div>
+      </div>
+
+      <div class="nav-user">
+        <div class="quota-display" id="quota-display">
+          <span class="quota-icon">⚡</span>
+          <div class="quota-info">
+            <span class="quota-label">오늘 남은 생성</span>
+            <span class="quota-val"><strong id="today-remaining">--</strong> / <span id="today-quota">--</span> 회</span>
+          </div>
+        </div>
+        <button id="open-pricing-btn" class="btn btn-primary btn-sm glow">
+          💎 플랜 업그레이드
+        </button>
+      </div>
+    </header>
+
+    <!-- 메인 워크스페이스 -->
+    <main class="main-content">
+      <!-- 좌측: 프롬프트 컨트롤 패널 -->
+      <section class="control-panel">
+        <div class="panel-header">
+          <h2>이미지 생성 스튜디오</h2>
+          <p class="subtitle">프롬프트를 입력하면 ComfyUI GPU 엔진이 고화질 작품을 생성합니다.</p>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="prompt-input">프롬프트 (Prompt)</label>
+            <span class="char-count" id="prompt-len">0 자</span>
+          </div>
+          <textarea id="prompt-input" rows="4" placeholder="예: A breathtaking cinematic portrait of a cybernetic warrior, 8k resolution, photorealistic, volumetric rim lighting, dramatic atmosphere..."></textarea>
+          
+          <!-- 추천 스타일 태그 -->
+          <div class="tag-list">
+            <button type="button" class="tag-pill" data-tag="masterpiece, highly detailed, 8k">🌟 초고화질</button>
+            <button type="button" class="tag-pill" data-tag="photorealistic, 35mm lens, raw photo">📷 극실사</button>
+            <button type="button" class="tag-pill" data-tag="anime aesthetic, makoto shinkai style, vibrant colors">🎨 애니/일러스트</button>
+            <button type="button" class="tag-pill" data-tag="cyberpunk, neon glow, wet streets">🌃 사이버펑크</button>
+            <button type="button" class="tag-pill" data-tag="fantasy landscape, epic castle, aurora">🏰 에픽 판타지</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="neg-prompt-input">네거티브 프롬프트 (제외할 요소)</label>
+          </div>
+          <input type="text" id="neg-prompt-input" value="ugly, deformed, blurry, bad anatomy, low quality, watermark, text" placeholder="제외할 키워드">
+        </div>
+
+        <!-- 이미지 비율 선택 -->
+        <div class="form-group">
+          <label>화면 비율</label>
+          <div class="ratio-selector">
+            <label class="ratio-btn active">
+              <input type="radio" name="aspect-ratio" value="1024x1024" checked>
+              <span class="ratio-box r-1-1"></span>
+              <span>1:1 (1024x1024)</span>
+            </label>
+            <label class="ratio-btn">
+              <input type="radio" name="aspect-ratio" value="1280x720">
+              <span class="ratio-box r-16-9"></span>
+              <span>16:9 (1280x720)</span>
+            </label>
+            <label class="ratio-btn">
+              <input type="radio" name="aspect-ratio" value="720x1280">
+              <span class="ratio-box r-9-16"></span>
+              <span>9:16 (720x1280)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 고급 옵션 (시드) -->
+        <div class="form-group advanced-group">
+          <details>
+            <summary>고급 옵션 (Seed 설정)</summary>
+            <div class="seed-input-row">
+              <input type="number" id="seed-input" placeholder="랜덤 (-1)" value="-1">
+              <button type="button" id="randomize-seed-btn" class="btn btn-outline btn-xs">🎲 랜덤</button>
+            </div>
+          </details>
+        </div>
+
+        <!-- 생성 버튼 & 진행률 -->
+        <div class="action-row">
+          <button id="generate-btn" class="btn btn-primary btn-lg btn-block glow">
+            <span class="btn-text" id="generate-btn-text">✨ 이미지 생성하기</span>
+            <div class="spinner hidden" id="gen-spinner"></div>
+          </button>
+        </div>
+
+        <div id="progress-container" class="progress-container hidden">
+          <div class="progress-label">
+            <span id="progress-status-text">ComfyUI GPU 작업 준비 중...</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 우측: 결과 프리뷰어 -->
+      <section class="preview-panel">
+        <div class="preview-card" id="preview-card">
+          <div class="preview-placeholder" id="preview-placeholder">
+            <div class="placeholder-icon">🎨</div>
+            <h3>생성된 이미지가 여기에 표시됩니다</h3>
+            <p>좌측에서 프롬프트를 입력하고 생성 버튼을 누르면 AI가 작품을 렌더링합니다.</p>
+          </div>
+
+          <div class="preview-image-container hidden" id="preview-img-container">
+            <img id="main-preview-img" src="" alt="생성 결과">
+            <div class="image-overlay">
+              <a id="download-btn" href="#" download="ai_image.png" class="btn btn-primary btn-sm">
+                ⬇️ 원본 다운로드
+              </a>
+              <button id="copy-prompt-btn" class="btn btn-secondary btn-sm">
+                📋 프롬프트 복사
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 메타데이터 -->
+        <div class="meta-box hidden" id="result-meta">
+          <div class="meta-item">
+            <span class="meta-key">Seed:</span>
+            <span class="meta-val" id="meta-seed">--</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-key">Size:</span>
+            <span class="meta-val" id="meta-size">--</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-key">Engine:</span>
+            <span class="meta-val" id="meta-engine">--</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 하단: 최근 생성 갤러리 -->
+    <section class="history-section">
+      <div class="section-title-row">
+        <h3>최근 생성 갤러리</h3>
+        <span class="history-count" id="history-count">0개 항목</span>
+      </div>
+      <div class="history-grid" id="history-grid">
+        <div class="empty-history">아직 생성된 이미지가 없습니다. 첫 작품을 생성해보세요!</div>
+      </div>
+    </section>
+
+    <!-- 푸터 (법적 정책 링크) -->
+    <footer class="app-footer">
+      <div class="footer-links">
+        <button type="button" class="link-btn" id="footer-refund-link">Refund & Cancellation Policy</button>
+        <span class="sep">•</span>
+        <button type="button" class="link-btn" id="footer-terms-link">Terms of Service</button>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 Lumina AI. High-performance ComfyUI Image Generation SaaS. All rights reserved.
+      </div>
+    </footer>
+  </div>
+
+  <!-- 1. SaaS 요금제 및 페이팔 결제 모달 -->
+  <div class="modal-backdrop hidden" id="pricing-modal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <div>
+          <h2>플랜 선택 & 업그레이드</h2>
+          <p class="subtitle">필요에 맞는 요금제를 선택하고 고성능 GPU 전용 큐에서 즉시 생성하세요.</p>
+        </div>
+        <button class="close-btn" id="close-pricing-btn">&times;</button>
+      </div>
+
+      <!-- 요금제 비교 카드 그리드 (3개 옵션) -->
+      <div class="pricing-comparison-grid" id="plans-container">
+        <!-- JS로 동적 생성 -->
+      </div>
+
+      <!-- 결제 진행 섹션 -->
+      <div class="checkout-wrapper">
+        <div class="selected-plan-banner">
+          <div class="selected-info">
+            <span class="label">선택된 플랜:</span>
+            <strong id="selected-plan-title">Pro Monthly Plan</strong>
+            <span class="badge" id="selected-plan-price-tag">$30 / month</span>
+          </div>
+          <p class="selected-desc" id="selected-plan-target">Power users, designers, content creators</p>
+        </div>
+
+        <!-- 필수 사전 동의 체크박스 (PayPal Safeguard) -->
+        <div class="consent-box">
+          <label class="consent-label">
+            <input type="checkbox" id="agreement-checkbox">
+            <span class="checkbox-custom"></span>
+            <span class="consent-text">
+              I agree to the <a href="#" id="view-terms-link" class="legal-link">Terms of Service</a> and understand the <a href="#" id="view-refund-link" class="legal-link">Refund Policy</a> (Credits and GPU compute consumed are non-refundable).
+            </span>
+          </label>
+          <div class="consent-error hidden" id="consent-error-msg">
+            ⚠️ 결제를 진행하려면 이용약관 및 환불 불가 정책에 반드시 동의해야 합니다.
+          </div>
+        </div>
+
+        <!-- 페이팔 공식 스마트 버튼 -->
+        <div class="paypal-action-area">
+          <div id="paypal-button-container"></div>
+          
+          <!-- Mock 테스트 결제 (개발 환경 지원) -->
+          <div class="mock-test-row">
+            <button id="mock-checkout-btn" class="btn btn-outline btn-sm btn-block">
+              ⚡ [테스트 모드] 1초 결제 승인 시뮬레이션
+            </button>
+          </div>
+        </div>
+
+        <!-- 결제 하단 법적 고지 배너 -->
+        <div class="digital-goods-notice">
+          <span class="notice-icon">ℹ️</span>
+          <p>
+            <em>Digital Goods Notice: Subscriptions grant instant access to dedicated GPU computing resources. Subscriptions can be canceled at any time from your account settings or PayPal dashboard.</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 환불 정책 모달 (Refund Policy Modal) -->
+  <div class="modal-backdrop hidden" id="refund-modal">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h2>REFUND & CANCELLATION POLICY</h2>
+        <button class="close-btn" id="close-refund-btn">&times;</button>
+      </div>
+      <div class="policy-body">
+        <div class="policy-section">
+          <h4>1. Digital Goods & GPU Consumption Notice</h4>
+          <p>Our service provides real-time AI image generation powered by dedicated GPU cloud resources. Because computing power and server costs are incurred immediately upon image generation, completed generations cannot be revoked.</p>
+        </div>
+
+        <div class="policy-section">
+          <h4>2. Eligibility for Refund</h4>
+          <p>• <strong>Full Refund:</strong> Eligible within 7 days of purchase ONLY IF the user has generated fewer than 5 images (or consumed less than 5% of their daily quota).</p>
+          <p>• Once more than 5 images have been generated, the purchase is strictly <strong>NON-REFUNDABLE</strong>.</p>
+          <p>• <strong>3-Month Pass ($74):</strong> After 7 days from purchase or upon generating more than 5 images, no pro-rated refunds will be issued for the remaining days.</p>
+        </div>
+
+        <div class="policy-section">
+          <h4>3. Results & Quality Disclaimer</h4>
+          <p>Variations in artistic preference, prompt interpretation by the AI model, or subjective dissatisfaction with generated artwork do not qualify for a refund. We recommend reviewing sample outputs prior to subscribing.</p>
+        </div>
+
+        <div class="policy-section">
+          <h4>4. Service Errors & Downtime</h4>
+          <p>In the event of failed generations due to server or ComfyUI pipeline errors, consumed credits will be automatically replenished to your daily balance. Cash refunds are not provided for temporary server interruptions.</p>
+        </div>
+
+        <div class="policy-section">
+          <h4>5. Subscription Cancellation</h4>
+          <p>You may cancel your monthly subscription at any time via your account dashboard or through your PayPal account. Upon cancellation, your plan will remain active until the end of the current billing cycle, with no further recurring charges.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" id="ack-refund-btn">이해했습니다 (닫기)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# Lumina AI - Core Dependencies
+aiohttp>=3.9.0
+pillow>=10.0.0
+requests>=2.31.0
+websockets>=12.0

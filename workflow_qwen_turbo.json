@@ -1,0 +1,103 @@
+{
+  "id": "aicb-qwen-image-2.1-turbo",
+  "revision": 0,
+  "last_node_id": 8,
+  "last_link_id": 8,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UnetLoaderGGUF",
+      "pos": [40, 80],
+      "size": [380, 80],
+      "properties": {
+        "models": [
+          {
+            "name": "qwen-image-2.1-turbo-Q4_K_M.gguf",
+            "url": "https://huggingface.co/unsloth/Qwen-Image-2.1-Turbo-GGUF/resolve/main/qwen-image-2.1-turbo-Q4_K_M.gguf",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": ["qwen-image-2.1-turbo-Q4_K_M.gguf"],
+      "title": "① 생성 모델 (Turbo Q4 GGUF)"
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [40, 220],
+      "size": [380, 120],
+      "properties": {
+        "models": [
+          {
+            "name": "qwen3vl_8b_w4a8.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_w4a8.safetensors",
+            "directory": "text_encoders"
+          }
+        ]
+      },
+      "widgets_values": ["qwen3vl_8b_w4a8.safetensors", "qwen_image", "default"],
+      "title": "② 텍스트 인코더 (Qwen3-VL 4비트)"
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [40, 400],
+      "size": [380, 80],
+      "properties": {
+        "models": [
+          {
+            "name": "qwen_image_2.1_vae_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": ["qwen_image_2.1_vae_bf16.safetensors"],
+      "title": "③ VAE"
+    },
+    {
+      "id": 4,
+      "type": "TextEncodeQwenImage21",
+      "pos": [480, 80],
+      "size": [440, 300],
+      "widgets_values": [
+        "A cozy Korean study room at dawn, a small white round robot holding a glowing golden star, soft 3D cartoon render, warm window light, a wooden sign on the wall that reads \"AI CITY BUILDERS\"",
+        "",
+        1024
+      ],
+      "title": "④ 프롬프트"
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [480, 420],
+      "size": [320, 110],
+      "widgets_values": [1024, 1024, 1],
+      "title": "⑤ 빈 도화지 1024×1024"
+    },
+    {
+      "id": 6,
+      "type": "KSampler",
+      "pos": [980, 80],
+      "size": [340, 280],
+      "widgets_values": [42, "fixed", 8, 1.0, "euler", "simple", 1.0],
+      "title": "⑥ 잡음 걷어내기 (Turbo 8스텝 · cfg 1)"
+    },
+    {
+      "id": 7,
+      "type": "VAEDecode",
+      "pos": [980, 400],
+      "size": [300, 60],
+      "title": "⑦ 그림으로 펼치기"
+    },
+    {
+      "id": 8,
+      "type": "SaveImage",
+      "pos": [1360, 80],
+      "size": [400, 420],
+      "widgets_values": ["LuminaAI"],
+      "title": "⑧ 저장"
+    }
+  ]
+}
+

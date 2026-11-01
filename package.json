@@ -1,0 +1,19 @@
+{
+  "name": "lumina-ai-saas",
+  "version": "1.0.0",
+  "description": "Lumina AI - ComfyUI 기반 고화질 AI 이미지 생성 및 PayPal 결제 구독 SaaS",
+  "main": "server.py",
+  "scripts": {
+    "start": "python server.py"
+  },
+  "keywords": [
+    "ai",
+    "comfyui",
+    "image-generation",
+    "saas",
+    "paypal",
+    "stable-diffusion"
+  ],
+  "author": "Lumina AI Team",
+  "license": "MIT"
+}

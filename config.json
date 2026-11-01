@@ -1,0 +1,93 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8000
+  },
+  "comfyui": {
+    "base_url": "http://127.0.0.1:8188",
+    "model_name": "qwen-image-2.1-turbo-Q4_K_M.gguf",
+    "timeout_seconds": 120
+  },
+  "paypal": {
+    "mode": "sandbox",
+    "client_id": "YOUR_PAYPAL_SANDBOX_CLIENT_ID",
+    "client_secret": "YOUR_PAYPAL_SANDBOX_CLIENT_SECRET",
+    "webhook_id": "YOUR_PAYPAL_WEBHOOK_ID",
+    "currency": "USD",
+    "plans": [
+      {
+        "id": "starter_monthly",
+        "name": "Starter Plan",
+        "type": "subscription",
+        "billing_cycle": "monthly",
+        "price": "15.00",
+        "price_display": "$15 / month",
+        "badge": "Standard",
+        "target": "Casual creators & hobbyists",
+        "daily_generations": 40,
+        "batch_size": 1,
+        "quality_steps": 25,
+        "max_resolution": "1024x1024",
+        "cta_text": "Get Started ($15/mo)",
+        "features": [
+          "40 image generations per day (resets daily at 00:00 UTC)",
+          "Standard resolution (up to 1024x1024)",
+          "Standard quality steps (25 steps)",
+          "Single generation per click (Batch size: 1)",
+          "Standard generation queue"
+        ]
+      },
+      {
+        "id": "pro_monthly",
+        "name": "Pro Monthly Plan",
+        "type": "subscription",
+        "billing_cycle": "monthly",
+        "price": "30.00",
+        "price_display": "$30 / month",
+        "badge": "Most Popular",
+        "featured": true,
+        "target": "Power users, designers, content creators",
+        "daily_generations": 150,
+        "batch_size": 4,
+        "quality_steps": 40,
+        "max_resolution": "2048x2048 (HD Upscale)",
+        "cta_text": "Upgrade to Pro ($30/mo)",
+        "features": [
+          "150 image generations per day (resets daily at 00:00 UTC)",
+          "High-resolution upscale & HD Fix support",
+          "Ultra-fine quality steps (35~40 steps)",
+          "4 variations per prompt (Batch size: 4)",
+          "Priority GPU execution queue"
+        ]
+      },
+      {
+        "id": "pro_3month",
+        "name": "Pro 3-Month Pass",
+        "type": "one_time",
+        "billing_cycle": "3_months",
+        "price": "74.00",
+        "price_display": "$74 one-time",
+        "subtitle": "$24.66 / month billed once every 3 months (Save ~18%)",
+        "badge": "Best Value",
+        "daily_generations": 150,
+        "duration_days": 90,
+        "batch_size": 4,
+        "quality_steps": 40,
+        "max_resolution": "2048x2048 (HD Upscale)",
+        "cta_text": "Get 3-Month Pass ($74)",
+        "features": [
+          "All Pro features included for 90 days",
+          "150 image generations per day (renewed daily)",
+          "No automatic recurring surprises (one-time checkout)",
+          "Save ~18% compared to monthly ($90)",
+          "Priority GPU execution queue"
+        ]
+      }
+    ]
+  },
+  "service": {
+    "initial_free_credits": 10,
+    "cost_per_image": 1,
+    "output_dir": "./outputs"
+  }
+}
