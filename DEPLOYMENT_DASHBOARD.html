@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumina AI - 상용 클라우드 배포 인터랙티브 매뉴얼</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(23, 32, 54, 0.7);
+      --card-border: rgba(99, 102, 241, 0.2);
+      --accent: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard', sans-serif;
+      line-height: 1.6;
+      padding: 30px 20px 60px;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%);
+    }
+    .container { max-width: 1040px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 35px; }
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #818cf8;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    p.subtitle { color: var(--text-muted); font-size: 1.05rem; }
+
+    /* Progress Tracker */
+    .progress-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      width: 0%;
+      transition: width 0.4s ease;
+      border-radius: 999px;
+    }
+
+    /* Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .tab-btn.active {
+      color: #fff;
+      background: var(--accent);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(12px);
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    /* Steps & Checklist */
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 10px;
+      transition: all 0.2s ease;
+    }
+    .checklist-item:hover {
+      background: rgba(99, 102, 241, 0.05);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    .checklist-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; font-size: 1rem; color: #fff; margin-bottom: 4px; }
+    .checklist-desc { font-size: 0.88rem; color: var(--text-muted); }
+
+    /* Code Blocks */
+    .code-box {
+      background: #090d16;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #38bdf8;
+      position: relative;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* Profit Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    th { color: #94a3b8; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
+    td strong { color: #38bdf8; }
+    .highlight-cell { color: #10b981; font-weight: 700; }
+
+    /* Interactive Calculator */
+    .calc-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .calc-input-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    .calc-input-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .calc-input-group input {
+      width: 100%;
+      background: #090d16;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+    }
+    .calc-result-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.15));
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 12px;
+      padding: 18px 24px;
+      text-align: center;
+      flex: 1;
+      min-width: 220px;
+    }
+    .calc-result-title { font-size: 0.85rem; color: #cbd5e1; }
+    .calc-result-value { font-size: 1.8rem; font-weight: 800; color: #10b981; margin-top: 4px; }
+
+    /* Links & Buttons */
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #818cf8;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .link-btn:hover { background: var(--accent); color: #fff; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">LUMINA AI COMMERCIAL GUIDE</div>
+    <h1>24시간 무중단 클라우드 상용 배포 매뉴얼</h1>
+    <p class="subtitle">내 PC를 꺼도 365일 전 세계 고객이 스스로 결제하고 초고속으로 이미지를 생성합니다.</p>
+  </header>
+
+  <!-- Total Progress Bar -->
+  <div class="progress-card">
+    <div class="progress-header">
+      <span style="font-weight: 600;">상용 배포 진행률</span>
+      <span id="progressText" style="color: #818cf8; font-weight: 700;">0% 완료 (0/5)</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="openTab('steps')">📅 5일 로드맵 & 체크리스트</button>
+    <button class="tab-btn" onclick="openTab('profit')">💰 순마진 & 실시간 계산기</button>
+    <button class="tab-btn" onclick="openTab('models')">⚡ Qwen Turbo 3종 모델</button>
+    <button class="tab-btn" onclick="openTab('architecture')">🏛️ 시스템 아키텍처</button>
+  </div>
+
+  <!-- TAB 1: 5-Day Steps & Checklist -->
+  <div id="steps" class="tab-pane active">
+    <!-- Day 1 -->
+    <div class="card">
+      <div class="card-title">🏷️ Day 1. 도메인 구매 & Cloudflare 무료 HTTPS 연결</div>
+      <div class="checklist-item">
+        <input type="checkbox" id="chk1" onchange="updateProgress()">
+        <div class="checklist-content">
+          <div class="checklist-title">호스팅케이알에서 도메인 구매 (연 1만~1.5만원)</div>
+          <div class="checklist-desc"><code>lumina-ai.com</code> 또는 <code>lumina-art.com</code> 1년 계약으로 구매</div>
+          <a class="link-btn" href="https://www.hosting.kr/" target="_blank">호스팅케이알 바로가기 ↗</a>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="chk2" onchange="updateProgress()">
+        <div class="checklist-content">
+          <div class="checklist-title">Cloudflare 무료($0) 가입 후 네임서버 등록</div>
+          <div class="checklist-desc">Cloudflare의 안내 네임서버 2개를 호스팅케이알 [네임서버 변경] 메뉴에 복사-붙여넣기</div>
+          <a class="link-btn" href="https://dash.cloudflare.com/" target="_blank">Cloudflare 대시보드 ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 2 -->
+    <div class="card">
+      <div class="card-title">☁️ Day 2. GitHub 비공개 저장소 & Render.com 24시간 배포</div>
+      <div class="checklist-item">
+        <input type="checkbox" id="chk3" onchange="updateProgress()">
+        <div class="checklist-content">
+          <div class="checklist-title">GitHub Private(비공개) 저장소 푸시</div>
+          <div class="checklist-desc">아래 명령어를 VS Code 터미널에서 실행하여 코드를 올립니다:</div>
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyText('git branch -M main\ngit remote add origin https://github.com/USERNAME/lumina-ai.git\ngit push -u origin main')">복사</button>
+git branch -M main<br>
+git remote add origin https://github.com/USERNAME/lumina-ai.git<br>
+git push -u origin main
+          </div>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <input type="checkbox" id="chk4" onchange="updateProgress()">
+        <div class="checklist-content">
+          <div class="checklist-title">Render.com 원클릭 무중단 배포 (월 $0~$7)</div>
+          <div class="checklist-desc">Start Command: <code>python server.py</code> / Custom Domain: <code>lumina-ai.com</code> 연결</div>
+          <a class="link-btn" href="https://render.com/" target="_blank">Render.com 배포 열기 ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 3 -->
+    <div class="card">
+      <div class="card-title">⚡ Day 3. Qwen-Image 2.1 Turbo (4비트 GGUF) 초고속 엔진 장착</div>
+      <div class="checklist-item">
+        <input type="checkbox" id="chk5" onchange="updateProgress()">
+        <div class="checklist-content">
+          <div class="checklist-title">8노드 공식 초경량 3종 모델 배치 완료</div>
+          <div class="checklist-desc">1장당 2~3초 컷 렌더링, 장당 GPU 원가 약 1.2원으로 마진 97% 확보</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 4 -->
+    <div class="card">
+      <div class="card-title">💳 Day 4. PayPal Live (실결제) 연동 & 계좌 입금 확인</div>
+      <div class="checklist-item">
+        <input type="checkbox" id="chk6" onchange="updateProgress()">
+        <div class="checklist-content">
+          <div class="checklist-title">PayPal Live 모드 전환 및 Client ID / Secret 발급</div>
+          <div class="checklist-desc"><code>config.json</code>의 paypal 항목을 실결제 모드로 전환합니다:</div>
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyText('{\n  \"paypal\": {\n    \"mode\": \"live\",\n    \"client_id\": \"LIVE_CLIENT_ID\",\n    \"client_secret\": \"LIVE_SECRET_KEY\",\n    \"currency\": \"USD\"\n  }\n}')">복사</button>
+"paypal": {<br>
+&nbsp;&nbsp;"mode": "live",<br>
+&nbsp;&nbsp;"client_id": "실제_LIVE_CLIENT_ID",<br>
+&nbsp;&nbsp;"client_secret": "실제_LIVE_SECRET_KEY",<br>
+&nbsp;&nbsp;"currency": "USD"<br>
+}
+          </div>
+          <a class="link-btn" href="https://developer.paypal.com/" target="_blank">PayPal Developer 대시보드 ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 5 -->
+    <div class="card">
+      <div class="card-title">🚀 Day 5. 스마트폰 실결제 검증 및 글로벌 런칭 홍보</div>
+      <div class="checklist-item">
+        <input type="checkbox" id="chk7" onchange="updateProgress()">
+        <div class="checklist-content">
+          <div class="checklist-title">직접 1회 $15 결제 진행 및 40장 충전 검증</div>
+          <div class="checklist-desc">내 페이팔 계좌로 달러 입금 확인 및 이미지 생성 완료 확인</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: Profit Calculator -->
+  <div id="profit" class="tab-pane">
+    <div class="card">
+      <div class="card-title">💎 플랜별 실제 순마진 분석 (Qwen Turbo 4비트 GGUF)</div>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">장당 8스텝 생성(2~3초)으로 GPU 소모 원가가 1장당 단 <strong>1.2원 ($0.0009)</strong>에 불과합니다.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>플랜</th>
+            <th>판매 가격</th>
+            <th>일일 한도</th>
+            <th>월평균 소비량</th>
+            <th>GPU 원가</th>
+            <th>사장님 순마진율</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🥉 Starter</td>
+            <td><strong>$15</strong> (약 20,500원)</td>
+            <td>40장 / 일</td>
+            <td>약 400장</td>
+            <td>약 480원</td>
+            <td class="highlight-cell">약 20,020원 (97.6%)</td>
+          </tr>
+          <tr>
+            <td>🥈 Pro</td>
+            <td><strong>$30</strong> (약 41,000원)</td>
+            <td>150장 / 일</td>
+            <td>약 1,200장</td>
+            <td>약 1,440원</td>
+            <td class="highlight-cell">약 39,560원 (96.5%)</td>
+          </tr>
+          <tr>
+            <td>🥇 Pro 3개월권</td>
+            <td><strong>$74</strong> (약 101,000원)</td>
+            <td>150장 / 일</td>
+            <td>약 3,500장</td>
+            <td>약 4,200원</td>
+            <td class="highlight-cell">약 96,800원 (95.8%)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Live Calculator -->
+    <div class="card">
+      <div class="card-title">🧮 실시간 예상 월 순수익 계산기</div>
+      <div class="calc-row">
+        <div class="calc-input-group">
+          <label>Starter 고객 수 (월 $15 / 20,500원)</label>
+          <input type="number" id="starterCount" value="50" oninput="calculateProfit()">
+        </div>
+        <div class="calc-input-group">
+          <label>Pro 고객 수 (월 $30 / 41,000원)</label>
+          <input type="number" id="proCount" value="30" oninput="calculateProfit()">
+        </div>
+        <div class="calc-result-box">
+          <div class="calc-result-title">사장님 예상 월 순수익</div>
+          <div class="calc-result-value" id="totalProfitDisplay">약 2,187,800원</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: Models -->
+  <div id="models" class="tab-pane">
+    <div class="card">
+      <div class="card-title">⚡ Qwen-Image 2.1 Turbo (4비트 GGUF) 3종 모델 파일 링크</div>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px;">클라우드 GPU 또는 ComfyUI 폴더의 각 지정 경로에 다운로드해 넣으시면 즉시 연동됩니다.</p>
+      
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #818cf8;">1. Diffusion 모델 (Unet)</strong><br>
+        <span style="font-size: 0.85rem; color: #cbd5e1;">폴더 경로: <code>ComfyUI/models/diffusion_models/</code></span><br>
+        <a class="link-btn" href="https://huggingface.co/unsloth/Qwen-Image-2.1-Turbo-GGUF/resolve/main/qwen-image-2.1-turbo-Q4_K_M.gguf" target="_blank">qwen-image-2.1-turbo-Q4_K_M.gguf 다운로드 (4비트 초고속) ↗</a>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #818cf8;">2. 텍스트 인코더 (CLIP)</strong><br>
+        <span style="font-size: 0.85rem; color: #cbd5e1;">폴더 경로: <code>ComfyUI/models/text_encoders/</code></span><br>
+        <a class="link-btn" href="https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_w4a8.safetensors" target="_blank">qwen3vl_8b_w4a8.safetensors 다운로드 ↗</a>
+      </div>
+
+      <div>
+        <strong style="color: #818cf8;">3. VAE 모델</strong><br>
+        <span style="font-size: 0.85rem; color: #cbd5e1;">폴더 경로: <code>ComfyUI/models/vae/</code></span><br>
+        <a class="link-btn" href="https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors" target="_blank">qwen_image_2.1_vae_bf16.safetensors 다운로드 ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: Architecture -->
+  <div id="architecture" class="tab-pane">
+    <div class="card">
+      <div class="card-title">🏛️ 24시간 무중단 클라우드 시스템 흐름도</div>
+      <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; line-height: 2;">
+        <p>1️⃣ <strong>접속 및 보안 계층</strong>: 고객 접속 $\rightarrow$ 호스팅케이알 도메인 $\rightarrow$ Cloudflare 무료 SSL & CDN (DDoS 보호)</p>
+        <p>2️⃣ <strong>24시간 상시 웹 서버</strong>: Render.com / VPS (컴퓨터 꺼도 상시 구동) $\rightarrow$ <code>server.py</code> 웹 서버</p>
+        <p>3️⃣ <strong>결제 & 라이선스</strong>: PayPal Live REST v2 실결제 승인 $\rightarrow$ SQLite 즉시 충전 & 환불 불가 약관 동의 증빙 저장</p>
+        <p>4️⃣ <strong>초고속 AI 엔진</strong>: ComfyUI + Qwen 2.1 Turbo (4비트 GGUF) 단 8스텝 렌더링 $\rightarrow$ 2~3초 내 고객에게 고화질 이미지 전달</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function openTab(tabId) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  function updateProgress() {
+    const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+    const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+    const total = checkboxes.length;
+    const percent = Math.round((checked / total) * 100);
+    
+    document.getElementById('progressBar').style.width = percent + '%';
+    document.getElementById('progressText').innerText = percent + '% 완료 (' + checked + '/' + total + ')';
+    localStorage.setItem('lumina_deploy_checklist', JSON.stringify(Array.from(checkboxes).map(cb => cb.checked)));
+  }
+
+  function loadProgress() {
+    const saved = localStorage.getItem('lumina_deploy_checklist');
+    if (saved) {
+      const states = JSON.parse(saved);
+      const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+      checkboxes.forEach((cb, idx) => {
+        if (states[idx] !== undefined) cb.checked = states[idx];
+      });
+      updateProgress();
+    }
+  }
+
+  function calculateProfit() {
+    const starter = parseInt(document.getElementById('starterCount').value) || 0;
+    const pro = parseInt(document.getElementById('proCount').value) || 0;
+    
+    const starterMargin = 20020;
+    const proMargin = 39560;
+    
+    const total = (starter * starterMargin) + (pro * proMargin);
+    document.getElementById('totalProfitDisplay').innerText = '약 ' + total.toLocaleString() + '원';
+  }
+
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('클립보드에 복사되었습니다!');
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    loadProgress();
+    calculateProfit();
+  });
+</script>
+
+</body>
+</html>
+

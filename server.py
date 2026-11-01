@@ -236,6 +236,18 @@ async def handle_get_history(request):
     history = get_generation_history(user_id=user_id, limit=30)
     return web.json_response({"history": history})
 
+@routes.get("/")
+async def handle_index(request):
+    """메인 프론트엔드 웹페이지 서빙"""
+    public_dir = os.path.abspath(os.path.dirname(__file__))
+    return web.FileResponse(os.path.join(public_dir, "index.html"))
+
+@routes.get("/manual")
+async def handle_manual(request):
+    """상용 배포 인터랙티브 대시보드 서빙"""
+    public_dir = os.path.abspath(os.path.dirname(__file__))
+    return web.FileResponse(os.path.join(public_dir, "DEPLOYMENT_DASHBOARD.html"))
+
 @web.middleware
 async def cors_middleware(request, handler):
     if request.method == "OPTIONS":
@@ -267,5 +279,5 @@ if __name__ == "__main__":
     app = create_app()
     port = config["server"].get("port", 8000)
     host = config["server"].get("host", "0.0.0.0")
-    print(f"🚀 Lumina AI Server running at http://localhost:{port}")
+    print(f"[Lumina AI] Server running at http://localhost:{port}")
     web.run_app(app, host=host, port=port)
