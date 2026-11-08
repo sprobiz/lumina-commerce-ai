@@ -264,7 +264,11 @@ async def handle_get_history(request):
 async def handle_index(request):
     """메인 프론트엔드 웹페이지 서빙"""
     public_dir = os.path.abspath(os.path.dirname(__file__))
-    return web.FileResponse(os.path.join(public_dir, "index.html"))
+    response = web.FileResponse(os.path.join(public_dir, "index.html"))
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 @routes.get("/manual")
 async def handle_manual(request):
