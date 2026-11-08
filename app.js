@@ -18,6 +18,17 @@ document.addEventListener("DOMContentLoaded", () => {
       quota_label: "Daily Remaining",
       quota_unit: "runs",
       btn_upgrade: "Upgrade Plan",
+      mode_t2i: "Text to Image",
+      mode_i2i: "Image + Text to Image",
+      ref_image_label: "Reference Image (Image to Image)",
+      upload_hint: "PNG, JPG, WEBP (Max 15MB)",
+      dropzone_title: "Click or Drag & Drop image here",
+      dropzone_desc: "AI will transform this image according to your prompt",
+      denoise_label: "Transformation Strength (Denoise)",
+      denoise_low: "0.3 (Keep structure)",
+      denoise_mid: "0.85 (Balanced)",
+      denoise_high: "1.0 (Full reimagining)",
+      alert_need_image: "Please upload a reference image for Image-to-Image mode!",
       comfy_online: "ComfyUI GPU Online (Live)",
       comfy_offline: "ComfyUI Offline (Demo Simulation)",
       comfy_waiting: "Waiting for server...",
@@ -106,6 +117,17 @@ document.addEventListener("DOMContentLoaded", () => {
       quota_label: "오늘 남은 생성",
       quota_unit: "회",
       btn_upgrade: "플랜 업그레이드",
+      mode_t2i: "텍스트로 생성 (Text to Image)",
+      mode_i2i: "이미지+텍스트로 생성 (Image to Image)",
+      ref_image_label: "참조할 이미지 (Image to Image)",
+      upload_hint: "PNG, JPG, WEBP (최대 15MB)",
+      dropzone_title: "여기를 클릭하거나 이미지를 드래그하여 업로드",
+      dropzone_desc: "AI가 원본 이미지를 시각적으로 분석하여 프롬프트에 맞춰 변형합니다",
+      denoise_label: "변형 강도 (Denoise)",
+      denoise_low: "0.3 (원본 형태 유지)",
+      denoise_mid: "0.85 (균형 변형)",
+      denoise_high: "1.0 (새로운 재창작)",
+      alert_need_image: "이미지+텍스트 모드에서는 참조할 이미지를 먼저 업로드해주세요!",
       comfy_online: "ComfyUI GPU 온라인 (Live)",
       comfy_offline: "ComfyUI 오프라인 (데모 시뮬레이션)",
       comfy_waiting: "서버 연결 대기 중...",
@@ -273,6 +295,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectedPlanPriceTag = document.getElementById("selected-plan-price-tag");
   const selectedPlanTarget = document.getElementById("selected-plan-target");
   const mockCheckoutBtn = document.getElementById("mock-checkout-btn");
+
+  // 모드 및 참조 이미지 상태
+  let currentMode = "txt2img"; // "txt2img" 또는 "img2img"
+  let uploadedComfyFilename = null;
+
+  // 생성 모드 & 이미지 업로드 DOM
+  const modeBtnT2i = document.getElementById("mode-btn-t2i");
+  const modeBtnI2i = document.getElementById("mode-btn-i2i");
+  const i2iUploadGroup = document.getElementById("i2i-upload-group");
+  const imageDropzone = document.getElementById("image-dropzone");
+  const refImageInput = document.getElementById("ref-image-input");
+  const dropzoneEmpty = document.getElementById("dropzone-empty");
+  const dropzonePreview = document.getElementById("dropzone-preview");
+  const refImagePreview = document.getElementById("ref-image-preview");
+  const refImageName = document.getElementById("ref-image-name");
+  const removeImageBtn = document.getElementById("remove-image-btn");
+  const denoiseSlider = document.getElementById("denoise-slider");
+  const denoiseValDisplay = document.getElementById("denoise-val-display");
 
   // 생성 제어
   const promptInput = document.getElementById("prompt-input");
@@ -689,6 +729,114 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === refundModal) closeRefundModal();
   });
 
+  // --- 모드 전환 & 참조 이미지 업로드 핸들러 ---
+  if (modeBtnT2i && modeBtnI2i) {
+    modeBtnT2i.addEventListener("click", () => {
+      currentMode = "txt2img";
+      modeBtnT2i.classList.add("active");
+      modeBtnI2i.classList.remove("active");
+      if (i2iUploadGroup) i2iUploadGroup.classList.add("hidden");
+    });
+
+    modeBtnI2i.addEventListener("click", () => {
+      currentMode = "img2img";
+      modeBtnI2i.classList.add("active");
+      modeBtnT2i.classList.remove("active");
+      if (i2iUploadGroup) i2iUploadGroup.classList.remove("hidden");
+    });
+  }
+
+  // 드롭존 및 이미지 업로드 처리
+  if (imageDropzone && refImageInput) {
+    imageDropzone.addEventListener("click", (e) => {
+      if (e.target !== removeImageBtn && (!removeImageBtn || !removeImageBtn.contains(e.target))) {
+        refImageInput.click();
+      }
+    });
+
+    imageDropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      imageDropzone.classList.add("dragover");
+    });
+
+    imageDropzone.addEventListener("dragleave", () => {
+      imageDropzone.classList.remove("dragover");
+    });
+
+    imageDropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      imageDropzone.classList.remove("dragover");
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleImageUpload(e.dataTransfer.files[0]);
+      }
+    });
+
+    refImageInput.addEventListener("change", () => {
+      if (refImageInput.files && refImageInput.files.length > 0) {
+        handleImageUpload(refImageInput.files[0]);
+      }
+    });
+  }
+
+  if (removeImageBtn) {
+    removeImageBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      clearUploadedImage();
+    });
+  }
+
+  function clearUploadedImage() {
+    uploadedComfyFilename = null;
+    if (refImageInput) refImageInput.value = "";
+    if (refImagePreview) refImagePreview.src = "";
+    if (dropzonePreview) dropzonePreview.classList.add("hidden");
+    if (dropzoneEmpty) dropzoneEmpty.classList.remove("hidden");
+  }
+
+  async function handleImageUpload(file) {
+    if (!file.type.startsWith("image/")) {
+      alert("PNG, JPG, WEBP 형식의 이미지 파일만 지원됩니다.");
+      return;
+    }
+
+    // 로컬 미리보기 표시
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (refImagePreview) refImagePreview.src = e.target.result;
+      if (refImageName) refImageName.textContent = file.name;
+      if (dropzoneEmpty) dropzoneEmpty.classList.add("hidden");
+      if (dropzonePreview) dropzonePreview.classList.remove("hidden");
+    };
+    reader.readAsDataURL(file);
+
+    // 서버로 즉시 업로드하여 ComfyUI input 폴더에 등록
+    const formData = new FormData();
+    formData.append("image", file, file.name);
+
+    try {
+      const res = await fetch("/api/upload-image", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success && data.filename) {
+        uploadedComfyFilename = data.filename;
+      } else {
+        throw new Error(data.error || "업로드 실패");
+      }
+    } catch (e) {
+      console.error("참조 이미지 업로드 실패:", e);
+      alert("참조 이미지 업로드 실패: " + e.message);
+      clearUploadedImage();
+    }
+  }
+
+  if (denoiseSlider && denoiseValDisplay) {
+    denoiseSlider.addEventListener("input", () => {
+      denoiseValDisplay.textContent = denoiseSlider.value;
+    });
+  }
+
   // --- 3. 이미지 생성 실행 ---
   promptInput.addEventListener("input", () => {
     const dict = i18n[currentLang] || i18n.en;
@@ -728,10 +876,18 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Image-to-Image 모드일 때 참조 이미지 첨부 검증
+    if (currentMode === "img2img" && !uploadedComfyFilename) {
+      alert(dict.alert_need_image);
+      if (refImageInput) refImageInput.click();
+      return;
+    }
+
     const selectedRatio = document.querySelector('input[name="aspect-ratio"]:checked').value;
     const [width, height] = selectedRatio.split("x").map(Number);
     const negativePrompt = negPromptInput.value.trim();
     const seed = parseInt(seedInput.value) || -1;
+    const denoiseVal = currentMode === "img2img" && denoiseSlider ? parseFloat(denoiseSlider.value) : 1.0;
 
     generateBtn.disabled = true;
     genSpinner.classList.remove("hidden");
@@ -757,11 +913,14 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: currentUserId,
+          mode: currentMode,
           prompt: prompt,
           negative_prompt: negativePrompt,
           width: width,
           height: height,
-          seed: seed
+          seed: seed,
+          image_filename: currentMode === "img2img" ? uploadedComfyFilename : null,
+          denoise: denoiseVal
         })
       });
 

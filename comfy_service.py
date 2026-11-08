@@ -42,14 +42,35 @@ class ComfyService:
         except Exception:
             return False
 
-    def build_standard_workflow(self, prompt: str, negative_prompt: str = "", width: int = 1024, height: int = 1024, seed: int = None) -> Dict[str, Any]:
+    async def upload_image(self, file_bytes: bytes, filename: str) -> str:
+        """ComfyUI 서버의 /upload/image 로 이미지 업로드"""
+        unique_name = f"{uuid.uuid4().hex[:8]}_{filename}"
+        local_upload_dir = os.path.join(self.output_dir, "uploads")
+        os.makedirs(local_upload_dir, exist_ok=True)
+        local_path = os.path.join(local_upload_dir, unique_name)
+        with open(local_path, "wb") as f:
+            f.write(file_bytes)
+
+        is_online = await self.is_comfy_online()
+        if is_online:
+            try:
+                async with aiohttp.ClientSession() as session:
+                    data = aiohttp.FormData()
+                    data.add_field('image', file_bytes, filename=unique_name, content_type='image/png')
+                    data.add_field('overwrite', 'true')
+                    async with session.post(f"{self.base_url}/upload/image", data=data) as resp:
+                        if resp.status == 200:
+                            res_json = await resp.json()
+                            return res_json.get("name", unique_name)
+            except Exception as e:
+                print(f"[ComfyService] ComfyUI image upload warning: {e}")
+
+        return unique_name
+
+    def build_standard_workflow(self, prompt: str, negative_prompt: str = "", width: int = 1024, height: int = 1024, seed: int = None, image_filename: Optional[str] = None, denoise: float = 1.0) -> Dict[str, Any]:
         """
-        Qwen-Image 2.1 Turbo (4비트 GGUF) 공식 8노드 파이프라인
-        - 모델: qwen-image-2.1-turbo-Q4_K_M.gguf (UnetLoaderGGUF)
-        - 인코더: qwen3vl_8b_w4a8.safetensors (CLIPLoader)
-        - VAE: qwen_image_2.1_vae_bf16.safetensors (VAELoader)
-        - 텍스트인코더: TextEncodeQwenImage21
-        - 샘플러: KSampler (8스텝, cfg 1.0, euler, simple)
+        Qwen-Image 2.1 Turbo (4비트 GGUF) 공식 8~10노드 파이프라인
+        - Text-to-Image 및 Image-Text-to-Image (멀티모달 참조 및 Img2Img) 지원
         """
         if seed is None or seed < 0:
             seed = random.randint(1, 1000000000)
@@ -98,7 +119,7 @@ class ComfyService:
                     "cfg": 1.0,
                     "sampler_name": "euler",
                     "scheduler": "simple",
-                    "denoise": 1.0,
+                    "denoise": float(denoise) if denoise is not None else 1.0,
                     "model": ["1", 0],
                     "positive": ["4", 0],
                     "negative": ["4", 1],
@@ -121,9 +142,30 @@ class ComfyService:
                 "class_type": "SaveImage"
             }
         }
+
+        # Image-to-Image 모드 설정 (참조 이미지가 제공된 경우)
+        if image_filename:
+            workflow["9"] = {
+                "inputs": {
+                    "image": image_filename
+                },
+                "class_type": "LoadImage"
+            }
+            # 원본 이미지를 VAE 인코딩하여 Latent 도화지로 연결
+            workflow["10"] = {
+                "inputs": {
+                    "pixels": ["9", 0],
+                    "vae": ["3", 0]
+                },
+                "class_type": "VAEEncode"
+            }
+            # KSampler의 시작 Latent를 원본 이미지 Latent로 교체하고 사용자가 설정한 denoise 변형 강도 적용
+            workflow["6"]["inputs"]["latent_image"] = ["10", 0]
+            workflow["6"]["inputs"]["denoise"] = float(denoise) if denoise is not None else 0.85
+
         return workflow
 
-    async def generate_image(self, prompt: str, negative_prompt: str = "", width: int = 512, height: int = 512, seed: int = None, progress_callback: Optional[Callable[[int, int], None]] = None) -> Dict[str, Any]:
+    async def generate_image(self, prompt: str, negative_prompt: str = "", width: int = 512, height: int = 512, seed: int = None, image_filename: Optional[str] = None, denoise: float = 1.0, progress_callback: Optional[Callable[[int, int], None]] = None) -> Dict[str, Any]:
         """이미지 생성 요청 및 결과 이미지 획득"""
         gen_id = str(uuid.uuid4())[:8]
         if seed is None or seed < 0:
@@ -132,9 +174,9 @@ class ComfyService:
         is_online = await self.is_comfy_online()
         if not is_online:
             # Fallback 모드 (ComfyUI 오프라인 시 데모 이미지 생성)
-            return await self._generate_fallback(gen_id, prompt, negative_prompt, width, height, seed, progress_callback)
+            return await self._generate_fallback(gen_id, prompt, negative_prompt, width, height, seed, image_filename, denoise, progress_callback)
 
-        workflow = self.build_standard_workflow(prompt, negative_prompt, width, height, seed)
+        workflow = self.build_standard_workflow(prompt, negative_prompt, width, height, seed, image_filename, denoise)
         payload = {
             "prompt": workflow,
             "client_id": self.client_id
@@ -187,7 +229,16 @@ class ComfyService:
                 if resp.status == 200:
                     history = await resp.json()
                     if prompt_id in history:
-                        outputs = history[prompt_id].get("outputs", {})
+                        item = history[prompt_id]
+                        status = item.get("status", {})
+                        if status.get("status_str") == "error":
+                            err_msg = "ComfyUI 렌더링 중 오류가 발생했습니다."
+                            for msg in status.get("messages", []):
+                                if msg[0] == "execution_error":
+                                    err_msg = msg[1].get("exception_message", err_msg)
+                            raise RuntimeError(err_msg)
+
+                        outputs = item.get("outputs", {})
                         for node_id, node_out in outputs.items():
                             if "images" in node_out and len(node_out["images"]) > 0:
                                 return node_out["images"][0]
@@ -198,7 +249,7 @@ class ComfyService:
 
         raise TimeoutError("ComfyUI 이미지 생성 제한 시간(120초)을 초과했습니다.")
 
-    async def _generate_fallback(self, gen_id: str, prompt: str, negative_prompt: str, width: int, height: int, seed: int, progress_callback: Optional[Callable[[int, int], None]] = None) -> Dict[str, Any]:
+    async def _generate_fallback(self, gen_id: str, prompt: str, negative_prompt: str, width: int, height: int, seed: int, image_filename: Optional[str] = None, denoise: float = 1.0, progress_callback: Optional[Callable[[int, int], None]] = None) -> Dict[str, Any]:
         """ComfyUI 미구동 시 서비스 테스트를 위한 안내용 데모 이미지 생성"""
         # 진행률 애니메이션 시뮬레이션
         for p in range(20, 101, 20):

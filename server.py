@@ -106,6 +106,26 @@ async def handle_get_plans(request):
 async def handle_refund_policy(request):
     return web.Response(text=REFUND_POLICY_TEXT, content_type="text/plain; charset=utf-8")
 
+@routes.post("/api/upload-image")
+async def handle_upload_image(request):
+    """Image-to-Image 용 참조 이미지 업로드 및 ComfyUI 전달"""
+    try:
+        reader = await request.multipart()
+        field = await reader.next()
+        if not field:
+            return web.json_response({"error": "업로드할 이미지가 없습니다."}, status=400)
+
+        filename = field.filename or "upload.png"
+        content = await field.read()
+
+        comfy_filename = await comfy_service.upload_image(content, filename)
+        return web.json_response({
+            "success": True,
+            "filename": comfy_filename
+        })
+    except Exception as e:
+        return web.json_response({"error": f"이미지 업로드 실패: {str(e)}"}, status=500)
+
 @routes.post("/api/generate")
 async def handle_generate(request):
     """이미지 생성 요청"""
@@ -120,6 +140,8 @@ async def handle_generate(request):
     width = int(data.get("width", 512))
     height = int(data.get("height", 512))
     seed = data.get("seed")
+    image_filename = data.get("image_filename")
+    denoise = float(data.get("denoise", 0.85)) if data.get("denoise") is not None else 1.0
 
     if not prompt:
         return web.json_response({"error": "프롬프트를 입력해주세요."}, status=400)
@@ -138,7 +160,9 @@ async def handle_generate(request):
             negative_prompt=negative_prompt,
             width=width,
             height=height,
-            seed=seed
+            seed=seed,
+            image_filename=image_filename,
+            denoise=denoise
         )
 
         # 3. 사용량 차감 및 DB 기록
@@ -265,7 +289,7 @@ async def cors_middleware(request, handler):
     return response
 
 def create_app():
-    app = web.Application(middlewares=[cors_middleware])
+    app = web.Application(middlewares=[cors_middleware], client_max_size=50 * 1024 * 1024)
     app.add_routes(routes)
 
     output_dir = os.path.abspath(config["service"].get("output_dir", "./outputs"))

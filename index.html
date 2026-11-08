@@ -58,6 +58,54 @@
             dedicated GPU pipeline.</p>
         </div>
 
+        <!-- 생성 모드 선택 탭 (Text-to-Image / Image-to-Image) -->
+        <div class="mode-tabs">
+          <button type="button" class="mode-tab-btn active" id="mode-btn-t2i" data-mode="txt2img">
+            🎨 <span data-i18n="mode_t2i">Text to Image</span>
+          </button>
+          <button type="button" class="mode-tab-btn" id="mode-btn-i2i" data-mode="img2img">
+            🖼️ <span data-i18n="mode_i2i">Image + Text to Image</span>
+          </button>
+        </div>
+
+        <!-- 이미지 업로드 섹션 (Image to Image 모드 활성화 시 노출) -->
+        <div class="form-group hidden" id="i2i-upload-group">
+          <div class="label-row">
+            <label data-i18n="ref_image_label">Reference Image (Image to Image)</label>
+            <span class="upload-hint" data-i18n="upload_hint">PNG, JPG, WEBP (Max 15MB)</span>
+          </div>
+
+          <div class="dropzone" id="image-dropzone">
+            <input type="file" id="ref-image-input" accept="image/png, image/jpeg, image/webp" class="file-input-hidden">
+            <div class="dropzone-content" id="dropzone-empty">
+              <span class="dropzone-icon">📁</span>
+              <p class="dropzone-title" data-i18n="dropzone_title">Click or Drag & Drop image here</p>
+              <p class="dropzone-desc" data-i18n="dropzone_desc">AI will transform this image according to your prompt</p>
+            </div>
+            <div class="dropzone-preview hidden" id="dropzone-preview">
+              <img id="ref-image-preview" src="" alt="Reference Image">
+              <div class="preview-actions">
+                <span class="preview-filename" id="ref-image-name">image.png</span>
+                <button type="button" class="btn-remove-image" id="remove-image-btn" title="Remove image">&times;</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 변형 강도 (Denoise) 제어 슬라이더 -->
+          <div class="denoise-control">
+            <div class="denoise-label-row">
+              <span data-i18n="denoise_label">Transformation Strength (Denoise)</span>
+              <strong id="denoise-val-display">0.85</strong>
+            </div>
+            <input type="range" id="denoise-slider" min="0.3" max="1.0" step="0.05" value="0.85">
+            <div class="denoise-ticks">
+              <span data-i18n="denoise_low">0.3 (Keep structure)</span>
+              <span data-i18n="denoise_mid">0.85 (Balanced)</span>
+              <span data-i18n="denoise_high">1.0 (Full reimagining)</span>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <div class="label-row">
             <label for="prompt-input" data-i18n="prompt_label">Prompt</label>
