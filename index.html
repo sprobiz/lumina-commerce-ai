@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lumina AI - 초고화질 AI 이미지 생성 SaaS</title>
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 </head>
@@ -59,60 +59,70 @@
         </div>
 
         <!-- 생성 모드 선택 탭 (Text-to-Image / Image-to-Image) -->
-        <div class="mode-tabs">
-          <button type="button" class="mode-tab-btn active" id="mode-btn-t2i" data-mode="txt2img">
-            🎨 <span data-i18n="mode_t2i">Text to Image</span>
-          </button>
-          <button type="button" class="mode-tab-btn" id="mode-btn-i2i" data-mode="img2img">
-            🖼️ <span data-i18n="mode_i2i">Image + Text to Image</span>
-          </button>
-        </div>
-
-        <!-- 이미지 업로드 섹션 (Image to Image 모드 활성화 시 노출) -->
-        <div class="form-group hidden" id="i2i-upload-group">
-          <div class="label-row">
-            <label data-i18n="ref_image_label">Reference Image (Image to Image)</label>
-            <span class="upload-hint" data-i18n="upload_hint">PNG, JPG, WEBP (Max 15MB)</span>
-          </div>
-
-          <div class="dropzone" id="image-dropzone">
-            <input type="file" id="ref-image-input" accept="image/png, image/jpeg, image/webp" class="file-input-hidden">
-            <div class="dropzone-content" id="dropzone-empty">
-              <span class="dropzone-icon">📁</span>
-              <p class="dropzone-title" data-i18n="dropzone_title">Click or Drag & Drop image here</p>
-              <p class="dropzone-desc" data-i18n="dropzone_desc">AI will transform this image according to your prompt</p>
-            </div>
-            <div class="dropzone-preview hidden" id="dropzone-preview">
-              <img id="ref-image-preview" src="" alt="Reference Image">
-              <div class="preview-actions">
-                <span class="preview-filename" id="ref-image-name">image.png</span>
-                <button type="button" class="btn-remove-image" id="remove-image-btn" title="Remove image">&times;</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- 변형 강도 (Denoise) 제어 슬라이더 -->
-          <div class="denoise-control">
-            <div class="denoise-label-row">
-              <span data-i18n="denoise_label">Transformation Strength (Denoise)</span>
-              <strong id="denoise-val-display">0.85</strong>
-            </div>
-            <input type="range" id="denoise-slider" min="0.3" max="1.0" step="0.05" value="0.85">
-            <div class="denoise-ticks">
-              <span data-i18n="denoise_low">0.3 (Keep structure)</span>
-              <span data-i18n="denoise_mid">0.85 (Balanced)</span>
-              <span data-i18n="denoise_high">1.0 (Full reimagining)</span>
-            </div>
+        <div class="mode-tabs-container">
+          <div class="mode-tabs-pill">
+            <button type="button" class="mode-tab-btn active" id="mode-tab-txt2img">
+              <span class="mode-icon">✏️</span>
+              <span data-i18n="mode_tab_txt2img">Text to Image</span>
+            </button>
+            <button type="button" class="mode-tab-btn" id="mode-tab-img2img">
+              <span class="mode-icon">🖼️</span>
+              <span data-i18n="mode_tab_img2img">Image to Image</span>
+              <span class="active-dot hidden" id="img2img-active-indicator">●</span>
+            </button>
           </div>
         </div>
 
         <div class="form-group">
-          <div class="label-row">
-            <label for="prompt-input" data-i18n="prompt_label">Prompt</label>
-            <span class="char-count" id="prompt-len">0 chars</span>
+          <!-- 제미나이 스타일 통합 프롬프트 컨테이너 -->
+          <div class="gemini-prompt-card" id="gemini-prompt-card">
+            <!-- 드래그 오버 안내 오버레이 -->
+            <div class="drop-overlay hidden" id="drop-overlay">
+              <div class="drop-overlay-content">
+                <span class="drop-icon">📥</span>
+                <p data-i18n="drop_overlay_text">이미지를 여기에 놓으면 바로 첨부됩니다</p>
+              </div>
+            </div>
+
+            <!-- 첨부된 이미지 미리보기 칩 (Gemini 스타일) -->
+            <div class="gemini-attachment-bar hidden" id="gemini-attachment-bar">
+              <div class="attachment-chip">
+                <img id="attached-thumb" src="" alt="첨부 이미지">
+                <div class="attachment-info">
+                  <span class="attachment-name" id="attached-name">image.png</span>
+                  <span class="attachment-tag" data-i18n="attachment_tag">🖼️ Image-to-Image Active</span>
+                </div>
+                <button type="button" class="btn-chip-remove" id="remove-attached-btn" title="이미지 제거">&times;</button>
+              </div>
+              <div class="attachment-denoise-compact">
+                <span data-i18n="denoise_label">Strength:</span>
+                <input type="range" id="denoise-slider" min="0.3" max="1.0" step="0.05" value="0.85">
+                <strong id="denoise-val-display">0.85</strong>
+              </div>
+            </div>
+
+            <!-- 프롬프트 텍스트 입력창 -->
+            <textarea id="prompt-input" rows="4" data-i18n-placeholder="prompt_placeholder"
+              placeholder="Enter your prompt (or drag & drop / Ctrl+V to attach reference image)..."></textarea>
+
+            <!-- 제미나이 스타일 하단 툴바 -->
+            <div class="gemini-prompt-toolbar">
+              <div class="toolbar-left">
+                <!-- 제미나이 스타일 원클릭 파일 첨부 버튼 -->
+                <button type="button" class="btn-gemini-upload" id="btn-quick-attach" title="이미지 파일 첨부">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                  </svg>
+                  <span data-i18n="btn_attach_image">Attach Image</span>
+                </button>
+                <input type="file" id="ref-image-input" accept="image/png, image/jpeg, image/webp" class="file-input-hidden">
+                <span class="toolbar-hint" data-i18n="toolbar_hint">or paste (Ctrl+V) / drag & drop</span>
+              </div>
+              <div class="toolbar-right">
+                <span class="char-count" id="prompt-len">0 chars</span>
+              </div>
+            </div>
           </div>
-          <textarea id="prompt-input" rows="4" data-i18n-placeholder="prompt_placeholder"
-            placeholder="e.g. A breathtaking cinematic portrait of a cybernetic warrior, 8k resolution, photorealistic, volumetric rim lighting, dramatic atmosphere..."></textarea>
 
           <!-- 추천 스타일 태그 -->
           <div class="tag-list">
@@ -342,7 +352,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 
 </html>

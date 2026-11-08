@@ -18,25 +18,16 @@ document.addEventListener("DOMContentLoaded", () => {
       quota_label: "Daily Remaining",
       quota_unit: "runs",
       btn_upgrade: "Upgrade Plan",
-      mode_t2i: "Text to Image",
-      mode_i2i: "Image + Text to Image",
-      ref_image_label: "Reference Image (Image to Image)",
-      upload_hint: "PNG, JPG, WEBP (Max 15MB)",
-      dropzone_title: "Click or Drag & Drop image here",
-      dropzone_desc: "AI will transform this image according to your prompt",
-      denoise_label: "Transformation Strength (Denoise)",
-      denoise_low: "0.3 (Keep structure)",
-      denoise_mid: "0.85 (Balanced)",
-      denoise_high: "1.0 (Full reimagining)",
-      alert_need_image: "Please upload a reference image for Image-to-Image mode!",
-      comfy_online: "ComfyUI GPU Online (Live)",
-      comfy_offline: "ComfyUI Offline (Demo Simulation)",
-      comfy_waiting: "Waiting for server...",
-      studio_title: "AI Generation Studio",
-      studio_subtitle: "Enter your prompt to render high-resolution artwork via dedicated GPU pipeline.",
+      mode_tab_txt2img: "Text to Image",
+      mode_tab_img2img: "Image to Image",
+      btn_attach_image: "Attach Image",
+      toolbar_hint: "or paste (Ctrl+V) / drag & drop",
+      drop_overlay_text: "Drop image here to attach",
+      attachment_tag: "🖼️ Image-to-Image Active",
+      denoise_label: "Strength:",
       prompt_label: "Prompt",
       prompt_chars: "chars",
-      prompt_placeholder: "e.g. A breathtaking cinematic portrait of a cybernetic warrior, 8k resolution, photorealistic, volumetric rim lighting, dramatic atmosphere...",
+      prompt_placeholder: "Enter your prompt (or drag & drop / Ctrl+V to attach reference image)...",
       tag_masterpiece: "🌟 Ultra HD",
       tag_photo: "📷 Photorealistic",
       tag_anime: "🎨 Anime Art",
@@ -117,25 +108,16 @@ document.addEventListener("DOMContentLoaded", () => {
       quota_label: "오늘 남은 생성",
       quota_unit: "회",
       btn_upgrade: "플랜 업그레이드",
-      mode_t2i: "텍스트로 생성 (Text to Image)",
-      mode_i2i: "이미지+텍스트로 생성 (Image to Image)",
-      ref_image_label: "참조할 이미지 (Image to Image)",
-      upload_hint: "PNG, JPG, WEBP (최대 15MB)",
-      dropzone_title: "여기를 클릭하거나 이미지를 드래그하여 업로드",
-      dropzone_desc: "AI가 원본 이미지를 시각적으로 분석하여 프롬프트에 맞춰 변형합니다",
-      denoise_label: "변형 강도 (Denoise)",
-      denoise_low: "0.3 (원본 형태 유지)",
-      denoise_mid: "0.85 (균형 변형)",
-      denoise_high: "1.0 (새로운 재창작)",
-      alert_need_image: "이미지+텍스트 모드에서는 참조할 이미지를 먼저 업로드해주세요!",
-      comfy_online: "ComfyUI GPU 온라인 (Live)",
-      comfy_offline: "ComfyUI 오프라인 (데모 시뮬레이션)",
-      comfy_waiting: "서버 연결 대기 중...",
-      studio_title: "AI 이미지 생성 스튜디오",
-      studio_subtitle: "프롬프트를 입력하면 ComfyUI GPU 엔진이 고화질 작품을 실시간 렌더링합니다.",
+      mode_tab_txt2img: "텍스트로 생성 (Txt2Img)",
+      mode_tab_img2img: "이미지 참조 생성 (Img2Img)",
+      btn_attach_image: "이미지 첨부",
+      toolbar_hint: "붙여넣기(Ctrl+V) 또는 드래그 지원",
+      drop_overlay_text: "이미지를 여기에 놓으면 바로 첨부됩니다",
+      attachment_tag: "🖼️ 이미지 참조(Img2Img) 활성",
+      denoise_label: "변형 강도:",
       prompt_label: "프롬프트 (Prompt)",
       prompt_chars: "자",
-      prompt_placeholder: "예: A breathtaking cinematic portrait of a cybernetic warrior, 8k resolution, photorealistic, volumetric rim lighting, dramatic atmosphere...",
+      prompt_placeholder: "프롬프트를 입력하세요 (이미지를 끌어다 놓거나 Ctrl+V로 붙여넣으면 즉시 첨부됩니다)...",
       tag_masterpiece: "🌟 초고화질",
       tag_photo: "📷 극실사",
       tag_anime: "🎨 애니·일러스트",
@@ -296,21 +278,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectedPlanTarget = document.getElementById("selected-plan-target");
   const mockCheckoutBtn = document.getElementById("mock-checkout-btn");
 
-  // 모드 및 참조 이미지 상태
-  let currentMode = "txt2img"; // "txt2img" 또는 "img2img"
+  // 첨부 이미지 상태
   let uploadedComfyFilename = null;
 
-  // 생성 모드 & 이미지 업로드 DOM
-  const modeBtnT2i = document.getElementById("mode-btn-t2i");
-  const modeBtnI2i = document.getElementById("mode-btn-i2i");
-  const i2iUploadGroup = document.getElementById("i2i-upload-group");
-  const imageDropzone = document.getElementById("image-dropzone");
+  // 생성 모드 탭 & 프롬프트 카드 DOM
+  const modeTabTxt2Img = document.getElementById("mode-tab-txt2img");
+  const modeTabImg2Img = document.getElementById("mode-tab-img2img");
+  const img2imgActiveIndicator = document.getElementById("img2img-active-indicator");
+  const geminiPromptCard = document.getElementById("gemini-prompt-card");
+  const dropOverlay = document.getElementById("drop-overlay");
+
+  // 제미나이 스타일 이미지 첨부 DOM
+  const btnQuickAttach = document.getElementById("btn-quick-attach");
   const refImageInput = document.getElementById("ref-image-input");
-  const dropzoneEmpty = document.getElementById("dropzone-empty");
-  const dropzonePreview = document.getElementById("dropzone-preview");
-  const refImagePreview = document.getElementById("ref-image-preview");
-  const refImageName = document.getElementById("ref-image-name");
-  const removeImageBtn = document.getElementById("remove-image-btn");
+  const geminiAttachmentBar = document.getElementById("gemini-attachment-bar");
+  const attachedThumb = document.getElementById("attached-thumb");
+  const attachedName = document.getElementById("attached-name");
+  const removeAttachedBtn = document.getElementById("remove-attached-btn");
   const denoiseSlider = document.getElementById("denoise-slider");
   const denoiseValDisplay = document.getElementById("denoise-val-display");
 
@@ -729,46 +713,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === refundModal) closeRefundModal();
   });
 
-  // --- 모드 전환 & 참조 이미지 업로드 핸들러 ---
-  if (modeBtnT2i && modeBtnI2i) {
-    modeBtnT2i.addEventListener("click", () => {
-      currentMode = "txt2img";
-      modeBtnT2i.classList.add("active");
-      modeBtnI2i.classList.remove("active");
-      if (i2iUploadGroup) i2iUploadGroup.classList.add("hidden");
+  // --- 생성 모드 선택 탭 제어 (Text-to-Image / Image-to-Image) ---
+  if (modeTabTxt2Img && modeTabImg2Img) {
+    modeTabTxt2Img.addEventListener("click", () => {
+      clearAttachedImage();
+      modeTabTxt2Img.classList.add("active");
+      modeTabImg2Img.classList.remove("active");
     });
 
-    modeBtnI2i.addEventListener("click", () => {
-      currentMode = "img2img";
-      modeBtnI2i.classList.add("active");
-      modeBtnT2i.classList.remove("active");
-      if (i2iUploadGroup) i2iUploadGroup.classList.remove("hidden");
-    });
-  }
-
-  // 드롭존 및 이미지 업로드 처리
-  if (imageDropzone && refImageInput) {
-    imageDropzone.addEventListener("click", (e) => {
-      if (e.target !== removeImageBtn && (!removeImageBtn || !removeImageBtn.contains(e.target))) {
+    modeTabImg2Img.addEventListener("click", () => {
+      modeTabImg2Img.classList.add("active");
+      modeTabTxt2Img.classList.remove("active");
+      if (!uploadedComfyFilename && refImageInput) {
         refImageInput.click();
       }
     });
+  }
 
-    imageDropzone.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      imageDropzone.classList.add("dragover");
-    });
-
-    imageDropzone.addEventListener("dragleave", () => {
-      imageDropzone.classList.remove("dragover");
-    });
-
-    imageDropzone.addEventListener("drop", (e) => {
-      e.preventDefault();
-      imageDropzone.classList.remove("dragover");
-      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        handleImageUpload(e.dataTransfer.files[0]);
-      }
+  // --- 제미나이 스타일 스마트 이미지 첨부 (클릭, 카드 드래그&드롭, Ctrl+V 붙여넣기) ---
+  if (btnQuickAttach && refImageInput) {
+    btnQuickAttach.addEventListener("click", () => {
+      refImageInput.click();
     });
 
     refImageInput.addEventListener("change", () => {
@@ -778,40 +743,104 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (removeImageBtn) {
-    removeImageBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      clearUploadedImage();
+  // 1. 프롬프트 카드 전체 드래그 앤 드롭 (Gemini 오버레이 UX)
+  if (geminiPromptCard) {
+    let dragCounter = 0;
+
+    geminiPromptCard.addEventListener("dragenter", (e) => {
+      e.preventDefault();
+      dragCounter++;
+      geminiPromptCard.classList.add("drag-active");
+      if (dropOverlay) dropOverlay.classList.remove("hidden");
+    });
+
+    geminiPromptCard.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+
+    geminiPromptCard.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      dragCounter--;
+      if (dragCounter <= 0) {
+        dragCounter = 0;
+        geminiPromptCard.classList.remove("drag-active");
+        if (dropOverlay) dropOverlay.classList.add("hidden");
+      }
+    });
+
+    geminiPromptCard.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dragCounter = 0;
+      geminiPromptCard.classList.remove("drag-active");
+      if (dropOverlay) dropOverlay.classList.add("hidden");
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleImageUpload(e.dataTransfer.files[0]);
+      }
     });
   }
 
-  function clearUploadedImage() {
+  // 2. 프롬프트 입력창 어디서나 클립보드 이미지 직접 붙여넣기 (Ctrl + V)
+  if (promptInput) {
+    promptInput.addEventListener("paste", (e) => {
+      const items = (e.clipboardData || window.clipboardData).items;
+      if (items) {
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].type && items[i].type.indexOf("image") !== -1) {
+            const blob = items[i].getAsFile();
+            if (blob) {
+              handleImageUpload(blob);
+              break;
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // 첨부 이미지 제거 버튼
+  if (removeAttachedBtn) {
+    removeAttachedBtn.addEventListener("click", () => {
+      clearAttachedImage();
+    });
+  }
+
+  function clearAttachedImage() {
     uploadedComfyFilename = null;
     if (refImageInput) refImageInput.value = "";
-    if (refImagePreview) refImagePreview.src = "";
-    if (dropzonePreview) dropzonePreview.classList.add("hidden");
-    if (dropzoneEmpty) dropzoneEmpty.classList.remove("hidden");
+    if (attachedThumb) attachedThumb.src = "";
+    if (geminiAttachmentBar) geminiAttachmentBar.classList.add("hidden");
+    if (modeTabTxt2Img && modeTabImg2Img) {
+      modeTabTxt2Img.classList.add("active");
+      modeTabImg2Img.classList.remove("active");
+    }
+    if (img2imgActiveIndicator) img2imgActiveIndicator.classList.add("hidden");
   }
 
   async function handleImageUpload(file) {
-    if (!file.type.startsWith("image/")) {
-      alert("PNG, JPG, WEBP 형식의 이미지 파일만 지원됩니다.");
+    if (!file || !file.type.startsWith("image/")) {
+      alert(currentLang === "ko" ? "PNG, JPG, WEBP 형식의 이미지 파일만 지원됩니다." : "Only PNG, JPG, WEBP images are supported.");
       return;
     }
 
-    // 로컬 미리보기 표시
+    const fileName = file.name || "attached_image.png";
+
+    // 1. 즉시 로컬 미리보기 칩 노출 & 모드 탭 자동 전환 (제미나이 UX)
     const reader = new FileReader();
     reader.onload = (e) => {
-      if (refImagePreview) refImagePreview.src = e.target.result;
-      if (refImageName) refImageName.textContent = file.name;
-      if (dropzoneEmpty) dropzoneEmpty.classList.add("hidden");
-      if (dropzonePreview) dropzonePreview.classList.remove("hidden");
+      if (attachedThumb) attachedThumb.src = e.target.result;
+      if (attachedName) attachedName.textContent = fileName;
+      if (geminiAttachmentBar) geminiAttachmentBar.classList.remove("hidden");
+      if (modeTabImg2Img && modeTabTxt2Img) {
+        modeTabImg2Img.classList.add("active");
+        modeTabTxt2Img.classList.remove("active");
+      }
+      if (img2imgActiveIndicator) img2imgActiveIndicator.classList.remove("hidden");
     };
     reader.readAsDataURL(file);
 
-    // 서버로 즉시 업로드하여 ComfyUI input 폴더에 등록
+    // 2. ComfyUI input 서버로 즉시 업로드
     const formData = new FormData();
-    formData.append("image", file, file.name);
+    formData.append("image", file, fileName);
 
     try {
       const res = await fetch("/api/upload-image", {
@@ -825,9 +854,9 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(data.error || "업로드 실패");
       }
     } catch (e) {
-      console.error("참조 이미지 업로드 실패:", e);
-      alert("참조 이미지 업로드 실패: " + e.message);
-      clearUploadedImage();
+      console.error("이미지 업로드 실패:", e);
+      alert((currentLang === "ko" ? "이미지 업로드 실패: " : "Image upload failed: ") + e.message);
+      clearAttachedImage();
     }
   }
 
@@ -876,18 +905,23 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Image-to-Image 모드일 때 참조 이미지 첨부 검증
-    if (currentMode === "img2img" && !uploadedComfyFilename) {
-      alert(dict.alert_need_image);
+    // 모드가 Image-to-Image인데 이미지가 첨부되지 않은 경우 안내
+    if (modeTabImg2Img && modeTabImg2Img.classList.contains("active") && !uploadedComfyFilename) {
+      alert(currentLang === "ko" 
+        ? "이미지 참조 모드(Img2Img)가 선택되었습니다. 참조할 이미지를 먼저 첨부하거나 [텍스트로 생성] 탭을 눌러주세요." 
+        : "Image-to-Image mode is active. Please attach a reference image or switch to [Text to Image].");
       if (refImageInput) refImageInput.click();
       return;
     }
+
+    // 이미지가 첨부되어 있으면 자동으로 Image-to-Image 모드, 없으면 Text-to-Image 모드로 작동
+    const isImg2Img = Boolean(uploadedComfyFilename);
+    const denoiseVal = isImg2Img && denoiseSlider ? parseFloat(denoiseSlider.value) : 1.0;
 
     const selectedRatio = document.querySelector('input[name="aspect-ratio"]:checked').value;
     const [width, height] = selectedRatio.split("x").map(Number);
     const negativePrompt = negPromptInput.value.trim();
     const seed = parseInt(seedInput.value) || -1;
-    const denoiseVal = currentMode === "img2img" && denoiseSlider ? parseFloat(denoiseSlider.value) : 1.0;
 
     generateBtn.disabled = true;
     genSpinner.classList.remove("hidden");
@@ -913,13 +947,13 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: currentUserId,
-          mode: currentMode,
+          mode: isImg2Img ? "img2img" : "txt2img",
           prompt: prompt,
           negative_prompt: negativePrompt,
           width: width,
           height: height,
           seed: seed,
-          image_filename: currentMode === "img2img" ? uploadedComfyFilename : null,
+          image_filename: isImg2Img ? uploadedComfyFilename : null,
           denoise: denoiseVal
         })
       });

@@ -290,6 +290,13 @@ async def cors_middleware(request, handler):
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    
+    # 캐시 방지 헤더 (HTML, JS, CSS 실시간 반영)
+    if request.path.endswith((".html", ".js", ".css")) or request.path in ["/", "/manual"]:
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+
     return response
 
 def create_app():
