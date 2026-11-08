@@ -281,10 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 첨부 이미지 상태
   let uploadedComfyFilename = null;
 
-  // 생성 모드 탭 & 프롬프트 카드 DOM
-  const modeTabTxt2Img = document.getElementById("mode-tab-txt2img");
-  const modeTabImg2Img = document.getElementById("mode-tab-img2img");
-  const img2imgActiveIndicator = document.getElementById("img2img-active-indicator");
+  // 프롬프트 카드 DOM
   const geminiPromptCard = document.getElementById("gemini-prompt-card");
   const dropOverlay = document.getElementById("drop-overlay");
 
@@ -713,23 +710,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === refundModal) closeRefundModal();
   });
 
-  // --- 생성 모드 선택 탭 제어 (Text-to-Image / Image-to-Image) ---
-  if (modeTabTxt2Img && modeTabImg2Img) {
-    modeTabTxt2Img.addEventListener("click", () => {
-      clearAttachedImage();
-      modeTabTxt2Img.classList.add("active");
-      modeTabImg2Img.classList.remove("active");
-    });
-
-    modeTabImg2Img.addEventListener("click", () => {
-      modeTabImg2Img.classList.add("active");
-      modeTabTxt2Img.classList.remove("active");
-      if (!uploadedComfyFilename && refImageInput) {
-        refImageInput.click();
-      }
-    });
-  }
-
   // --- 제미나이 스타일 스마트 이미지 첨부 (클릭, 카드 드래그&드롭, Ctrl+V 붙여넣기) ---
   if (btnQuickAttach && refImageInput) {
     btnQuickAttach.addEventListener("click", () => {
@@ -809,11 +789,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (refImageInput) refImageInput.value = "";
     if (attachedThumb) attachedThumb.src = "";
     if (geminiAttachmentBar) geminiAttachmentBar.classList.add("hidden");
-    if (modeTabTxt2Img && modeTabImg2Img) {
-      modeTabTxt2Img.classList.add("active");
-      modeTabImg2Img.classList.remove("active");
-    }
-    if (img2imgActiveIndicator) img2imgActiveIndicator.classList.add("hidden");
   }
 
   async function handleImageUpload(file) {
@@ -824,17 +799,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fileName = file.name || "attached_image.png";
 
-    // 1. 즉시 로컬 미리보기 칩 노출 & 모드 탭 자동 전환 (제미나이 UX)
+    // 1. 즉시 로컬 미리보기 칩 노출 (제미나이 UX)
     const reader = new FileReader();
     reader.onload = (e) => {
       if (attachedThumb) attachedThumb.src = e.target.result;
       if (attachedName) attachedName.textContent = fileName;
       if (geminiAttachmentBar) geminiAttachmentBar.classList.remove("hidden");
-      if (modeTabImg2Img && modeTabTxt2Img) {
-        modeTabImg2Img.classList.add("active");
-        modeTabTxt2Img.classList.remove("active");
-      }
-      if (img2imgActiveIndicator) img2imgActiveIndicator.classList.remove("hidden");
     };
     reader.readAsDataURL(file);
 
@@ -902,15 +872,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!prompt) {
       alert(dict.alert_empty_prompt);
       promptInput.focus();
-      return;
-    }
-
-    // 모드가 Image-to-Image인데 이미지가 첨부되지 않은 경우 안내
-    if (modeTabImg2Img && modeTabImg2Img.classList.contains("active") && !uploadedComfyFilename) {
-      alert(currentLang === "ko" 
-        ? "이미지 참조 모드(Img2Img)가 선택되었습니다. 참조할 이미지를 먼저 첨부하거나 [텍스트로 생성] 탭을 눌러주세요." 
-        : "Image-to-Image mode is active. Please attach a reference image or switch to [Text to Image].");
-      if (refImageInput) refImageInput.click();
       return;
     }
 
