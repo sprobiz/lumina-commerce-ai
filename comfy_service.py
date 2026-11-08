@@ -78,7 +78,7 @@ class ComfyService:
                 "inputs": {
                     "prompt": prompt,
                     "negative_prompt": negative_prompt,
-                    "max_length": 1024,
+                    "resolution": max(width, height),
                     "clip": ["2", 0]
                 },
                 "class_type": "TextEncodeQwenImage21"
@@ -150,13 +150,17 @@ class ComfyService:
                 prompt_id = res_data.get("prompt_id")
 
             # 2. 실행 완료 대기 (WebSocket 또는 폴링)
-            output_image_filename = await self._wait_for_completion(session, prompt_id, progress_callback)
+            img_info = await self._wait_for_completion(session, prompt_id, progress_callback)
             
             # 3. 이미지 다운로드 및 로컬 캐싱
             local_filename = f"gen_{gen_id}.png"
             local_path = os.path.join(self.output_dir, local_filename)
 
-            async with session.get(f"{self.base_url}/view?filename={output_image_filename}&subfolder=&type=output") as img_resp:
+            img_fname = img_info.get("filename", "")
+            img_sub = img_info.get("subfolder", "")
+            img_type = img_info.get("type", "output")
+
+            async with session.get(f"{self.base_url}/view?filename={img_fname}&subfolder={img_sub}&type={img_type}") as img_resp:
                 if img_resp.status == 200:
                     img_bytes = await img_resp.read()
                     with open(local_path, "wb") as f:
@@ -175,7 +179,7 @@ class ComfyService:
             "mode": "comfyui_live"
         }
 
-    async def _wait_for_completion(self, session: aiohttp.ClientSession, prompt_id: str, progress_callback: Optional[Callable[[int, int], None]] = None, timeout: int = 120) -> str:
+    async def _wait_for_completion(self, session: aiohttp.ClientSession, prompt_id: str, progress_callback: Optional[Callable[[int, int], None]] = None, timeout: int = 120) -> Dict[str, Any]:
         """ComfyUI History 폴링을 통한 결과 대기"""
         start_time = time.time()
         while time.time() - start_time < timeout:
@@ -186,7 +190,7 @@ class ComfyService:
                         outputs = history[prompt_id].get("outputs", {})
                         for node_id, node_out in outputs.items():
                             if "images" in node_out and len(node_out["images"]) > 0:
-                                return node_out["images"][0]["filename"]
+                                return node_out["images"][0]
             await asyncio.sleep(1.0)
             if progress_callback:
                 elapsed = int(time.time() - start_time)

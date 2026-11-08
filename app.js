@@ -768,14 +768,21 @@ document.addEventListener("DOMContentLoaded", () => {
       clearInterval(progressTimer);
 
       if (!res.ok) {
-        const err = await res.json();
+        let errMsg = "Generation error";
+        try {
+          const err = await res.json();
+          errMsg = err.error || errMsg;
+        } catch {
+          const txt = await res.text();
+          errMsg = txt || errMsg;
+        }
         if (res.status === 402) {
           if (confirm(dict.alert_quota_exceeded)) {
             pricingModal.classList.remove("hidden");
           }
           return;
         }
-        throw new Error(err.error || "Generation error");
+        throw new Error(errMsg);
       }
 
       const data = await res.json();

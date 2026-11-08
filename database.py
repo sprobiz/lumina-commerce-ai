@@ -40,6 +40,22 @@ def init_db(initial_credits: int = 10):
                 created_at REAL NOT NULL
             )
         """)
+
+        # 기존 DB 스키마 자동 마이그레이션 (컬럼 누락 방지)
+        cursor.execute("PRAGMA table_info(users)")
+        existing_cols = {r[1] for r in cursor.fetchall()}
+        required_cols = {
+            "plan_id": "TEXT DEFAULT 'free'",
+            "plan_type": "TEXT DEFAULT 'free'",
+            "plan_expires_at": "REAL DEFAULT 0",
+            "daily_quota": "INTEGER DEFAULT 10",
+            "today_used": "INTEGER DEFAULT 0",
+            "last_reset_date": "TEXT DEFAULT ''",
+            "total_generated_after_purchase": "INTEGER DEFAULT 0"
+        }
+        for col, col_type in required_cols.items():
+            if col not in existing_cols:
+                cursor.execute(f"ALTER TABLE users ADD COLUMN {col} {col_type}")
         
         # 결제 거래 내역 테이블 (PayPal)
         cursor.execute("""
@@ -96,7 +112,8 @@ def get_user(user_id: str = "default_user") -> Dict[str, Any]:
 
         user = dict(row)
         # UTC 00:00 일일 쿼터 리셋 점검
-        if user["last_reset_date"] != today:
+        last_reset = user.get("last_reset_date", "")
+        if last_reset != today:
             cursor.execute("""
                 UPDATE users SET today_used = 0, last_reset_date = ? WHERE id = ?
             """, (today, user_id))
@@ -105,7 +122,11 @@ def get_user(user_id: str = "default_user") -> Dict[str, Any]:
             user["last_reset_date"] = today
 
         # 일일 남은 횟수 계산
-        user["remaining_today"] = max(0, user["daily_quota"] - user["today_used"])
+        daily_quota = user.get("daily_quota") or 10
+        today_used = user.get("today_used") or 0
+        user["daily_quota"] = daily_quota
+        user["today_used"] = today_used
+        user["remaining_today"] = max(0, daily_quota - today_used)
         return user
 
 def apply_plan_to_user(user_id: str, plan: Dict[str, Any]):

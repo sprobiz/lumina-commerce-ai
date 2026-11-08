@@ -257,6 +257,8 @@ async def cors_middleware(request, handler):
             response = await handler(request)
         except web.HTTPException as ex:
             response = ex
+        except Exception as ex:
+            response = web.json_response({"error": str(ex)}, status=500)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
