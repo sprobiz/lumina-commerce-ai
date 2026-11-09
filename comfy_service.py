@@ -152,6 +152,10 @@ class ComfyService:
                 },
                 "class_type": "LoadImage"
             }
+            # Qwen3-VL 비전 언어 인코더(Node 4)에 참조 이미지(image_1)와 VAE 직접 연결 -> 인물의 실제 얼굴/이목구비 직접 인식!
+            workflow["4"]["inputs"]["vae"] = ["3", 0]
+            workflow["4"]["inputs"]["image_1"] = ["9", 0]
+
             # 원본 이미지를 VAE 인코딩하여 Latent 도화지로 연결
             workflow["10"] = {
                 "inputs": {
