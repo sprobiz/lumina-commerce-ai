@@ -14,9 +14,10 @@ from typing import Dict, Any, Optional, Callable
 from PIL import Image, ImageDraw, ImageFont
 
 class ComfyService:
-    def __init__(self, base_url: str = "http://127.0.0.1:8188", output_dir: str = "./outputs"):
+    def __init__(self, base_url: str = "http://127.0.0.1:8188", output_dir: str = "./outputs", timeout_seconds: int = 300):
         self.base_url = base_url.rstrip("/")
         self.output_dir = output_dir
+        self.timeout_seconds = timeout_seconds
         os.makedirs(self.output_dir, exist_ok=True)
         self.client_id = str(uuid.uuid4())
 
@@ -192,7 +193,7 @@ class ComfyService:
                 prompt_id = res_data.get("prompt_id")
 
             # 2. 실행 완료 대기 (WebSocket 또는 폴링)
-            img_info = await self._wait_for_completion(session, prompt_id, progress_callback)
+            img_info = await self._wait_for_completion(session, prompt_id, progress_callback, timeout=self.timeout_seconds)
             
             # 3. 이미지 다운로드 및 로컬 캐싱
             local_filename = f"gen_{gen_id}.png"
@@ -247,7 +248,7 @@ class ComfyService:
                 elapsed = int(time.time() - start_time)
                 progress_callback(min(elapsed * 5, 95), 100)
 
-        raise TimeoutError("ComfyUI 이미지 생성 제한 시간(120초)을 초과했습니다.")
+        raise TimeoutError(f"ComfyUI 이미지 생성 제한 시간({timeout}초)을 초과했습니다.")
 
     async def _generate_fallback(self, gen_id: str, prompt: str, negative_prompt: str, width: int, height: int, seed: int, image_filename: Optional[str] = None, denoise: float = 1.0, progress_callback: Optional[Callable[[int, int], None]] = None) -> Dict[str, Any]:
         """ComfyUI 미구동 시 서비스 테스트를 위한 안내용 데모 이미지 생성"""

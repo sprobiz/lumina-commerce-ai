@@ -34,7 +34,8 @@ init_db(initial_credits=config["service"].get("initial_free_credits", 10))
 # 서비스 인스턴스 초기화
 comfy_service = ComfyService(
     base_url=config["comfyui"].get("base_url", "http://127.0.0.1:8188"),
-    output_dir=config["service"].get("output_dir", "./outputs")
+    output_dir=config["service"].get("output_dir", "./outputs"),
+    timeout_seconds=config["comfyui"].get("timeout_seconds", 300)
 )
 
 paypal_service = PayPalService(
