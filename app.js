@@ -430,10 +430,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`/api/user?user_id=${currentUserId}`);
       currentUser = await res.json();
 
-      // 헤더 플랜 뱃지 갱신
-      headerPlanBadge.textContent = (currentUser.plan_id || "FREE").toUpperCase();
-      todayRemainingEl.textContent = currentUser.remaining_today ?? currentUser.credits;
-      todayQuotaEl.textContent = currentUser.daily_quota ?? 10;
+      // 헤더 플랜 뱃지 & 할당량 갱신 (서비스 오너 무제한 VIP 특별 표시)
+      if (currentUser.plan_id === "owner" || currentUser.plan_type === "unlimited") {
+        headerPlanBadge.textContent = "👑 OWNER";
+        headerPlanBadge.style.background = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
+        headerPlanBadge.style.color = "#ffffff";
+        todayRemainingEl.textContent = "∞";
+        todayQuotaEl.textContent = currentLang === "ko" ? "무제한" : "Unlimited";
+      } else {
+        headerPlanBadge.textContent = (currentUser.plan_id || "FREE").toUpperCase();
+        todayRemainingEl.textContent = currentUser.remaining_today ?? currentUser.credits;
+        todayQuotaEl.textContent = currentUser.daily_quota ?? 10;
+      }
     } catch (e) {
       console.error("사용자 정보 로드 실패:", e);
     }
@@ -965,8 +973,13 @@ document.addEventListener("DOMContentLoaded", () => {
       // 사용자 쿼터 갱신
       if (data.user) {
         currentUser = data.user;
-        todayRemainingEl.textContent = currentUser.remaining_today;
-        todayQuotaEl.textContent = currentUser.daily_quota;
+        if (currentUser.plan_id === "owner" || currentUser.plan_type === "unlimited") {
+          todayRemainingEl.textContent = "∞";
+          todayQuotaEl.textContent = currentLang === "ko" ? "무제한" : "Unlimited";
+        } else {
+          todayRemainingEl.textContent = currentUser.remaining_today;
+          todayQuotaEl.textContent = currentUser.daily_quota;
+        }
       }
 
       showPreview(data);

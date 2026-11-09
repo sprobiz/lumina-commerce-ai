@@ -88,7 +88,7 @@ def init_db(initial_credits: int = 10):
             )
         """)
         
-        # 기본 유저 생성
+        # 기본 유저 생성 (로컬 개발자 / 서비스 오너를 위한 영구 무제한 VIP 권한)
         today = get_today_utc_str()
         cursor.execute("SELECT id FROM users WHERE id = 'default_user'")
         if not cursor.fetchone():
@@ -96,7 +96,19 @@ def init_db(initial_credits: int = 10):
                 INSERT INTO users 
                 (id, email, credits, plan_id, plan_type, plan_expires_at, daily_quota, today_used, last_reset_date, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, ("default_user", "creator@example.com", initial_credits, "free", "free", 0, 10, 0, today, time.time()))
+            """, ("default_user", "owner@lumina.ai", 999999, "owner", "unlimited", 9999999999.0, 999999, 0, today, time.time()))
+        else:
+            # 기존 default_user도 즉시 마스터 오너 무제한으로 승격
+            cursor.execute("""
+                UPDATE users SET 
+                    plan_id = 'owner', 
+                    plan_type = 'unlimited', 
+                    plan_expires_at = 9999999999.0, 
+                    daily_quota = 999999, 
+                    credits = 999999,
+                    today_used = 0
+                WHERE id = 'default_user'
+            """)
         conn.commit()
 
 def get_user(user_id: str = "default_user") -> Dict[str, Any]:
@@ -159,6 +171,10 @@ def can_generate(user_id: str = "default_user") -> (bool, str):
     user = get_user(user_id)
     now = time.time()
 
+    # 서비스 오너 / 개발자 영구 무제한 패스
+    if user["plan_id"] in ("owner", "master", "unlimited") or user["plan_type"] == "unlimited":
+        return True, "unlimited"
+
     # 활성화된 플랜이 있는 경우
     if user["plan_id"] != "free" and user["plan_expires_at"] > now:
         if user["today_used"] < user["daily_quota"]:
@@ -174,6 +190,9 @@ def can_generate(user_id: str = "default_user") -> (bool, str):
 
 def record_generation_use(user_id: str, gen_type: str):
     """생성 1회 소비 기록"""
+    if gen_type == "unlimited":
+        return
+
     with get_connection() as conn:
         cursor = conn.cursor()
         if gen_type == "plan":
