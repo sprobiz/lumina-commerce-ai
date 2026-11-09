@@ -162,7 +162,7 @@ class ComfyService:
             }
             # KSampler의 시작 Latent를 원본 이미지 Latent로 교체하고 사용자가 설정한 denoise 변형 강도 적용
             workflow["6"]["inputs"]["latent_image"] = ["10", 0]
-            workflow["6"]["inputs"]["denoise"] = float(denoise) if denoise is not None else 0.85
+            workflow["6"]["inputs"]["denoise"] = float(denoise) if denoise is not None else 0.50
 
         return workflow
 

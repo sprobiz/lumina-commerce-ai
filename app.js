@@ -830,10 +830,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  const denoiseModeHint = document.getElementById("denoise-mode-hint");
   if (denoiseSlider && denoiseValDisplay) {
-    denoiseSlider.addEventListener("input", () => {
-      denoiseValDisplay.textContent = denoiseSlider.value;
-    });
+    const updateDenoiseHint = () => {
+      const val = parseFloat(denoiseSlider.value);
+      denoiseValDisplay.textContent = val.toFixed(2);
+      if (denoiseModeHint) {
+        if (val <= 0.55) {
+          denoiseModeHint.textContent = currentLang === "ko" ? "(얼굴 보존 / 배경 변경)" : "(Preserve Faces)";
+          denoiseModeHint.style.color = "#10b981";
+        } else {
+          denoiseModeHint.textContent = currentLang === "ko" ? "(새로운 인물로 재창작)" : "(Major Redraw)";
+          denoiseModeHint.style.color = "#f59e0b";
+        }
+      }
+    };
+    denoiseSlider.addEventListener("input", updateDenoiseHint);
+    updateDenoiseHint();
   }
 
   // --- 3. 이미지 생성 실행 ---

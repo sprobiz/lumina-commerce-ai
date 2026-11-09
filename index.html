@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lumina AI - 초고화질 AI 이미지 생성 SaaS</title>
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 </head>
@@ -81,8 +81,9 @@
               </div>
               <div class="attachment-denoise-compact">
                 <span data-i18n="denoise_label">Strength:</span>
-                <input type="range" id="denoise-slider" min="0.3" max="1.0" step="0.05" value="0.85">
-                <strong id="denoise-val-display">0.85</strong>
+                <input type="range" id="denoise-slider" min="0.2" max="0.9" step="0.05" value="0.50">
+                <strong id="denoise-val-display">0.50</strong>
+                <span id="denoise-mode-hint" style="font-size: 11px; color: #10b981;">(Face Preserved)</span>
               </div>
             </div>
 
@@ -337,7 +338,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 
 </html>
