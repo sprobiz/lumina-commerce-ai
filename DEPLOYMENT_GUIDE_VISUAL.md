@@ -1,7 +1,7 @@
 # 🌟 Lumina Commerce AI 24시간 무중단 실전 런칭 비주얼 가이드
 
 > **S-Probiz (대표 Seyun, Connect AI Lab 대표 멤버십)**  
-> **아마존·쿠팡 상세페이지 및 광고용 고전환(High-Converting) AI 모델 컷 SaaS**  
+> **아마존·쇼피파이·Etsy 상세페이지 및 광고용 고전환(High-Converting) AI 모델 컷 SaaS**  
 > **핵심 원칙**: 로컬 AI(내 노트북 GPU) 완전 배제 ➡️ **24시간 무중단 서버리스 클라우드 아키텍처**  
 
 ---
