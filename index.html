@@ -190,11 +190,16 @@
           <span class="hidden sm:inline" data-i18n="btnFalKey">fal.ai Key</span>
         </button>
 
-        <!-- BILINGUAL LANGUAGE TOGGLE (EN / KO) -->
-        <button onclick="toggleLang()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-white/10 text-[11px] font-bold text-slate-200 transition">
-          <i data-lucide="globe" class="w-3.5 h-3.5 text-brand-accent"></i>
-          <span id="langDisplay">EN</span>
-        </button>
+        <!-- BILINGUAL LANGUAGE SWITCHER (EN | KR) -->
+        <div class="flex items-center bg-dark-900/90 p-1 rounded-xl border border-white/10 text-[11px] font-bold shadow-inner">
+          <button type="button" onclick="setLang('en')" id="langBtnEn" class="px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition">
+            EN
+          </button>
+          <span class="text-slate-600 px-1 font-normal select-none">|</span>
+          <button type="button" onclick="setLang('ko')" id="langBtnKo" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            KR
+          </button>
+        </div>
 
         <!-- CURRENT PLAN STATUS / UPGRADE -->
         <button onclick="switchNav('pricing')" id="userPlanBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-accent via-indigo-600 to-purple-600 hover:opacity-95 text-white font-extrabold text-xs shadow-lg shadow-brand-accent/30 transition transform active:scale-95">
@@ -256,15 +261,6 @@
             <i data-lucide="dollar-sign" class="w-4 h-4 text-amber-400"></i>
             <span data-i18n="stat3">100% Commercial Use & Resell Rights</span>
           </div>
-        </div>
-
-        <!-- TARGET PLATFORMS BADGE ROW -->
-        <div class="pt-2 flex flex-wrap items-center gap-2.5 text-[11px] text-slate-400">
-          <span class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">Optimized for:</span>
-          <span class="px-2.5 py-1 rounded-xl bg-dark-900/80 border border-white/5 text-slate-300 font-medium flex items-center gap-1.5"><i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-amber-400"></i> Amazon FBA</span>
-          <span class="px-2.5 py-1 rounded-xl bg-dark-900/80 border border-white/5 text-slate-300 font-medium flex items-center gap-1.5"><i data-lucide="rocket" class="w-3.5 h-3.5 text-rose-400"></i> Coupang Wing</span>
-          <span class="px-2.5 py-1 rounded-xl bg-dark-900/80 border border-white/5 text-slate-300 font-medium flex items-center gap-1.5"><i data-lucide="store" class="w-3.5 h-3.5 text-emerald-400"></i> Shopify Plus</span>
-          <span class="px-2.5 py-1 rounded-xl bg-dark-900/80 border border-white/5 text-slate-300 font-medium flex items-center gap-1.5"><i data-lucide="video" class="w-3.5 h-3.5 text-sky-400"></i> TikTok Shop Ads</span>
         </div>
 
       </div>
@@ -329,34 +325,6 @@
                 <button type="button" onclick="clearUpload()" class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition" title="Remove Product">
                   <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
-              </div>
-
-              <!-- 1-CLICK TEST SAMPLES -->
-              <div class="pt-2 space-y-1.5">
-                <div class="flex items-center justify-between text-[11px] font-bold">
-                  <span class="text-indigo-400 flex items-center gap-1.5">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                    <span data-i18n="sampleProductsLabel">⚡ Quick Test: 1-Click Product Presets (No file needed)</span>
-                  </span>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <button type="button" onclick="loadSampleProduct('dress')" class="sample-btn px-2.5 py-2 rounded-xl bg-dark-900 hover:bg-dark-750 border border-white/10 hover:border-brand-accent/60 text-left text-[11px] font-semibold text-slate-300 hover:text-white transition flex items-center gap-2 group shadow-sm">
-                    <span class="text-base group-hover:scale-110 transition">👗</span>
-                    <span class="truncate">Silk Dress</span>
-                  </button>
-                  <button type="button" onclick="loadSampleProduct('bag')" class="sample-btn px-2.5 py-2 rounded-xl bg-dark-900 hover:bg-dark-750 border border-white/10 hover:border-brand-accent/60 text-left text-[11px] font-semibold text-slate-300 hover:text-white transition flex items-center gap-2 group shadow-sm">
-                    <span class="text-base group-hover:scale-110 transition">👜</span>
-                    <span class="truncate">Leather Tote</span>
-                  </button>
-                  <button type="button" onclick="loadSampleProduct('watch')" class="sample-btn px-2.5 py-2 rounded-xl bg-dark-900 hover:bg-dark-750 border border-white/10 hover:border-brand-accent/60 text-left text-[11px] font-semibold text-slate-300 hover:text-white transition flex items-center gap-2 group shadow-sm">
-                    <span class="text-base group-hover:scale-110 transition">⌚</span>
-                    <span class="truncate">Gold Watch</span>
-                  </button>
-                  <button type="button" onclick="loadSampleProduct('serum')" class="sample-btn px-2.5 py-2 rounded-xl bg-dark-900 hover:bg-dark-750 border border-white/10 hover:border-brand-accent/60 text-left text-[11px] font-semibold text-slate-300 hover:text-white transition flex items-center gap-2 group shadow-sm">
-                    <span class="text-base group-hover:scale-110 transition">🧴</span>
-                    <span class="truncate">Glow Serum</span>
-                  </button>
-                </div>
               </div>
             </div>
 
@@ -526,15 +494,6 @@
               <div class="flex justify-between"><span>Commercial Rights:</span> <strong class="text-slate-200">100% Royalty-Free</strong></div>
             </div>
 
-            <!-- RECENT CREATIONS GALLERY -->
-            <div id="recentGalleryContainer" class="hidden rounded-2xl bg-dark-900/90 p-4 border border-white/10 space-y-2.5">
-              <div class="flex items-center justify-between text-xs font-bold text-slate-300">
-                <span class="flex items-center gap-1.5"><i data-lucide="history" class="w-3.5 h-3.5 text-indigo-400"></i> <span data-i18n="recentGalleryTitle">Recent Studio Shots</span></span>
-                <span id="galleryCount" class="text-[10px] text-slate-500 font-mono">0 saved</span>
-              </div>
-              <div id="recentGalleryThumbnails" class="flex items-center gap-2.5 overflow-x-auto pb-1"></div>
-            </div>
-
           </div>
         </div>
 
@@ -619,46 +578,6 @@
         <p class="text-xs md:text-sm text-slate-400 leading-relaxed" data-i18n="pricingDesc">
           Pick your monthly quota. Powered by fal.ai serverless GPU infrastructure with verified 85%+ conservative net margin.
         </p>
-      </div>
-
-      <!-- ROI & COST SAVINGS COMPARISON CARD -->
-      <div class="max-w-4xl mx-auto rounded-3xl p-6 md:p-8 glass-card border border-white/10 space-y-6">
-        <div class="text-center space-y-1">
-          <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Unbeatable ROI</span>
-          <h3 class="text-xl md:text-2xl font-black text-white" data-i18n="roiTitle">Traditional Agency Shoot vs Lumina Commerce AI</h3>
-          <p class="text-xs text-slate-400 max-w-lg mx-auto" data-i18n="roiDesc">Compare the real cost, time, and flexibility of human studio shoots vs our cloud engine</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Traditional Photoshoot -->
-          <div class="rounded-2xl bg-dark-900/80 border border-rose-500/20 p-5 space-y-3.5">
-            <div class="flex items-center justify-between border-b border-rose-500/20 pb-3">
-              <span class="text-xs font-bold text-rose-400 flex items-center gap-1.5"><i data-lucide="x-circle" class="w-4 h-4"></i> Traditional Studio Photoshoot</span>
-              <span class="text-sm font-black text-rose-400 font-mono">$2,800+</span>
-            </div>
-            <ul class="space-y-2 text-xs text-slate-300">
-              <li class="flex items-center gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i> Model agency casting fee ($800~$1,500)</li>
-              <li class="flex items-center gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i> Studio rental, lighting crew & equipment ($700)</li>
-              <li class="flex items-center gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i> 10~14 days turnaround wait time</li>
-              <li class="flex items-center gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i> Re-shooting angle requires 100% full re-booking fee</li>
-            </ul>
-          </div>
-
-          <!-- Lumina Commerce AI -->
-          <div class="rounded-2xl bg-dark-900/80 border border-emerald-500/30 p-5 space-y-3.5 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
-            <div class="flex items-center justify-between border-b border-emerald-500/20 pb-3">
-              <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4"></i> Lumina Commerce AI Studio</span>
-              <span class="text-sm font-black text-emerald-400 font-mono">$19 ~ $39 / mo</span>
-            </div>
-            <ul class="space-y-2 text-xs text-slate-200">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> 150 to 500 studio shots included</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Instant ~2.8s generation per image</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Unlimited styles, models & studio scenes</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> 100% royalty-free commercial rights included</li>
-            </ul>
-          </div>
-        </div>
       </div>
 
       <!-- 3-TIER PRICING CARDS -->
@@ -822,13 +741,9 @@
         <span>•</span>
         <span>Operated by S-Probiz (Director Seyun)</span>
       </div>
-      <div class="flex items-center gap-4 text-slate-400 font-medium">
-        <!-- OWNER PASS BUTTON FOR DIRECTOR SEYUN -->
-        <button onclick="toggleOwnerPass()" class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 transition flex items-center gap-1.5 text-[11px] font-bold">
-          <i data-lucide="crown" class="w-3 h-3"></i> <span id="ownerToggleText">Owner Pass (Seyun)</span>
-        </button>
-        <a href="#" onclick="openLegalModal('terms')" class="hover:text-white transition">Terms</a>
-        <a href="#" onclick="openLegalModal('refund')" class="hover:text-white transition">Refund Policy</a>
+      <div class="flex items-center gap-5 text-slate-400 font-medium">
+        <a href="#" onclick="openLegalModal('terms')" class="hover:text-white transition">Terms of Service</a>
+        <a href="#" onclick="openLegalModal('refund')" class="hover:text-white transition">Refund Policy (5-Shot Limit)</a>
       </div>
     </div>
     <p class="text-[11px] text-slate-600 text-center">
@@ -1005,11 +920,7 @@
         showcaseTitle: "Compare the Difference: Raw Product vs AI Model Studio",
         showcaseDesc: "Slide the bar below to see how ordinary flat lay or mannequin shots are transformed into Vogue-level studio model photography.",
         pricingTitle: "High-Converting Commercial Plans",
-        pricingDesc: "Pick your monthly quota. Powered by fal.ai serverless GPU infrastructure with verified 85%+ conservative net margin.",
-        sampleProductsLabel: "⚡ Quick Test: 1-Click Product Presets (No file needed)",
-        recentGalleryTitle: "Recent Studio Shots",
-        roiTitle: "Traditional Agency Shoot vs Lumina Commerce AI",
-        roiDesc: "Compare the real cost, time, and flexibility of human studio shoots vs our cloud engine"
+        pricingDesc: "Pick your monthly quota. Powered by fal.ai serverless GPU infrastructure with verified 85%+ conservative net margin."
       },
       ko: {
         navSubtitle: "아마존·쿠팡 상세페이지를 위한 AI 고전환 모델 컷 & 상업용 스튜디오",
@@ -1042,11 +953,7 @@
         showcaseTitle: "일반 바닥 사진 vs AI 모델 스튜디오 컷 극적인 전환율 비교",
         showcaseDesc: "가운데 슬라이더를 좌우로 밀어서 밋밋한 제품 사진이 보그(Vogue)급 모델 컷으로 변하는 차이를 직접 확인하세요.",
         pricingTitle: "압도적 마진의 커머스 전용 요금제",
-        pricingDesc: "월간 생성 쿼터를 선택하세요. fal.ai 서버리스 GPU 인프라 기반으로 보수적 85%+ 순수익 마진이 검증되었습니다.",
-        sampleProductsLabel: "⚡ 퀵 테스트: 원클릭 샘플 제품 (사진 파일 없이 즉시 체험)",
-        recentGalleryTitle: "최근 생성된 스튜디오 컷",
-        roiTitle: "기존 오프라인 스튜디오 촬영 vs Lumina Commerce AI 비교",
-        roiDesc: "수백만 원대 모델 촬영 비용과 2주 대기 시간을 3초와 월 $19대로 단번에 혁신합니다"
+        pricingDesc: "월간 생성 쿼터를 선택하세요. fal.ai 서버리스 GPU 인프라 기반으로 보수적 85%+ 순수익 마진이 검증되었습니다."
       }
     };
 
@@ -1063,8 +970,6 @@
       document.getElementById("falApiKeyInput").value = savedFal;
 
       enhancePrompt();
-      renderRecentGallery();
-      updateOwnerToggleUI();
     });
 
     function switchNav(tab) {
@@ -1088,14 +993,29 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function toggleLang() {
-      currentLang = currentLang === 'en' ? 'ko' : 'en';
+    function setLang(lang) {
+      currentLang = lang;
       localStorage.setItem("lumina_lang", currentLang);
       applyLanguage(currentLang);
     }
 
+    function toggleLang() {
+      setLang(currentLang === 'en' ? 'ko' : 'en');
+    }
+
     function applyLanguage(lang) {
-      document.getElementById("langDisplay").textContent = lang.toUpperCase();
+      const btnEn = document.getElementById("langBtnEn");
+      const btnKo = document.getElementById("langBtnKo");
+      if (btnEn && btnKo) {
+        if (lang === 'en') {
+          btnEn.className = "px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition";
+          btnKo.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition";
+        } else {
+          btnKo.className = "px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition";
+          btnEn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition";
+        }
+      }
+
       const dict = i18n[lang] || i18n.en;
       
       document.querySelectorAll("[data-i18n]").forEach(el => {
@@ -1342,7 +1262,6 @@
       const btnDownload = document.getElementById("btnDownload");
       btnDownload.href = url;
       document.getElementById("resultActions").classList.remove("hidden");
-      addToRecentGallery(url);
     }
 
     function copyPromptToClipboard() {
@@ -1539,127 +1458,6 @@
     function closeLegalModal() {
       document.getElementById("legalModal").classList.add("hidden");
     }
-
-    // RECENT GALLERY HISTORY
-    let recentGallery = JSON.parse(localStorage.getItem("lumina_recent_gallery") || "[]");
-
-    function renderRecentGallery() {
-      const container = document.getElementById("recentGalleryContainer");
-      const thumbnails = document.getElementById("recentGalleryThumbnails");
-      const count = document.getElementById("galleryCount");
-      if (!thumbnails || !container) return;
-      if (!recentGallery.length) {
-        container.classList.add("hidden");
-        return;
-      }
-      container.classList.remove("hidden");
-      count.textContent = `${recentGallery.length} saved`;
-      thumbnails.innerHTML = "";
-      recentGallery.forEach((item, idx) => {
-        const thumb = document.createElement("div");
-        thumb.className = "shrink-0 w-16 h-16 rounded-xl overflow-hidden border border-white/15 cursor-pointer hover:border-brand-accent transition group relative";
-        thumb.innerHTML = `
-          <img src="${item.url}" alt="Shot ${idx + 1}" class="w-full h-full object-cover">
-          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-            <i data-lucide="zoom-in" class="w-4 h-4 text-white"></i>
-          </div>
-        `;
-        thumb.onclick = () => renderResult(item.url);
-        thumbnails.appendChild(thumb);
-      });
-      lucide.createIcons();
-    }
-
-    function addToRecentGallery(url) {
-      recentGallery.unshift({ url, timestamp: Date.now() });
-      if (recentGallery.length > 6) recentGallery.pop();
-      localStorage.setItem("lumina_recent_gallery", JSON.stringify(recentGallery));
-      renderRecentGallery();
-    }
-
-    // 1-CLICK SAMPLE PRODUCTS
-    const sampleProducts = {
-      dress: {
-        name: "Emerald Silk Slip Dress",
-        persona: "female_editorial",
-        scene: "luxury_marble",
-        img: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80",
-        prompt: "award-winning commercial product photoshoot. Elegant European female runway model wearing a tailored emerald green silk slip dress, confident gentle expression. Placed in a luxury white marble studio with soft warm sunbeams casting soft organic shadows. Shot on Hasselblad H6D-100c, 8k resolution, photorealistic silk fabric texture, ultra sharp focus."
-      },
-      bag: {
-        name: "Italian Leather Tote Bag",
-        persona: "female_editorial",
-        scene: "parisian_street",
-        img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80",
-        prompt: "award-winning commercial product photoshoot. Chic female fashion model casually holding a handcrafted cognac brown Italian leather tote bag. Set on an outdoor Parisian cafe terrace with blurred cobblestone street in background. Hasselblad H6D-100c, rich grain leather texture, golden hour bokeh lighting, 8k resolution."
-      },
-      watch: {
-        name: "Luxury Chronograph Gold Watch",
-        persona: "male_casual",
-        scene: "sunlit_loft",
-        img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
-        prompt: "award-winning commercial product photoshoot. Charismatic handsome male model wearing a luxury gold chronograph wristwatch on wrist, fitted dark navy blazer cuff. Set in a minimalist Scandinavian penthouse loft with natural window lighting. Hasselblad H6D-100c, sapphire glass reflection, crisp metallic details, 8k resolution."
-      },
-      serum: {
-        name: "Radiance Vitamin C Serum",
-        persona: "beauty_hands",
-        scene: "nature_garden",
-        img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
-        prompt: "award-winning commercial product photoshoot. Flawless manicured female hands gently presenting an amber glass vitamin C serum bottle with dropper. Surrounded by dewy green botanical leaves and morning sunlight refraction. Macro beauty photography, pristine glass refraction, 8k resolution, clean commercial aesthetic."
-      }
-    };
-
-    function loadSampleProduct(type) {
-      const sample = sampleProducts[type];
-      if (!sample) return;
-
-      currentUploadedDataUrl = sample.img;
-      document.getElementById("uploadPreviewImg").src = sample.img;
-      document.getElementById("uploadPreviewName").textContent = sample.name;
-      document.getElementById("uploadPreviewBar").classList.remove("hidden");
-      document.getElementById("dropzone").classList.add("hidden");
-
-      // Auto select persona & scene
-      selectPersona(sample.persona);
-      selectScene(sample.scene);
-      document.getElementById("promptInput").value = sample.prompt;
-
-      // Highlight active sample button
-      document.querySelectorAll(".sample-btn").forEach(btn => {
-        btn.classList.remove("border-brand-accent", "bg-brand-accent/20", "text-white");
-        btn.classList.add("border-white/10", "bg-dark-900", "text-slate-300");
-      });
-      if (window.event && window.event.currentTarget) {
-        window.event.currentTarget.classList.remove("border-white/10", "bg-dark-900", "text-slate-300");
-        window.event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/20", "text-white");
-      }
-    }
-
-    // DIRECTOR SEYUN OWNER PASS TOGGLE
-    function toggleOwnerPass() {
-      if (userSubscription.plan === 'owner') {
-        userSubscription = { plan: 'none', shotsRemaining: 0, totalQuota: 0 };
-        localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
-        updatePlanBadgeDisplay();
-        alert(currentLang === 'ko' ? "일반 구독자 모드로 전환되었습니다." : "Switched to standard user mode.");
-      } else {
-        userSubscription = { plan: 'owner', shotsRemaining: 999999, totalQuota: 999999 };
-        localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
-        updatePlanBadgeDisplay();
-        alert(currentLang === 'ko' 
-          ? "👑 [S-Probiz 대표 Seyun] 오너 무제한 모드가 활성화되었습니다!\n과금/차감 없이 무제한으로 AI 모델 컷 생성이 가능합니다." 
-          : "👑 [S-Probiz Director Seyun] Owner Unlimited Pass Activated!\nGenerate unlimited AI model shots without credit deduction.");
-      }
-      updateOwnerToggleUI();
-    }
-
-    function updateOwnerToggleUI() {
-      const btn = document.getElementById("ownerToggleText");
-      if (btn) {
-        btn.textContent = userSubscription.plan === 'owner' ? "Owner (Active ∞)" : "Owner Pass (Seyun)";
-      }
-    }
-
   </script>
 </body>
 </html>
