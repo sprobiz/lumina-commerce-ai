@@ -171,24 +171,27 @@
           <i data-lucide="sliders" class="w-4 h-4 inline mr-1.5"></i> <span data-i18n="navShowcase">Before & After</span>
         </button>
         <button onclick="switchNav('pricing')" id="navPricing" class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition">
-          <i data-lucide="crown" class="w-4 h-4 inline mr-1.5 text-amber-400"></i> <span data-i18n="navPricing">Pricing & Margins</span>
+          <i data-lucide="crown" class="w-4 h-4 inline mr-1.5 text-amber-400"></i> <span data-i18n="navPricing">Pricing & Plans</span>
         </button>
       </div>
 
       <!-- RIGHT HEADER ACTIONS -->
       <div class="flex items-center gap-2 md:gap-2.5">
         
-        <!-- PAYPAL KEY MODAL BUTTON -->
-        <button onclick="openPaypalModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-sky-500/30 text-[11px] font-bold text-sky-400 transition hover:border-sky-400 shadow-sm" title="PayPal Live Client ID Settings">
-          <i data-lucide="wallet" class="w-3.5 h-3.5 text-sky-400"></i>
-          <span class="hidden sm:inline" data-i18n="btnPaypalKey">PayPal Key</span>
-        </button>
+        <!-- ADMIN / OWNER ONLY CONFIG KEYS (HIDDEN FROM PUBLIC CUSTOMERS) -->
+        <div id="adminHeaderKeys" class="hidden items-center gap-2">
+          <!-- PAYPAL KEY MODAL BUTTON -->
+          <button onclick="openPaypalModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-sky-500/30 text-[11px] font-bold text-sky-400 transition hover:border-sky-400 shadow-sm" title="PayPal Live Client ID Settings">
+            <i data-lucide="wallet" class="w-3.5 h-3.5 text-sky-400"></i>
+            <span class="hidden sm:inline" data-i18n="btnPaypalKey">PayPal Key</span>
+          </button>
 
-        <!-- FAL.AI KEY MODAL BUTTON -->
-        <button onclick="openFalKeyModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-emerald-500/30 text-[11px] font-bold text-emerald-400 transition hover:border-emerald-400 shadow-sm" title="fal.ai Cloud API Key">
-          <i data-lucide="cloud" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span class="hidden sm:inline" data-i18n="btnFalKey">fal.ai Key</span>
-        </button>
+          <!-- FAL.AI KEY MODAL BUTTON -->
+          <button onclick="openFalKeyModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-emerald-500/30 text-[11px] font-bold text-emerald-400 transition hover:border-emerald-400 shadow-sm" title="fal.ai Cloud API Key">
+            <i data-lucide="cloud" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span class="hidden sm:inline" data-i18n="btnFalKey">fal.ai Key</span>
+          </button>
+        </div>
 
         <!-- BILINGUAL LANGUAGE SWITCHER (EN | KR) -->
         <div class="flex items-center bg-dark-900/90 p-1 rounded-xl border border-white/10 text-[11px] font-bold shadow-inner">
@@ -255,7 +258,7 @@
           </div>
           <div class="flex items-center gap-2 bg-dark-900/60 px-3 py-1.5 rounded-lg border border-white/5">
             <i data-lucide="shield-check" class="w-4 h-4 text-indigo-400"></i>
-            <span data-i18n="stat2">Zero Downtime Cloud (Laptop Independent)</span>
+            <span data-i18n="stat2">99.9% Enterprise Cloud Uptime SLA</span>
           </div>
           <div class="flex items-center gap-2 bg-dark-900/60 px-3 py-1.5 rounded-lg border border-white/5">
             <i data-lucide="dollar-sign" class="w-4 h-4 text-amber-400"></i>
@@ -917,14 +920,14 @@
         navSubtitle: "High-Converting AI Model Shots for Amazon, Shopify & TikTok Shop",
         navStudio: "AI Model Studio",
         navShowcase: "Before & After",
-        navPricing: "Pricing & Margins",
+        navPricing: "Pricing & Plans",
         btnPaypalKey: "PayPal Key",
         btnFalKey: "fal.ai Key",
         heroBadge: "Enterprise Serverless Cloud • 99.9% Uptime SLA • Instant 8K Studio",
         heroTitle: "Turn Flat Product Shots into <span class='gradient-text-indigo'>High-Converting</span> AI Model Photoshoots",
         heroDesc: "Eliminate $3,000 studio photoshoot fees. Upload a raw product or mannequin photo and generate commercial-grade AI model wearing shots in 3 seconds for Amazon, Shopify, and TikTok Shop.",
         stat1: "+340% Higher CTR on Ads",
-        stat2: "Zero Downtime Cloud (Laptop Independent)",
+        stat2: "99.9% Enterprise Cloud Uptime SLA",
         stat3: "100% Commercial Use & Resell Rights",
         studioConfigTitle: "Model & Studio Parameters",
         studioConfigDesc: "Configure the commercial model persona and luxury setting for your product",
@@ -950,14 +953,14 @@
         navSubtitle: "아마존·쇼피파이 글로벌 셀러를 위한 AI 고전환 모델 컷 스튜디오",
         navStudio: "AI 모델 스튜디오",
         navShowcase: "Before & After 비교",
-        navPricing: "요금제 & 마진 구조",
+        navPricing: "구독 요금제",
         btnPaypalKey: "PayPal 키",
         btnFalKey: "fal.ai 키",
         heroBadge: "24시간 무중단 엔터프라이즈 클라우드 • 초고속 8K 상업용 AI 스튜디오",
         heroTitle: "바닥에 놓인 제품 사진, 5초 만에 아마존·쇼피파이 글로벌 1등 상세페이지 <span class='gradient-text-indigo'>고전환 AI 럭셔리 모델 컷</span>으로 완성",
         heroDesc: "회당 300~500만 원 드는 스튜디오 촬영비 전면 제로화. 마네킹 또는 바닥에 둔 제품 사진만 올리면 글로벌 톱 모델 착용 컷과 럭셔리 스튜디오 컷이 3초 만에 생성됩니다.",
         stat1: "상세페이지/광고 클릭률(CTR) +340% 상승",
-        stat2: "노트북 꺼도 24시간 가동되는 클라우드 엔진",
+        stat2: "99.9% 엔터프라이즈 클라우드 SLA 보증",
         stat3: "100% 상업적 이용 및 재판매 권한 포함",
         studioConfigTitle: "모델 및 스튜디오 촬영 환경 설정",
         studioConfigDesc: "제품에 어울리는 상업용 AI 모델과 고급 촬영 스튜디오 배경을 선택하세요",
