@@ -1,344 +1,1665 @@
 <!DOCTYPE html>
-<html lang="ko">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lumina AI - 초고화질 AI 이미지 생성 SaaS</title>
-  <link rel="stylesheet" href="style.css?v=5">
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <title>Lumina Commerce AI - High-Converting eCommerce AI Model Studio</title>
+  
+  <!-- Tailwind CSS & Lucide Icons & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              accent: '#6366f1',
+              accentHover: '#4f46e5',
+              violet: '#8b5cf6',
+              emerald: '#10b981',
+              rose: '#f43f5e',
+              amber: '#f59e0b'
+            },
+            dark: {
+              950: '#04060a',
+              900: '#070a12',
+              850: '#0c101d',
+              800: '#121829',
+              750: '#172036',
+              700: '#1f2b47',
+              600: '#2b3b61'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans KR"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          animation: {
+            'glow-pulse': 'glowPulse 4s ease-in-out infinite',
+            'spin-slow': 'spin 12s linear infinite'
+          },
+          keyframes: {
+            glowPulse: {
+              '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+              '50%': { opacity: '0.7', transform: 'scale(1.05)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- PAYPAL SDK LOADER -->
+  <script id="paypal-sdk-script" src="https://www.paypal.com/sdk/js?client-id=BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik&currency=USD"></script>
+
+  <style>
+    body {
+      background-color: #04060a;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+      overflow-x: hidden;
+      selection-background-color: #6366f1;
+    }
+    ::selection { background: #6366f1; color: #ffffff; }
+
+    /* Luxury Glassmorphism & Borders */
+    .glass-card {
+      background: rgba(12, 16, 29, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-glow {
+      background: rgba(14, 20, 36, 0.8);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
+    }
+    .glass-card-hover {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(99, 102, 241, 0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px -8px rgba(99, 102, 241, 0.25);
+    }
+
+    /* Gradient Text & Badges */
+    .gradient-text-indigo {
+      background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-border {
+      position: relative;
+    }
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(139, 92, 246, 0.2), transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Comparison Slider Thumb */
+    input[type=range].comparison-slider::-webkit-slider-thumb {
+      pointer-events: all;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #6366f1;
+      border: 3.5px solid #ffffff;
+      cursor: ew-resize;
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.9), 0 0 10px rgba(0, 0, 0, 0.5);
+      -webkit-appearance: none;
+      transition: transform 0.1s ease;
+    }
+    input[type=range].comparison-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.08);
+    }
+
+    /* Sleek Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #04060a; }
+    ::-webkit-scrollbar-thumb { background: #1a233a; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+  </style>
 </head>
+<body class="min-h-screen flex flex-col bg-[#04060a] relative">
 
-<body>
-  <div class="app-container">
-    <!-- 상단 네비게이션 헤더 -->
-    <header class="navbar">
-      <div class="brand">
-        <span class="brand-icon">✨</span>
-        <span class="brand-name">Lumina AI <span class="badge-pro" id="header-plan-badge">FREE</span></span>
-      </div>
+  <!-- BACKGROUND AMBIENT GLOWS -->
+  <div class="fixed top-0 left-1/4 w-[500px] h-[500px] bg-brand-accent/10 rounded-full blur-[140px] pointer-events-none animate-glow-pulse"></div>
+  <div class="fixed top-1/3 right-10 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px] pointer-events-none"></div>
+  <div class="fixed bottom-10 left-10 w-[450px] h-[450px] bg-emerald-500/5 rounded-full blur-[130px] pointer-events-none"></div>
 
-      <div class="nav-status">
-        <div id="comfy-status-badge" class="status-pill status-offline">
-          <span class="dot"></span>
-          <span id="comfy-status-text">ComfyUI 연결 확인 중...</span>
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 md:px-8 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      
+      <!-- BRAND LOGO -->
+      <div class="flex items-center gap-3 cursor-pointer shrink-0" onclick="switchNav('studio')">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-accent via-indigo-500 to-purple-500 flex items-center justify-center font-black text-white shadow-lg shadow-brand-accent/30 ring-1 ring-white/20">
+          <i data-lucide="sparkles" class="w-5 h-5 fill-white"></i>
         </div>
-      </div>
-
-      <div class="nav-user">
-        <!-- 다국어 언어 선택 스위처 -->
-        <div class="lang-switcher">
-          <button type="button" class="lang-btn active" id="lang-btn-en" data-lang="en">EN</button>
-          <span class="lang-sep">|</span>
-          <button type="button" class="lang-btn" id="lang-btn-ko" data-lang="ko">한국어</button>
-        </div>
-
-        <div class="quota-display" id="quota-display">
-          <span class="quota-icon">⚡</span>
-          <div class="quota-info">
-            <span class="quota-label" data-i18n="quota_label">Daily Remaining</span>
-            <span class="quota-val"><strong id="today-remaining">--</strong> / <span id="today-quota">--</span> <span
-                data-i18n="quota_unit">runs</span></span>
-          </div>
-        </div>
-        <button id="open-pricing-btn" class="btn btn-primary btn-sm glow">
-          💎 <span data-i18n="btn_upgrade">Upgrade Plan</span>
-        </button>
-      </div>
-    </header>
-
-    <!-- 메인 워크스페이스 -->
-    <main class="main-content">
-      <!-- 좌측: 프롬프트 컨트롤 패널 -->
-      <section class="control-panel">
-        <div class="panel-header">
-          <h2 data-i18n="studio_title">AI Generation Studio</h2>
-          <p class="subtitle" data-i18n="studio_subtitle">Enter your prompt to render high-resolution artwork via
-            dedicated GPU pipeline.</p>
-        </div>
-
-        <div class="form-group">
-          <!-- 제미나이 스타일 통합 프롬프트 컨테이너 -->
-          <div class="gemini-prompt-card" id="gemini-prompt-card">
-            <!-- 드래그 오버 안내 오버레이 -->
-            <div class="drop-overlay hidden" id="drop-overlay">
-              <div class="drop-overlay-content">
-                <span class="drop-icon">📥</span>
-                <p data-i18n="drop_overlay_text">이미지를 여기에 놓으면 바로 첨부됩니다</p>
-              </div>
-            </div>
-
-            <!-- 첨부된 이미지 미리보기 칩 (Gemini 스타일) -->
-            <div class="gemini-attachment-bar hidden" id="gemini-attachment-bar">
-              <div class="attachment-chip">
-                <img id="attached-thumb" src="" alt="첨부 이미지">
-                <div class="attachment-info">
-                  <span class="attachment-name" id="attached-name">image.png</span>
-                  <span class="attachment-tag" data-i18n="attachment_tag">🖼️ Image-to-Image Active</span>
-                </div>
-                <button type="button" class="btn-chip-remove" id="remove-attached-btn" title="이미지 제거">&times;</button>
-              </div>
-              <div class="attachment-denoise-compact">
-                <span data-i18n="denoise_label">Strength:</span>
-                <input type="range" id="denoise-slider" min="0.2" max="0.9" step="0.05" value="0.50">
-                <strong id="denoise-val-display">0.50</strong>
-                <span id="denoise-mode-hint" style="font-size: 11px; color: #10b981;">(Face Preserved)</span>
-              </div>
-            </div>
-
-            <!-- 프롬프트 텍스트 입력창 -->
-            <textarea id="prompt-input" rows="4" data-i18n-placeholder="prompt_placeholder"
-              placeholder="Enter your prompt (or drag & drop / Ctrl+V to attach reference image)..."></textarea>
-
-            <!-- 제미나이 스타일 하단 툴바 -->
-            <div class="gemini-prompt-toolbar">
-              <div class="toolbar-left">
-                <!-- 제미나이 스타일 원클릭 파일 첨부 버튼 -->
-                <button type="button" class="btn-gemini-upload" id="btn-quick-attach" title="이미지 파일 첨부">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                  </svg>
-                  <span data-i18n="btn_attach_image">Attach Image</span>
-                </button>
-                <input type="file" id="ref-image-input" accept="image/png, image/jpeg, image/webp" class="file-input-hidden">
-                <span class="toolbar-hint" data-i18n="toolbar_hint">or paste (Ctrl+V) / drag & drop</span>
-              </div>
-              <div class="toolbar-right">
-                <span class="char-count" id="prompt-len">0 chars</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- 추천 스타일 태그 -->
-          <div class="tag-list">
-            <button type="button" class="tag-pill" data-tag="masterpiece, highly detailed, 8k"
-              data-i18n="tag_masterpiece">🌟 Ultra HD</button>
-            <button type="button" class="tag-pill" data-tag="photorealistic, 35mm lens, raw photo"
-              data-i18n="tag_photo">📷 Photorealistic</button>
-            <button type="button" class="tag-pill" data-tag="anime aesthetic, makoto shinkai style, vibrant colors"
-              data-i18n="tag_anime">🎨 Anime Art</button>
-            <button type="button" class="tag-pill" data-tag="cyberpunk, neon glow, wet streets"
-              data-i18n="tag_cyberpunk">🌃 Cyberpunk</button>
-            <button type="button" class="tag-pill" data-tag="fantasy landscape, epic castle, aurora"
-              data-i18n="tag_fantasy">🏰 Epic Fantasy</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="label-row">
-            <label for="neg-prompt-input" data-i18n="neg_prompt_label">Negative Prompt (Exclude)</label>
-          </div>
-          <input type="text" id="neg-prompt-input"
-            value="ugly, deformed, blurry, bad anatomy, low quality, watermark, text"
-            data-i18n-placeholder="neg_prompt_placeholder" placeholder="Keywords to avoid">
-        </div>
-
-        <!-- 이미지 비율 선택 -->
-        <div class="form-group">
-          <label data-i18n="aspect_ratio_label">Aspect Ratio</label>
-          <div class="ratio-selector">
-            <label class="ratio-btn active">
-              <input type="radio" name="aspect-ratio" value="1024x1024" checked>
-              <span class="ratio-box r-1-1"></span>
-              <span>1:1 (1024x1024)</span>
-            </label>
-            <label class="ratio-btn">
-              <input type="radio" name="aspect-ratio" value="1280x720">
-              <span class="ratio-box r-16-9"></span>
-              <span>16:9 (1280x720)</span>
-            </label>
-            <label class="ratio-btn">
-              <input type="radio" name="aspect-ratio" value="720x1280">
-              <span class="ratio-box r-9-16"></span>
-              <span>9:16 (720x1280)</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- 고급 옵션 (시드) -->
-        <div class="form-group advanced-group">
-          <details>
-            <summary data-i18n="advanced_options">Advanced Options (Seed)</summary>
-            <div class="seed-input-row">
-              <input type="number" id="seed-input" placeholder="Random (-1)" value="-1">
-              <button type="button" id="randomize-seed-btn" class="btn btn-outline btn-xs" data-i18n="btn_random">🎲
-                Random</button>
-            </div>
-          </details>
-        </div>
-
-        <!-- 생성 버튼 & 진행률 -->
-        <div class="action-row">
-          <button id="generate-btn" class="btn btn-primary btn-lg btn-block glow">
-            <span class="btn-text" id="generate-btn-text" data-i18n="btn_generate">✨ Generate Image</span>
-            <div class="spinner hidden" id="gen-spinner"></div>
-          </button>
-        </div>
-
-        <div id="progress-container" class="progress-container hidden">
-          <div class="progress-label">
-            <span id="progress-status-text" data-i18n="progress_preparing">Preparing GPU pipeline...</span>
-            <span id="progress-percent">0%</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 우측: 결과 프리뷰어 -->
-      <section class="preview-panel">
-        <div class="preview-card" id="preview-card">
-          <div class="preview-placeholder" id="preview-placeholder">
-            <div class="placeholder-icon">🎨</div>
-            <h3 data-i18n="preview_empty_title">Your generated artwork will appear here</h3>
-            <p data-i18n="preview_empty_desc">Enter a prompt on the left and click Generate to start AI rendering.</p>
-          </div>
-
-          <div class="preview-image-container hidden" id="preview-img-container">
-            <img id="main-preview-img" src="" alt="생성 결과">
-            <div class="image-overlay">
-              <a id="download-btn" href="#" download="ai_image.png" class="btn btn-primary btn-sm">
-                ⬇️ <span data-i18n="btn_download">Download HD</span>
-              </a>
-              <button id="copy-prompt-btn" class="btn btn-secondary btn-sm">
-                📋 <span data-i18n="btn_copy_prompt">Copy Prompt</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 메타데이터 -->
-        <div class="meta-box hidden" id="result-meta">
-          <div class="meta-item">
-            <span class="meta-key">Seed:</span>
-            <span class="meta-val" id="meta-seed">--</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-key">Size:</span>
-            <span class="meta-val" id="meta-size">--</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-key">Engine:</span>
-            <span class="meta-val" id="meta-engine">--</span>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 하단: 최근 생성 갤러리 -->
-    <section class="history-section">
-      <div class="section-title-row">
-        <h3 data-i18n="gallery_title">Recent Creations</h3>
-        <span class="history-count" id="history-count">0 items</span>
-      </div>
-      <div class="history-grid" id="history-grid">
-        <div class="empty-history" data-i18n="gallery_empty">No images created yet. Create your first masterpiece!</div>
-      </div>
-    </section>
-
-    <!-- 푸터 (법적 정책 링크) -->
-    <footer class="app-footer">
-      <div class="footer-links">
-        <button type="button" class="link-btn" id="footer-refund-link" data-i18n="footer_refund">Refund & Cancellation
-          Policy</button>
-        <span class="sep">•</span>
-        <button type="button" class="link-btn" id="footer-terms-link" data-i18n="footer_terms">Terms of Service</button>
-      </div>
-      <div class="footer-copy">
-        &copy; 2026 Lumina AI. High-performance ComfyUI Image Generation SaaS. All rights reserved.
-      </div>
-    </footer>
-  </div>
-
-  <!-- 1. SaaS 요금제 및 페이팔 결제 모달 -->
-  <div class="modal-backdrop hidden" id="pricing-modal">
-    <div class="modal-box modal-lg">
-      <div class="modal-header">
         <div>
-          <h2 data-i18n="pricing_title">Choose Your Plan</h2>
-          <p class="subtitle" data-i18n="pricing_subtitle">Select the plan that fits your creative workflow. Instant GPU
-            queue priority.</p>
-        </div>
-        <button class="close-btn" id="close-pricing-btn">&times;</button>
-      </div>
-
-      <!-- 요금제 비교 카드 그리드 (3개 옵션) -->
-      <div class="pricing-comparison-grid" id="plans-container">
-        <!-- JS로 동적 생성 -->
-      </div>
-
-      <!-- 결제 진행 섹션 -->
-      <div class="checkout-wrapper">
-        <div class="selected-plan-banner">
-          <div class="selected-info">
-            <span class="label" data-i18n="selected_plan_label">Selected Plan:</span>
-            <strong id="selected-plan-title">Pro Monthly Plan</strong>
-            <span class="badge" id="selected-plan-price-tag">$30 / month</span>
-          </div>
-          <p class="selected-desc" id="selected-plan-target">Power users, designers, content creators</p>
-        </div>
-
-        <!-- 필수 사전 동의 체크박스 (PayPal Safeguard) -->
-        <div class="consent-box">
-          <label class="consent-label">
-            <input type="checkbox" id="agreement-checkbox">
-            <span class="checkbox-custom"></span>
-            <span class="consent-text" id="consent-text-container">
-              I agree to the <a href="#" id="view-terms-link" class="legal-link">Terms of Service</a> and understand the
-              <a href="#" id="view-refund-link" class="legal-link">Refund Policy</a> (Credits and GPU compute consumed
-              are non-refundable).
-            </span>
-          </label>
-          <div class="consent-error hidden" id="consent-error-msg" data-i18n="consent_error">
-            ⚠️ You must agree to the Terms of Service and Refund Policy to proceed.
-          </div>
-        </div>
-
-        <!-- 페이팔 공식 스마트 버튼 -->
-        <div class="paypal-action-area">
-          <div id="paypal-button-container"></div>
-
-          <!-- Mock 테스트 결제 (개발 환경 지원) -->
-          <div class="mock-test-row">
-            <button id="mock-checkout-btn" class="btn btn-outline btn-sm btn-block" data-i18n="btn_mock_checkout">
-              ⚡ [Test Mode] 1-Sec Instant Approval Simulation
-            </button>
-          </div>
-        </div>
-
-        <!-- 결제 하단 법적 고지 배너 -->
-        <div class="digital-goods-notice">
-          <span class="notice-icon">ℹ️</span>
-          <p>
-            <em data-i18n="digital_goods_notice">Digital Goods Notice: Subscriptions grant instant access to dedicated
-              GPU computing resources. Subscriptions can be canceled at any time from your account settings or PayPal
-              dashboard.</em>
+          <span class="text-base md:text-xl font-black tracking-tight text-white flex items-center gap-1.5">
+            Lumina Commerce <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-accent/25 text-indigo-300 border border-brand-accent/40 font-bold uppercase tracking-wider">AI Studio</span>
+          </span>
+          <p class="hidden sm:block text-[11px] text-slate-400 font-medium" data-i18n="navSubtitle">
+            High-Converting AI Model Shots for Amazon, Coupang & Shopify
           </p>
         </div>
       </div>
+
+      <!-- CENTER NAV TABS -->
+      <div class="hidden lg:flex items-center gap-1.5 bg-dark-900/90 p-1.5 rounded-2xl border border-white/10 shadow-inner">
+        <button onclick="switchNav('studio')" id="navStudio" class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-white bg-brand-accent shadow-md shadow-brand-accent/25 transition">
+          <i data-lucide="camera" class="w-4 h-4 inline mr-1.5"></i> <span data-i18n="navStudio">AI Model Studio</span>
+        </button>
+        <button onclick="switchNav('showcase')" id="navShowcase" class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition">
+          <i data-lucide="sliders" class="w-4 h-4 inline mr-1.5"></i> <span data-i18n="navShowcase">Before & After</span>
+        </button>
+        <button onclick="switchNav('pricing')" id="navPricing" class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition">
+          <i data-lucide="crown" class="w-4 h-4 inline mr-1.5 text-amber-400"></i> <span data-i18n="navPricing">Pricing & Margins</span>
+        </button>
+      </div>
+
+      <!-- RIGHT HEADER ACTIONS -->
+      <div class="flex items-center gap-2 md:gap-2.5">
+        
+        <!-- PAYPAL KEY MODAL BUTTON -->
+        <button onclick="openPaypalModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-sky-500/30 text-[11px] font-bold text-sky-400 transition hover:border-sky-400 shadow-sm" title="PayPal Live Client ID Settings">
+          <i data-lucide="wallet" class="w-3.5 h-3.5 text-sky-400"></i>
+          <span class="hidden sm:inline" data-i18n="btnPaypalKey">PayPal Key</span>
+        </button>
+
+        <!-- FAL.AI KEY MODAL BUTTON -->
+        <button onclick="openFalKeyModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-emerald-500/30 text-[11px] font-bold text-emerald-400 transition hover:border-emerald-400 shadow-sm" title="fal.ai Cloud API Key">
+          <i data-lucide="cloud" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span class="hidden sm:inline" data-i18n="btnFalKey">fal.ai Key</span>
+        </button>
+
+        <!-- BILINGUAL LANGUAGE TOGGLE (EN / KO) -->
+        <button onclick="toggleLang()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-white/10 text-[11px] font-bold text-slate-200 transition">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-brand-accent"></i>
+          <span id="langDisplay">EN</span>
+        </button>
+
+        <!-- CURRENT PLAN STATUS / UPGRADE -->
+        <button onclick="switchNav('pricing')" id="userPlanBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-accent via-indigo-600 to-purple-600 hover:opacity-95 text-white font-extrabold text-xs shadow-lg shadow-brand-accent/30 transition transform active:scale-95">
+          <i data-lucide="zap" class="w-3.5 h-3.5 fill-white"></i>
+          <span id="planBadgeText">Upgrade Plan</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- MOBILE BOTTOM TABS -->
+    <div class="flex lg:hidden items-center justify-around gap-1 pt-2.5 mt-2 border-t border-white/10 text-[11px] font-bold">
+      <button onclick="switchNav('studio')" class="px-2.5 py-1 text-slate-200 hover:text-white flex items-center gap-1">
+        <i data-lucide="camera" class="w-3.5 h-3.5"></i> Studio
+      </button>
+      <button onclick="switchNav('showcase')" class="px-2.5 py-1 text-slate-400 hover:text-white flex items-center gap-1">
+        <i data-lucide="sliders" class="w-3.5 h-3.5"></i> Before/After
+      </button>
+      <button onclick="switchNav('pricing')" class="px-2.5 py-1 text-amber-400 hover:text-amber-300 flex items-center gap-1">
+        <i data-lucide="crown" class="w-3.5 h-3.5"></i> Pricing
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-12">
+
+    <!-- HERO SECTION WITH PROOF TICKER -->
+    <section class="relative overflow-hidden rounded-3xl p-6 md:p-12 glass-card gradient-border shadow-2xl">
+      <div class="absolute -right-16 -bottom-16 w-96 h-96 bg-brand-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="relative z-10 max-w-3xl space-y-4">
+        
+        <!-- TAG PILL -->
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span data-i18n="heroBadge">Serverless 24/7 Cloud Architecture • Powered by fal.ai Flux.1</span>
+        </div>
+
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.15] tracking-tight" data-i18n="heroTitle">
+          Turn Flat Product Shots into <span class="gradient-text-indigo">High-Converting</span> AI Model Photoshoots
+        </h1>
+
+        <p class="text-sm md:text-base text-slate-300/90 leading-relaxed max-w-2xl font-normal" data-i18n="heroDesc">
+          Eliminate $3,000 studio photoshoot fees. Upload a raw product or mannequin photo and generate commercial-grade AI model wearing shots in 3 seconds for Amazon, Coupang, and Shopify.
+        </p>
+
+        <!-- STATS PILLS -->
+        <div class="flex flex-wrap items-center gap-5 pt-3 text-xs text-slate-300 font-semibold">
+          <div class="flex items-center gap-2 bg-dark-900/60 px-3 py-1.5 rounded-lg border border-white/5">
+            <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i>
+            <span data-i18n="stat1">+340% Higher CTR on Ads</span>
+          </div>
+          <div class="flex items-center gap-2 bg-dark-900/60 px-3 py-1.5 rounded-lg border border-white/5">
+            <i data-lucide="shield-check" class="w-4 h-4 text-indigo-400"></i>
+            <span data-i18n="stat2">Zero Downtime Cloud (Laptop Independent)</span>
+          </div>
+          <div class="flex items-center gap-2 bg-dark-900/60 px-3 py-1.5 rounded-lg border border-white/5">
+            <i data-lucide="dollar-sign" class="w-4 h-4 text-amber-400"></i>
+            <span data-i18n="stat3">100% Commercial Use & Resell Rights</span>
+          </div>
+        </div>
+
+        <!-- TARGET PLATFORMS BADGE ROW -->
+        <div class="pt-2 flex flex-wrap items-center gap-2.5 text-[11px] text-slate-400">
+          <span class="text-slate-500 font-bold uppercase tracking-wider text-[10px]">Optimized for:</span>
+          <span class="px-2.5 py-1 rounded-xl bg-dark-900/80 border border-white/5 text-slate-300 font-medium flex items-center gap-1.5"><i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-amber-400"></i> Amazon FBA</span>
+          <span class="px-2.5 py-1 rounded-xl bg-dark-900/80 border border-white/5 text-slate-300 font-medium flex items-center gap-1.5"><i data-lucide="rocket" class="w-3.5 h-3.5 text-rose-400"></i> Coupang Wing</span>
+          <span class="px-2.5 py-1 rounded-xl bg-dark-900/80 border border-white/5 text-slate-300 font-medium flex items-center gap-1.5"><i data-lucide="store" class="w-3.5 h-3.5 text-emerald-400"></i> Shopify Plus</span>
+          <span class="px-2.5 py-1 rounded-xl bg-dark-900/80 border border-white/5 text-slate-300 font-medium flex items-center gap-1.5"><i data-lucide="video" class="w-3.5 h-3.5 text-sky-400"></i> TikTok Shop Ads</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 1: AI MODEL STUDIO ==================== -->
+    <div id="viewStudio" class="space-y-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT CONTROL PANEL (7 COLS) -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="glass-card rounded-3xl p-6 md:p-8 space-y-7 shadow-xl">
+            
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <h2 class="text-lg md:text-xl font-black text-white flex items-center gap-2" data-i18n="studioConfigTitle">
+                  <i data-lucide="sliders-horizontal" class="w-5 h-5 text-brand-accent"></i> Model & Studio Parameters
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5" data-i18n="studioConfigDesc">
+                  Configure the commercial model persona and luxury setting for your product
+                </p>
+              </div>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-brand-accent/15 text-indigo-300 border border-brand-accent/30">
+                5-Step Engine
+              </span>
+            </div>
+
+            <!-- STEP 1: PRODUCT IMAGE UPLOAD -->
+            <div class="space-y-2.5">
+              <label class="text-xs md:text-sm font-bold text-slate-200 flex items-center justify-between">
+                <span data-i18n="labelProductImage">1. Upload Product Photo (Clothing, Bag, Cosmetics, Shoes)</span>
+                <span class="text-[11px] text-slate-400 font-medium">PNG / JPG / WEBP</span>
+              </label>
+
+              <div id="dropzone" onclick="document.getElementById('productFileInput').click()" class="border-2 border-dashed border-white/15 hover:border-brand-accent/70 bg-dark-900/70 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2.5 group">
+                <input type="file" id="productFileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                <div class="w-14 h-14 rounded-2xl bg-dark-800 border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-brand-accent/50 transition text-brand-accent shadow-md">
+                  <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-xs md:text-sm font-bold text-slate-200" data-i18n="dropzonePrompt">
+                    Drag & drop product photo or click to browse
+                  </p>
+                  <p class="text-[11px] text-slate-400" data-i18n="dropzoneHint">
+                    Supports Ctrl+V paste directly anywhere onto this page
+                  </p>
+                </div>
+              </div>
+
+              <!-- UPLOAD PREVIEW CHIP -->
+              <div id="uploadPreviewBar" class="hidden flex items-center justify-between bg-dark-800/95 border border-brand-accent/40 rounded-2xl p-3 shadow-lg">
+                <div class="flex items-center gap-3.5">
+                  <img id="uploadPreviewImg" src="" alt="Product" class="w-14 h-14 rounded-xl object-cover border border-white/20 shadow">
+                  <div>
+                    <p id="uploadPreviewName" class="text-xs font-bold text-white max-w-[220px] truncate">product.png</p>
+                    <span class="text-[11px] text-emerald-400 font-bold flex items-center gap-1 mt-0.5">
+                      <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Ready for AI Studio Fitting
+                    </span>
+                  </div>
+                </div>
+                <button type="button" onclick="clearUpload()" class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition" title="Remove Product">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <!-- 1-CLICK TEST SAMPLES -->
+              <div class="pt-2 space-y-1.5">
+                <div class="flex items-center justify-between text-[11px] font-bold">
+                  <span class="text-indigo-400 flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <span data-i18n="sampleProductsLabel">⚡ Quick Test: 1-Click Product Presets (No file needed)</span>
+                  </span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button type="button" onclick="loadSampleProduct('dress')" class="sample-btn px-2.5 py-2 rounded-xl bg-dark-900 hover:bg-dark-750 border border-white/10 hover:border-brand-accent/60 text-left text-[11px] font-semibold text-slate-300 hover:text-white transition flex items-center gap-2 group shadow-sm">
+                    <span class="text-base group-hover:scale-110 transition">👗</span>
+                    <span class="truncate">Silk Dress</span>
+                  </button>
+                  <button type="button" onclick="loadSampleProduct('bag')" class="sample-btn px-2.5 py-2 rounded-xl bg-dark-900 hover:bg-dark-750 border border-white/10 hover:border-brand-accent/60 text-left text-[11px] font-semibold text-slate-300 hover:text-white transition flex items-center gap-2 group shadow-sm">
+                    <span class="text-base group-hover:scale-110 transition">👜</span>
+                    <span class="truncate">Leather Tote</span>
+                  </button>
+                  <button type="button" onclick="loadSampleProduct('watch')" class="sample-btn px-2.5 py-2 rounded-xl bg-dark-900 hover:bg-dark-750 border border-white/10 hover:border-brand-accent/60 text-left text-[11px] font-semibold text-slate-300 hover:text-white transition flex items-center gap-2 group shadow-sm">
+                    <span class="text-base group-hover:scale-110 transition">⌚</span>
+                    <span class="truncate">Gold Watch</span>
+                  </button>
+                  <button type="button" onclick="loadSampleProduct('serum')" class="sample-btn px-2.5 py-2 rounded-xl bg-dark-900 hover:bg-dark-750 border border-white/10 hover:border-brand-accent/60 text-left text-[11px] font-semibold text-slate-300 hover:text-white transition flex items-center gap-2 group shadow-sm">
+                    <span class="text-base group-hover:scale-110 transition">🧴</span>
+                    <span class="truncate">Glow Serum</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: MODEL PERSONA SELECTOR -->
+            <div class="space-y-2.5">
+              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelPersona">2. Select AI Model Persona</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <button type="button" onclick="selectPersona('female_editorial')" class="persona-btn active p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-left text-xs font-bold text-white transition flex flex-col gap-1.5 shadow-sm">
+                  <span class="text-lg">💃</span>
+                  <span>Female Runway</span>
+                  <span class="text-[10px] text-slate-400 font-normal">Vogue editorial look</span>
+                </button>
+                <button type="button" onclick="selectPersona('male_casual')" class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
+                  <span class="text-lg">🕺</span>
+                  <span>Male Athletic</span>
+                  <span class="text-[10px] text-slate-400 font-normal">Fit & confident posture</span>
+                </button>
+                <button type="button" onclick="selectPersona('beauty_hands')" class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
+                  <span class="text-lg">💅</span>
+                  <span>Beauty & Hands</span>
+                  <span class="text-[10px] text-slate-400 font-normal">Jewelry & cosmetics</span>
+                </button>
+                <button type="button" onclick="selectPersona('ghost_mannequin')" class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
+                  <span class="text-lg">👻</span>
+                  <span>Ghost 3D Fit</span>
+                  <span class="text-[10px] text-slate-400 font-normal">Hollow mannequin</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 3: STUDIO SCENE & LIGHTING -->
+            <div class="space-y-2.5">
+              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelScene">3. Select Commercial Studio Scene</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                <button type="button" onclick="selectScene('luxury_marble')" class="scene-btn active p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-left text-xs font-bold text-white transition flex items-center gap-2">
+                  <span>🏛️</span> Luxury Marble
+                </button>
+                <button type="button" onclick="selectScene('sunlit_loft')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                  <span>☀️</span> Sunlit Modern Loft
+                </button>
+                <button type="button" onclick="selectScene('parisian_street')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                  <span>☕</span> Parisian Cafe
+                </button>
+                <button type="button" onclick="selectScene('amazon_white')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                  <span>📦</span> Amazon Pure White
+                </button>
+                <button type="button" onclick="selectScene('nature_garden')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                  <span>🌿</span> Botanical Garden
+                </button>
+                <button type="button" onclick="selectScene('cyber_vogue')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                  <span>🌃</span> Neon Cyber Studio
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 4: ASPECT RATIO SELECTOR -->
+            <div class="space-y-2.5">
+              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelRatio">4. Commercial Aspect Ratio</label>
+              <div class="grid grid-cols-3 gap-3">
+                <label class="ratio-label active flex items-center justify-center gap-2 p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-xs font-bold text-white cursor-pointer transition shadow-sm">
+                  <input type="radio" name="ratio" value="square_hd" checked class="hidden" onchange="updateRatio(this)">
+                  <span>1:1</span>
+                  <span class="text-[10px] text-slate-400 font-normal">Amazon / Coupang</span>
+                </label>
+                <label class="ratio-label flex items-center justify-center gap-2 p-3 rounded-2xl border border-white/10 bg-dark-800 text-xs font-bold text-slate-300 cursor-pointer transition shadow-sm">
+                  <input type="radio" name="ratio" value="portrait_4_3" class="hidden" onchange="updateRatio(this)">
+                  <span>4:5</span>
+                  <span class="text-[10px] text-slate-400 font-normal">Instagram Feed</span>
+                </label>
+                <label class="ratio-label flex items-center justify-center gap-2 p-3 rounded-2xl border border-white/10 bg-dark-800 text-xs font-bold text-slate-300 cursor-pointer transition shadow-sm">
+                  <input type="radio" name="ratio" value="portrait_16_9" class="hidden" onchange="updateRatio(this)">
+                  <span>9:16</span>
+                  <span class="text-[10px] text-slate-400 font-normal">Reels & TikTok Ads</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- STEP 5: PROMPT & ONE-CLICK AUTO ENHANCER -->
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between">
+                <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelPrompt">
+                  5. Commercial Prompt & Details
+                </label>
+                <button type="button" onclick="enhancePrompt()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 font-bold transition">
+                  <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Auto-Generate Prompt
+                </button>
+              </div>
+              <textarea id="promptInput" rows="3" class="w-full bg-dark-900 border border-white/15 focus:border-brand-accent rounded-2xl p-4 text-xs md:text-sm text-white placeholder-slate-500 outline-none transition resize-none leading-relaxed"></textarea>
+            </div>
+
+            <!-- GENERATE BUTTON (GATED) -->
+            <button id="btnGenerate" onclick="handleGenerateClick()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-accent via-indigo-600 to-purple-600 hover:opacity-95 text-white font-black text-sm md:text-base flex items-center justify-center gap-2.5 shadow-xl shadow-brand-accent/35 transition transform active:scale-[0.99]">
+              <i data-lucide="sparkles" class="w-5 h-5 fill-white"></i>
+              <span id="btnGenerateText" data-i18n="btnGenerateText">Generate High-Converting AI Model Shot</span>
+            </button>
+
+            <!-- GENERATION STATUS BAR -->
+            <div id="genStatusContainer" class="hidden space-y-2 bg-dark-900/90 border border-brand-accent/50 rounded-2xl p-4 shadow-xl">
+              <div class="flex items-center justify-between text-xs font-bold">
+                <span id="genStatusText" class="text-indigo-400 flex items-center gap-2">
+                  <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-brand-accent"></i> Dispatching to fal.ai Flux.1 Schnell Cloud...
+                </span>
+                <span id="genProgressPercent" class="text-slate-300 font-mono">45%</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full bg-dark-800 overflow-hidden">
+                <div id="genProgressBar" class="h-full bg-gradient-to-r from-brand-accent via-indigo-500 to-emerald-400 transition-all duration-300" style="width: 45%"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT LIVE PREVIEW CANVAS (5 COLS) -->
+        <div class="lg:col-span-5 space-y-5">
+          <div class="glass-card rounded-3xl p-6 space-y-4 sticky top-24 shadow-2xl">
+            
+            <div class="flex items-center justify-between border-b border-white/10 pb-3.5">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2" data-i18n="resultCanvasTitle">
+                <i data-lucide="eye" class="w-4 h-4 text-emerald-400"></i> Live Commercial Canvas
+              </h3>
+              <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30">
+                8K Commercial Export
+              </span>
+            </div>
+
+            <!-- CANVAS BOX -->
+            <div id="resultCanvasBox" class="relative rounded-2xl overflow-hidden bg-dark-950 border border-white/10 aspect-square flex items-center justify-center shadow-inner group">
+              
+              <!-- EMPTY STATE -->
+              <div id="canvasEmptyState" class="text-center p-8 space-y-3.5">
+                <div class="w-20 h-20 mx-auto rounded-3xl bg-dark-800/90 border border-white/10 flex items-center justify-center text-slate-500 shadow-lg">
+                  <i data-lucide="image" class="w-10 h-10"></i>
+                </div>
+                <div class="space-y-1.5">
+                  <p class="text-sm font-bold text-slate-200" data-i18n="emptyStateTitle">
+                    Your Commercial AI Model Shot Will Appear Here
+                  </p>
+                  <p class="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed" data-i18n="emptyStateDesc">
+                    Upload a product on the left and click Generate to run the serverless AI studio pipeline.
+                  </p>
+                </div>
+              </div>
+
+              <!-- RESULT IMAGE -->
+              <img id="resultImage" src="" alt="AI Model Shot" class="hidden w-full h-full object-cover">
+
+              <!-- BADGE -->
+              <div id="canvasBadge" class="hidden absolute top-4 left-4 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-xs font-bold text-emerald-400 shadow-lg">
+                ✨ Ready for Amazon & Coupang
+              </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div id="resultActions" class="hidden grid grid-cols-2 gap-3 pt-2">
+              <a id="btnDownload" href="#" download="lumina_commercial_shot.png" class="py-3 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/25 transition">
+                <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="btnDownload">Download 8K</span>
+              </a>
+              <button onclick="copyPromptToClipboard()" class="py-3 rounded-xl bg-dark-800 hover:bg-dark-750 border border-white/15 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition">
+                <i data-lucide="copy" class="w-4 h-4"></i> <span data-i18n="btnCopyPrompt">Copy Prompt</span>
+              </button>
+            </div>
+
+            <!-- SPECS CARD -->
+            <div class="rounded-2xl bg-dark-900/80 p-3.5 border border-white/5 space-y-1.5 text-xs text-slate-400 font-medium">
+              <div class="flex justify-between"><span>Inference Engine:</span> <strong class="text-slate-200 font-mono">fal.ai Flux.1 Schnell</strong></div>
+              <div class="flex justify-between"><span>Generation Speed:</span> <strong class="text-emerald-400 font-mono">~2.8 seconds</strong></div>
+              <div class="flex justify-between"><span>Commercial Rights:</span> <strong class="text-slate-200">100% Royalty-Free</strong></div>
+            </div>
+
+            <!-- RECENT CREATIONS GALLERY -->
+            <div id="recentGalleryContainer" class="hidden rounded-2xl bg-dark-900/90 p-4 border border-white/10 space-y-2.5">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-300">
+                <span class="flex items-center gap-1.5"><i data-lucide="history" class="w-3.5 h-3.5 text-indigo-400"></i> <span data-i18n="recentGalleryTitle">Recent Studio Shots</span></span>
+                <span id="galleryCount" class="text-[10px] text-slate-500 font-mono">0 saved</span>
+              </div>
+              <div id="recentGalleryThumbnails" class="flex items-center gap-2.5 overflow-x-auto pb-1"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 2: BEFORE & AFTER COMPARISON ==================== -->
+    <div id="viewShowcase" class="hidden space-y-10">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <span class="px-3.5 py-1.5 rounded-full bg-brand-accent/15 border border-brand-accent/30 text-indigo-400 text-xs font-bold">
+          High-Converting Comparison
+        </span>
+        <h2 class="text-3xl md:text-4xl font-black text-white" data-i18n="showcaseTitle">
+          Compare the Difference: Raw Product vs AI Model Studio
+        </h2>
+        <p class="text-xs md:text-sm text-slate-400 leading-relaxed" data-i18n="showcaseDesc">
+          Slide the bar below to see how ordinary flat lay or mannequin shots are transformed into Vogue-level studio model photography.
+        </p>
+      </div>
+
+      <!-- INTERACTIVE COMPARISON SLIDER -->
+      <div class="max-w-4xl mx-auto glass-card rounded-3xl p-5 md:p-8 space-y-7 shadow-2xl">
+        
+        <div class="relative w-full aspect-[4/3] md:aspect-[16/9] rounded-2xl overflow-hidden select-none border border-white/15 shadow-2xl">
+          
+          <!-- AFTER IMAGE (BOTTOM LAYER) -->
+          <img id="sliderAfterImg" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80" alt="After AI Studio" class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute top-4 right-4 px-3.5 py-1.5 rounded-xl bg-indigo-600/90 text-white font-extrabold text-xs shadow-lg backdrop-blur-md">
+            ✨ AFTER: AI Studio Model (+340% CTR)
+          </div>
+
+          <!-- BEFORE IMAGE (TOP CLIPPED LAYER) -->
+          <div id="sliderBeforeClip" class="absolute inset-0 w-full h-full overflow-hidden" style="width: 50%;">
+            <img id="sliderBeforeImg" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80" alt="Before Raw" class="absolute inset-0 w-full h-full object-cover" style="max-width: none; width: 100%; height: 100%;">
+            <div class="absolute top-4 left-4 px-3.5 py-1.5 rounded-xl bg-dark-900/90 text-slate-300 font-bold text-xs border border-white/20 shadow-lg backdrop-blur-md">
+              📷 BEFORE: Flat Lay / Mannequin
+            </div>
+          </div>
+
+          <!-- DRAGGABLE DIVIDER LINE -->
+          <div id="sliderDividerLine" class="absolute top-0 bottom-0 w-1 bg-white shadow-2xl pointer-events-none" style="left: 50%;">
+            <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-brand-accent text-white border-2 border-white flex items-center justify-center shadow-2xl">
+              <i data-lucide="chevrons-left-right" class="w-4 h-4"></i>
+            </div>
+          </div>
+
+          <input type="range" min="0" max="100" value="50" oninput="updateComparisonSlider(this.value)" class="comparison-slider absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20">
+        </div>
+
+        <!-- CATEGORY PRESETS -->
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <button onclick="loadComparisonSample('apparel')" class="comp-btn active px-4 py-2 rounded-xl border border-brand-accent bg-brand-accent/20 text-white text-xs font-bold transition">
+            👗 Fashion Dress
+          </button>
+          <button onclick="loadComparisonSample('cosmetics')" class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
+            🧴 Skincare Cosmetics
+          </button>
+          <button onclick="loadComparisonSample('watch')" class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
+            ⌚ Luxury Watch
+          </button>
+          <button onclick="loadComparisonSample('shoes')" class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
+            👟 Sneakers & Shoes
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 3: 100% GATED PRICING MATRIX ==================== -->
+    <div id="viewPricing" class="hidden space-y-12">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <span class="px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-bold">
+          Zero Free Leaks • 100% Gated Subscriptions
+        </span>
+        <h2 class="text-3xl md:text-5xl font-black text-white" data-i18n="pricingTitle">
+          High-Converting Commercial Plans
+        </h2>
+        <p class="text-xs md:text-sm text-slate-400 leading-relaxed" data-i18n="pricingDesc">
+          Pick your monthly quota. Powered by fal.ai serverless GPU infrastructure with verified 85%+ conservative net margin.
+        </p>
+      </div>
+
+      <!-- ROI & COST SAVINGS COMPARISON CARD -->
+      <div class="max-w-4xl mx-auto rounded-3xl p-6 md:p-8 glass-card border border-white/10 space-y-6">
+        <div class="text-center space-y-1">
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Unbeatable ROI</span>
+          <h3 class="text-xl md:text-2xl font-black text-white" data-i18n="roiTitle">Traditional Agency Shoot vs Lumina Commerce AI</h3>
+          <p class="text-xs text-slate-400 max-w-lg mx-auto" data-i18n="roiDesc">Compare the real cost, time, and flexibility of human studio shoots vs our cloud engine</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Traditional Photoshoot -->
+          <div class="rounded-2xl bg-dark-900/80 border border-rose-500/20 p-5 space-y-3.5">
+            <div class="flex items-center justify-between border-b border-rose-500/20 pb-3">
+              <span class="text-xs font-bold text-rose-400 flex items-center gap-1.5"><i data-lucide="x-circle" class="w-4 h-4"></i> Traditional Studio Photoshoot</span>
+              <span class="text-sm font-black text-rose-400 font-mono">$2,800+</span>
+            </div>
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="flex items-center gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i> Model agency casting fee ($800~$1,500)</li>
+              <li class="flex items-center gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i> Studio rental, lighting crew & equipment ($700)</li>
+              <li class="flex items-center gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i> 10~14 days turnaround wait time</li>
+              <li class="flex items-center gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i> Re-shooting angle requires 100% full re-booking fee</li>
+            </ul>
+          </div>
+
+          <!-- Lumina Commerce AI -->
+          <div class="rounded-2xl bg-dark-900/80 border border-emerald-500/30 p-5 space-y-3.5 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="flex items-center justify-between border-b border-emerald-500/20 pb-3">
+              <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4"></i> Lumina Commerce AI Studio</span>
+              <span class="text-sm font-black text-emerald-400 font-mono">$19 ~ $39 / mo</span>
+            </div>
+            <ul class="space-y-2 text-xs text-slate-200">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> 150 to 500 studio shots included</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Instant ~2.8s generation per image</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Unlimited styles, models & studio scenes</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> 100% royalty-free commercial rights included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-TIER PRICING CARDS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
+        
+        <!-- 1. STARTER PLAN ($19) -->
+        <div class="glass-card glass-card-hover rounded-3xl p-7 flex flex-col justify-between space-y-6 relative">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-dark-750 text-slate-300 text-xs font-bold border border-white/10">Starter</span>
+              <span class="text-xs text-slate-400 font-medium">New Sellers</span>
+            </div>
+            <div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-4xl md:text-5xl font-black text-white">$19</span>
+                <span class="text-xs text-slate-400">/ month</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1 font-mono">~$0.12 per commercial AI model shot</p>
+            </div>
+            <ul class="space-y-3 text-xs text-slate-300 pt-3 border-t border-white/10">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> <strong>150 AI Model Shots</strong> / mo</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Standard Commercial Studio Scenes</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Amazon & Coupang 1:1 Export</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Standard Cloud Queue (fal.ai Schnell)</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Full Commercial Use License</li>
+            </ul>
+          </div>
+          <button onclick="startCheckout('starter', 19, 'Starter Plan', 150)" class="w-full py-3.5 rounded-2xl bg-dark-750 hover:bg-dark-700 border border-white/15 text-white font-bold text-xs md:text-sm transition">
+            Subscribe Starter ($19)
+          </button>
+        </div>
+
+        <!-- 2. PRO PLAN ($39 - MOST POPULAR) -->
+        <div class="glass-card-glow rounded-3xl p-7 flex flex-col justify-between space-y-6 relative border-2 border-brand-accent shadow-2xl shadow-brand-accent/25 bg-gradient-to-b from-dark-850 to-dark-900">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-brand-accent to-purple-600 text-white font-black text-[11px] shadow-lg tracking-wider uppercase">
+            🔥 Most Popular
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-brand-accent/25 text-indigo-300 text-xs font-bold border border-brand-accent/40">Pro Studio</span>
+              <span class="text-xs text-indigo-300 font-bold">Top 5% Amazon Sellers</span>
+            </div>
+            <div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-4xl md:text-5xl font-black text-white">$39</span>
+                <span class="text-xs text-slate-400">/ month</span>
+              </div>
+              <p class="text-xs text-indigo-300 mt-1 font-mono">~$0.078 per shot (Save 97% vs photoshoots)</p>
+            </div>
+            <ul class="space-y-3 text-xs text-slate-200 pt-3 border-t border-white/10">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> <strong>500 AI Model Shots</strong> / mo</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> All Global Model Personas & Diversity</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> Luxury Marble & Parisian Street Scenes</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> Video Ad Ratio (9:16 Reels & TikTok)</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> Priority Serverless Cloud Queue</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> 8K Commercial Resolution Export</li>
+            </ul>
+          </div>
+          <button onclick="startCheckout('pro', 39, 'Pro Monthly Plan', 500)" class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-accent to-purple-600 hover:opacity-95 text-white font-black text-xs md:text-sm shadow-xl shadow-brand-accent/40 transition transform active:scale-95">
+            Upgrade to Pro ($39)
+          </button>
+        </div>
+
+        <!-- 3. AGENCY PLAN ($89 - BEST VALUE) -->
+        <div class="glass-card glass-card-hover rounded-3xl p-7 flex flex-col justify-between space-y-6 relative">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-dark-750 text-amber-400 text-xs font-bold border border-amber-400/20">Agency Scale</span>
+              <span class="text-xs text-slate-400 font-medium">Agencies & Brand Owners</span>
+            </div>
+            <div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-4xl md:text-5xl font-black text-white">$89</span>
+                <span class="text-xs text-slate-400">/ month</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1 font-mono">~$0.059 per shot (Wholesale rate)</p>
+            </div>
+            <ul class="space-y-3 text-xs text-slate-300 pt-3 border-t border-white/10">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> <strong>1,500 AI Model Shots</strong> / mo</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Multi-Brand Product Batch Processing</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Custom Prompt Brand Guidelines</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> VIP Dedicated fal.ai Cloud Queue</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Priority 1-on-1 Support</li>
+            </ul>
+          </div>
+          <button onclick="startCheckout('agency', 89, 'Agency Scale Plan', 1500)" class="w-full py-3.5 rounded-2xl bg-dark-750 hover:bg-dark-700 border border-white/15 text-white font-bold text-xs md:text-sm transition">
+            Subscribe Agency ($89)
+          </button>
+        </div>
+
+      </div>
+
+      <!-- 85%+ NET MARGIN MATH BREAKDOWN TABLE -->
+      <div class="max-w-4xl mx-auto glass-card rounded-3xl p-6 md:p-8 space-y-5">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> S-Probiz Conservative 85%+ Net Cash Margin Math
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">Calculated with full PayPal fees, FX exchange buffer, and fal.ai Flux Schnell API costs</p>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-black">
+            Conservative ~85% Net
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-white/10 text-slate-400 font-mono">
+                <th class="py-3 px-3">Plan</th>
+                <th class="py-3 px-3">Revenue</th>
+                <th class="py-3 px-3">fal.ai GPU Cost ($0.003/shot)</th>
+                <th class="py-3 px-3">PayPal Gateway Fee</th>
+                <th class="py-3 px-3 text-emerald-400 font-bold">Net Profit / Month</th>
+                <th class="py-3 px-3 text-emerald-400 font-bold">Net Margin</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5 text-slate-200 font-mono">
+              <tr>
+                <td class="py-3.5 px-3 font-bold font-sans">Starter (150 shots)</td>
+                <td class="py-3.5 px-3 font-bold">$19.00</td>
+                <td class="py-3.5 px-3 text-slate-400">$0.45</td>
+                <td class="py-3.5 px-3 text-slate-400">~$1.15</td>
+                <td class="py-3.5 px-3 font-extrabold text-emerald-400">$17.40</td>
+                <td class="py-3.5 px-3 font-extrabold text-emerald-400">91.5%</td>
+              </tr>
+              <tr>
+                <td class="py-3.5 px-3 font-bold text-indigo-400 font-sans">Pro (500 shots)</td>
+                <td class="py-3.5 px-3 font-bold text-indigo-300">$39.00</td>
+                <td class="py-3.5 px-3 text-slate-400">$1.50</td>
+                <td class="py-3.5 px-3 text-slate-400">~$1.85</td>
+                <td class="py-3.5 px-3 font-extrabold text-emerald-400">$35.65</td>
+                <td class="py-3.5 px-3 font-extrabold text-emerald-400">91.4%</td>
+              </tr>
+              <tr>
+                <td class="py-3.5 px-3 font-bold font-sans">Agency (1,500 shots)</td>
+                <td class="py-3.5 px-3 font-bold">$89.00</td>
+                <td class="py-3.5 px-3 text-slate-400">$4.50</td>
+                <td class="py-3.5 px-3 text-slate-400">~$3.60</td>
+                <td class="py-3.5 px-3 font-extrabold text-emerald-400">$80.90</td>
+                <td class="py-3.5 px-3 font-extrabold text-emerald-400">90.9%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[11px] text-slate-500 italic pt-1">
+          * Factoring in international currency buffers (~3%) and operational hosting, net cash margin firmly stays above 85%+.
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-white/10 bg-dark-950 py-10 px-4 text-xs text-slate-500 space-y-4">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-300">Lumina Commerce AI</span>
+        <span>•</span>
+        <span>Operated by S-Probiz (Director Seyun)</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400 font-medium">
+        <!-- OWNER PASS BUTTON FOR DIRECTOR SEYUN -->
+        <button onclick="toggleOwnerPass()" class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 transition flex items-center gap-1.5 text-[11px] font-bold">
+          <i data-lucide="crown" class="w-3 h-3"></i> <span id="ownerToggleText">Owner Pass (Seyun)</span>
+        </button>
+        <a href="#" onclick="openLegalModal('terms')" class="hover:text-white transition">Terms</a>
+        <a href="#" onclick="openLegalModal('refund')" class="hover:text-white transition">Refund Policy</a>
+      </div>
+    </div>
+    <p class="text-[11px] text-slate-600 text-center">
+      © 2026 Lumina Commerce AI. 24/7 Zero-Downtime Serverless Cloud Architecture.
+    </p>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. CHECKOUT / PAYPAL PAYMENT MODAL -->
+  <div id="checkoutModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-5 border border-white/20 relative animate-in fade-in zoom-in duration-200 shadow-2xl">
+      
+      <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div>
+        <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-accent/25 text-indigo-300 uppercase tracking-wide">
+          S-Probiz Checkout
+        </span>
+        <h3 class="text-xl font-black text-white mt-1.5" id="checkoutPlanTitle">Activate Pro Plan</h3>
+        <p class="text-xs text-slate-400" id="checkoutPlanDesc">$39/month • 500 AI Model Shots</p>
+      </div>
+
+      <!-- LEGAL CONSENT CHECKBOX -->
+      <div class="rounded-2xl bg-dark-900/90 border border-amber-500/30 p-4 space-y-2.5">
+        <label class="flex items-start gap-3 text-xs text-slate-300 cursor-pointer select-none">
+          <input type="checkbox" id="legalConsentCheckbox" class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-0 bg-dark-800 border-white/20">
+          <span class="leading-relaxed">
+            I agree to the <a href="#" onclick="openLegalModal('terms')" class="text-indigo-400 underline font-bold">Terms</a> and understand the <a href="#" onclick="openLegalModal('refund')" class="text-amber-400 underline font-bold">Refund Policy</a>. Digital compute is non-refundable once over 5 shots are generated.
+          </span>
+        </label>
+        <p id="consentError" class="hidden text-[11px] text-rose-400 font-bold">⚠️ You must check the agreement box before proceeding to payment.</p>
+      </div>
+
+      <!-- PAYPAL BUTTON CONTAINER -->
+      <div id="paypalBtnContainer" class="space-y-2">
+        <div id="paypal-smart-button-area"></div>
+      </div>
+
+      <!-- INSTANT TEST APPROVAL BUTTON -->
+      <div class="border-t border-white/10 pt-3 text-center">
+        <button onclick="simulateSuccessfulPayment()" class="text-xs text-slate-400 hover:text-emerald-400 font-bold flex items-center justify-center gap-1.5 mx-auto transition">
+          <i data-lucide="terminal" class="w-3.5 h-3.5"></i> [Staging/Test] 1-Sec Instant Approval
+        </button>
+      </div>
+
     </div>
   </div>
 
-  <!-- 2. 환불 정책 모달 (Refund Policy Modal) -->
-  <div class="modal-backdrop hidden" id="refund-modal">
-    <div class="modal-box modal-md">
-      <div class="modal-header">
-        <h2 id="refund-modal-title">REFUND & CANCELLATION POLICY</h2>
-        <button class="close-btn" id="close-refund-btn">&times;</button>
+  <!-- 2. PAYPAL CLIENT ID CONFIG MODAL -->
+  <div id="paypalConfigModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-4 border border-sky-500/30 relative shadow-2xl">
+      <button onclick="closePaypalModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="flex items-center gap-2.5 text-sky-400">
+        <div class="w-8 h-8 rounded-xl bg-sky-500/10 flex items-center justify-center">
+          <i data-lucide="wallet" class="w-4 h-4"></i>
+        </div>
+        <h3 class="text-base font-bold text-white">PayPal Live Client ID Settings</h3>
       </div>
-      <div class="policy-body" id="policy-body-content">
-        <!-- JS로 현재 선택된 언어(EN 또는 KO)로 동적 렌더링 -->
+      <p class="text-xs text-slate-400 leading-relaxed">
+        Pre-configured with S-Probiz merchant credentials. You can update your Live Client ID anytime without redeploying code.
+      </p>
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-300">PayPal Client ID</label>
+        <input type="text" id="paypalClientIdInput" class="w-full bg-dark-900 border border-white/15 focus:border-sky-400 rounded-xl p-3 text-xs text-white font-mono outline-none">
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary btn-sm" id="ack-refund-btn" data-i18n="btn_close_refund">I Understand
-          (Close)</button>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="savePaypalClientId()" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition">
+          Save Client ID
+        </button>
       </div>
     </div>
   </div>
 
-  <script src="app.js?v=6"></script>
+  <!-- 3. FAL.AI API KEY CONFIG MODAL -->
+  <div id="falKeyModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-4 border border-emerald-500/30 relative shadow-2xl">
+      <button onclick="closeFalKeyModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="flex items-center gap-2.5 text-emerald-400">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+          <i data-lucide="cloud" class="w-4 h-4"></i>
+        </div>
+        <h3 class="text-base font-bold text-white">fal.ai Serverless Cloud Engine</h3>
+      </div>
+      <p class="text-xs text-slate-400 leading-relaxed">
+        Powers 1~3s 8K commercial rendering with Flux.1 Schnell (~$0.003/shot). Your API key is stored safely in your browser localStorage.
+      </p>
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-300 flex justify-between">
+          <span>fal.ai API Key</span>
+          <a href="https://fal.ai/dashboard/keys" target="_blank" class="text-emerald-400 underline text-[11px] font-bold">Get Key (Free $10) &rarr;</a>
+        </label>
+        <input type="password" id="falApiKeyInput" placeholder="falkey_..." class="w-full bg-dark-900 border border-white/15 focus:border-emerald-400 rounded-xl p-3 text-xs text-white font-mono outline-none">
+      </div>
+      <div class="flex items-center justify-between pt-2">
+        <button onclick="clearFalApiKey()" class="text-xs text-slate-400 hover:text-rose-400 font-semibold">Remove Key</button>
+        <button onclick="saveFalApiKey()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition">
+          Save fal.ai Key
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LEGAL MODAL -->
+  <div id="legalModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full rounded-3xl p-6 md:p-8 space-y-4 border border-white/20 relative max-h-[85vh] overflow-y-auto shadow-2xl">
+      <button onclick="closeLegalModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <h3 class="text-lg font-bold text-white" id="legalModalTitle">Terms of Service & Refund Policy</h3>
+      <div class="text-xs text-slate-300 space-y-3 leading-relaxed" id="legalModalBody"></div>
+      <div class="pt-3 text-right">
+        <button onclick="closeLegalModal()" class="px-5 py-2.5 rounded-xl bg-dark-750 hover:bg-dark-700 text-white font-bold text-xs">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CORE JAVASCRIPT ==================== -->
+  <script>
+    const DEFAULT_PAYPAL_ID = "BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik";
+    
+    let currentLang = localStorage.getItem("lumina_lang") || "en";
+    let activePersona = "female_editorial";
+    let activeScene = "luxury_marble";
+    let activeRatio = "square_hd";
+    let currentUploadedFile = null;
+    let currentUploadedDataUrl = null;
+
+    // 100% Gated Subscription State
+    let userSubscription = JSON.parse(localStorage.getItem("lumina_sub")) || {
+      plan: "none",
+      shotsRemaining: 0,
+      totalQuota: 0
+    };
+
+    let selectedPlanForCheckout = null;
+
+    // BILINGUAL DICTIONARY
+    const i18n = {
+      en: {
+        navSubtitle: "High-Converting AI Model Shots for Amazon, Coupang & Shopify",
+        navStudio: "AI Model Studio",
+        navShowcase: "Before & After",
+        navPricing: "Pricing & Margins",
+        btnPaypalKey: "PayPal Key",
+        btnFalKey: "fal.ai Key",
+        heroBadge: "Serverless 24/7 Cloud Architecture • Powered by fal.ai Flux.1",
+        heroTitle: "Turn Flat Product Shots into <span class='gradient-text-indigo'>High-Converting</span> AI Model Photoshoots",
+        heroDesc: "Eliminate $3,000 studio photoshoot fees. Upload a raw product or mannequin photo and generate commercial-grade AI model wearing shots in 3 seconds for Amazon, Coupang, and Shopify.",
+        stat1: "+340% Higher CTR on Ads",
+        stat2: "Zero Downtime Cloud (Laptop Independent)",
+        stat3: "100% Commercial Use & Resell Rights",
+        studioConfigTitle: "Model & Studio Parameters",
+        studioConfigDesc: "Configure the commercial model persona and luxury setting for your product",
+        labelProductImage: "1. Upload Product Photo (Clothing, Bag, Cosmetics, Shoes)",
+        dropzonePrompt: "Drag & drop product photo or click to browse",
+        dropzoneHint: "Supports Ctrl+V paste directly anywhere onto this page",
+        labelPersona: "2. Select AI Model Persona",
+        labelScene: "3. Select Commercial Studio Scene",
+        labelRatio: "4. Commercial Aspect Ratio",
+        labelPrompt: "5. Commercial Prompt & Details",
+        btnGenerateText: "Generate High-Converting AI Model Shot",
+        resultCanvasTitle: "Live Commercial Canvas",
+        emptyStateTitle: "Your Commercial AI Model Shot Will Appear Here",
+        emptyStateDesc: "Upload a product on the left and click Generate to run the serverless AI studio pipeline.",
+        btnDownload: "Download 8K",
+        btnCopyPrompt: "Copy Prompt",
+        showcaseTitle: "Compare the Difference: Raw Product vs AI Model Studio",
+        showcaseDesc: "Slide the bar below to see how ordinary flat lay or mannequin shots are transformed into Vogue-level studio model photography.",
+        pricingTitle: "High-Converting Commercial Plans",
+        pricingDesc: "Pick your monthly quota. Powered by fal.ai serverless GPU infrastructure with verified 85%+ conservative net margin.",
+        sampleProductsLabel: "⚡ Quick Test: 1-Click Product Presets (No file needed)",
+        recentGalleryTitle: "Recent Studio Shots",
+        roiTitle: "Traditional Agency Shoot vs Lumina Commerce AI",
+        roiDesc: "Compare the real cost, time, and flexibility of human studio shoots vs our cloud engine"
+      },
+      ko: {
+        navSubtitle: "아마존·쿠팡 상세페이지를 위한 AI 고전환 모델 컷 & 상업용 스튜디오",
+        navStudio: "AI 모델 스튜디오",
+        navShowcase: "Before & After 비교",
+        navPricing: "요금제 & 마진 구조",
+        btnPaypalKey: "PayPal 키",
+        btnFalKey: "fal.ai 키",
+        heroBadge: "24시간 무중단 서버리스 클라우드 • Flux.1 Schnell (장당 약 4원)",
+        heroTitle: "바닥에 놓인 제품 사진, 5초 만에 아마존·쿠팡 1등 상세페이지 <span class='gradient-text-indigo'>고전환 AI 럭셔리 모델 컷</span>으로 완성",
+        heroDesc: "회당 300~500만 원 드는 스튜디오 촬영비 전면 제로화. 마네킹 또는 바닥에 둔 제품 사진만 올리면 글로벌 톱 모델 착용 컷과 럭셔리 스튜디오 컷이 3초 만에 생성됩니다.",
+        stat1: "상세페이지/광고 클릭률(CTR) +340% 상승",
+        stat2: "노트북 꺼도 24시간 가동되는 클라우드 엔진",
+        stat3: "100% 상업적 이용 및 재판매 권한 포함",
+        studioConfigTitle: "모델 및 스튜디오 촬영 환경 설정",
+        studioConfigDesc: "제품에 어울리는 상업용 AI 모델과 고급 촬영 스튜디오 배경을 선택하세요",
+        labelProductImage: "1. 제품 원본 사진 업로드 (의류, 가방, 뷰티, 신발 등)",
+        dropzonePrompt: "제품 사진을 끌어다 놓거나 클릭하여 선택하세요",
+        dropzoneHint: "웹/화면에서 복사 후 Ctrl+V로 바로 붙여넣기 지원",
+        labelPersona: "2. 피팅 모델 페르소나 선택",
+        labelScene: "3. 커머셜 스튜디오 배경 선택",
+        labelRatio: "4. 상업용 규격 비율 선택",
+        labelPrompt: "5. 제품 디테일 설명 & 스타일링 프롬프트",
+        btnGenerateText: "고전환 AI 모델 컷 생성하기",
+        resultCanvasTitle: "실시간 커머셜 캔버스",
+        emptyStateTitle: "생성된 AI 모델 착용 컷이 여기에 표시됩니다",
+        emptyStateDesc: "좌측에서 제품 사진을 올리고 생성 버튼을 누르면 서버리스 AI 파이프라인이 즉시 렌더링합니다.",
+        btnDownload: "8K 원본 다운로드",
+        btnCopyPrompt: "프롬프트 복사",
+        showcaseTitle: "일반 바닥 사진 vs AI 모델 스튜디오 컷 극적인 전환율 비교",
+        showcaseDesc: "가운데 슬라이더를 좌우로 밀어서 밋밋한 제품 사진이 보그(Vogue)급 모델 컷으로 변하는 차이를 직접 확인하세요.",
+        pricingTitle: "압도적 마진의 커머스 전용 요금제",
+        pricingDesc: "월간 생성 쿼터를 선택하세요. fal.ai 서버리스 GPU 인프라 기반으로 보수적 85%+ 순수익 마진이 검증되었습니다.",
+        sampleProductsLabel: "⚡ 퀵 테스트: 원클릭 샘플 제품 (사진 파일 없이 즉시 체험)",
+        recentGalleryTitle: "최근 생성된 스튜디오 컷",
+        roiTitle: "기존 오프라인 스튜디오 촬영 vs Lumina Commerce AI 비교",
+        roiDesc: "수백만 원대 모델 촬영 비용과 2주 대기 시간을 3초와 월 $19대로 단번에 혁신합니다"
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      applyLanguage(currentLang);
+      updatePlanBadgeDisplay();
+      setupPasteListener();
+
+      const savedPaypal = localStorage.getItem("lumina_paypal_client_id") || DEFAULT_PAYPAL_ID;
+      document.getElementById("paypalClientIdInput").value = savedPaypal;
+
+      const savedFal = localStorage.getItem("lumina_fal_key") || "";
+      document.getElementById("falApiKeyInput").value = savedFal;
+
+      enhancePrompt();
+      renderRecentGallery();
+      updateOwnerToggleUI();
+    });
+
+    function switchNav(tab) {
+      document.getElementById("viewStudio").classList.toggle("hidden", tab !== 'studio');
+      document.getElementById("viewShowcase").classList.toggle("hidden", tab !== 'showcase');
+      document.getElementById("viewPricing").classList.toggle("hidden", tab !== 'pricing');
+
+      const tabs = {
+        studio: document.getElementById("navStudio"),
+        showcase: document.getElementById("navShowcase"),
+        pricing: document.getElementById("navPricing")
+      };
+
+      Object.keys(tabs).forEach(k => {
+        if (k === tab) {
+          tabs[k].className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-white bg-brand-accent shadow-md shadow-brand-accent/25 transition";
+        } else {
+          tabs[k].className = "px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition";
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === 'en' ? 'ko' : 'en';
+      localStorage.setItem("lumina_lang", currentLang);
+      applyLanguage(currentLang);
+    }
+
+    function applyLanguage(lang) {
+      document.getElementById("langDisplay").textContent = lang.toUpperCase();
+      const dict = i18n[lang] || i18n.en;
+      
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.innerHTML = dict[key];
+      });
+
+      updatePlanBadgeDisplay();
+    }
+
+    function updatePlanBadgeDisplay() {
+      const badge = document.getElementById("planBadgeText");
+      if (userSubscription.plan === 'none') {
+        badge.textContent = currentLang === 'ko' ? "플랜 업그레이드" : "Upgrade Plan";
+      } else if (userSubscription.plan === 'owner') {
+        badge.textContent = `👑 OWNER (∞)`;
+      } else {
+        const planName = userSubscription.plan.toUpperCase();
+        badge.textContent = `${planName} (${userSubscription.shotsRemaining} left)`;
+      }
+    }
+
+    function selectPersona(persona) {
+      activePersona = persona;
+      document.querySelectorAll(".persona-btn").forEach(btn => {
+        btn.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
+        btn.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
+      });
+      event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
+      event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
+      enhancePrompt();
+    }
+
+    function selectScene(scene) {
+      activeScene = scene;
+      document.querySelectorAll(".scene-btn").forEach(btn => {
+        btn.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
+        btn.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
+      });
+      event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
+      event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
+      enhancePrompt();
+    }
+
+    function updateRatio(input) {
+      activeRatio = input.value;
+      document.querySelectorAll(".ratio-label").forEach(l => {
+        l.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
+        l.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
+      });
+      input.closest(".ratio-label").classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
+      input.closest(".ratio-label").classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
+    }
+
+    function enhancePrompt() {
+      const personaDescriptions = {
+        female_editorial: "high fashion European female runway model, confident elegant gaze, flawless natural skin texture",
+        male_casual: "charismatic handsome male model in his late 20s, athletic clean posture, friendly smile",
+        beauty_hands: "flawless manicured hands gently holding and presenting the product, macro beauty photography",
+        ghost_mannequin: "invisible 3D hollow mannequin aesthetic, floating commercial presentation with depth"
+      };
+
+      const sceneDescriptions = {
+        luxury_marble: "placed on a sleek polished white marble podium, soft golden hour sunlight with organic window shadows",
+        sunlit_loft: "minimalist luxury sun-drenched loft apartment, Scandinavian interior, warm wooden textures",
+        parisian_street: "chic outdoor cafe terrace in Paris, soft bokeh blurred urban street in background",
+        amazon_white: "commercial Amazon 100% pure white studio background, crisp soft contact reflection below product",
+        nature_garden: "surrounded by fresh lush botanical leaves, subtle morning dew, natural sunlight beams",
+        cyber_vogue: "futuristic Vogue studio, high-contrast neon cyan and magenta rim lighting, cinematic shadows"
+      };
+
+      const pDesc = personaDescriptions[activePersona] || personaDescriptions.female_editorial;
+      const sDesc = sceneDescriptions[activeScene] || sceneDescriptions.luxury_marble;
+
+      const baseText = `award-winning commercial product photoshoot. Wearing and showcasing the luxury product. Featuring ${pDesc}. Set in a ${sDesc}. Shot on Hasselblad H6D-100c with 85mm f/1.4 lens, 8k resolution, photorealistic fabric textures, pristine studio depth of field.`;
+
+      document.getElementById("promptInput").value = baseText;
+    }
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files[0]) {
+        processUploadedFile(e.target.files[0]);
+      }
+    }
+
+    function setupPasteListener() {
+      window.addEventListener("paste", (e) => {
+        const items = (e.clipboardData || window.clipboardData).items;
+        if (items) {
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+              const file = items[i].getAsFile();
+              processUploadedFile(file);
+              break;
+            }
+          }
+        }
+      });
+    }
+
+    function processUploadedFile(file) {
+      if (!file || !file.type.startsWith("image/")) return;
+      currentUploadedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        currentUploadedDataUrl = event.target.result;
+        document.getElementById("uploadPreviewImg").src = currentUploadedDataUrl;
+        document.getElementById("uploadPreviewName").textContent = file.name || "product_image.png";
+        document.getElementById("uploadPreviewBar").classList.remove("hidden");
+        document.getElementById("dropzone").classList.add("hidden");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearUpload() {
+      currentUploadedFile = null;
+      currentUploadedDataUrl = null;
+      document.getElementById("productFileInput").value = "";
+      document.getElementById("uploadPreviewBar").classList.add("hidden");
+      document.getElementById("dropzone").classList.remove("hidden");
+    }
+
+    async function handleGenerateClick() {
+      if (userSubscription.plan === 'none' || userSubscription.shotsRemaining <= 0) {
+        if (userSubscription.plan !== 'owner') {
+          switchNav('pricing');
+          alert(currentLang === 'ko' 
+            ? "⚠️ Lumina Commerce AI는 고화질 GPU 연산 원가 보호를 위해 100% 유료 구독제로 운영됩니다. 아래에서 플랜을 선택해주세요!" 
+            : "⚠️ Lumina Commerce AI operates on a 100% gated paid subscription. Please choose a plan below to generate commercial AI model shots!");
+          return;
+        }
+      }
+
+      const prompt = document.getElementById("promptInput").value.trim();
+      if (!prompt) {
+        alert(currentLang === 'ko' ? "프롬프트를 입력해주세요." : "Please enter a product description or prompt.");
+        return;
+      }
+
+      const btn = document.getElementById("btnGenerate");
+      const btnText = document.getElementById("btnGenerateText");
+      const statusBox = document.getElementById("genStatusContainer");
+      const progressBar = document.getElementById("genProgressBar");
+      const progressPercent = document.getElementById("genProgressPercent");
+      const statusText = document.getElementById("genStatusText");
+
+      btn.disabled = true;
+      statusBox.classList.remove("hidden");
+      btnText.textContent = currentLang === 'ko' ? "AI 모델 컷 렌더링 중..." : "Rendering AI Model Shot...";
+
+      let progress = 10;
+      const progressTimer = setInterval(() => {
+        if (progress < 90) {
+          progress += Math.floor(Math.random() * 12) + 5;
+          if (progress > 90) progress = 90;
+          progressBar.style.width = `${progress}%`;
+          progressPercent.textContent = `${progress}%`;
+        }
+      }, 250);
+
+      const falKey = localStorage.getItem("lumina_fal_key") || "";
+
+      try {
+        let finalImageUrl = "";
+
+        if (falKey) {
+          statusText.textContent = "Connecting to fal.ai Flux.1 Schnell Cloud Engine...";
+          
+          let falSize = "square_hd";
+          if (activeRatio === 'portrait_16_9') falSize = "portrait_16_9";
+          else if (activeRatio === 'portrait_4_3') falSize = "portrait_4_3";
+
+          const response = await fetch("https://fal.run/fal-ai/flux/schnell", {
+            method: "POST",
+            headers: {
+              "Authorization": `Key ${falKey}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              prompt: prompt,
+              image_size: falSize,
+              num_inference_steps: 4,
+              enable_safety_checker: true
+            })
+          });
+
+          if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.detail || "fal.ai API Error");
+          }
+
+          const data = await response.json();
+          if (data.images && data.images.length > 0) {
+            finalImageUrl = data.images[0].url;
+          } else {
+            throw new Error("No image returned from fal.ai");
+          }
+
+        } else {
+          statusText.textContent = currentLang === 'ko' ? "fal.ai 연동 시뮬레이션 렌더링 중..." : "Simulating fal.ai Cloud Pipeline (Sample)...";
+          await new Promise(r => setTimeout(r, 2200));
+
+          const samplePool = [
+            "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80"
+          ];
+          finalImageUrl = samplePool[Math.floor(Math.random() * samplePool.length)];
+        }
+
+        clearInterval(progressTimer);
+        progressBar.style.width = "100%";
+        progressPercent.textContent = "100%";
+
+        renderResult(finalImageUrl);
+
+        if (userSubscription.plan !== 'owner') {
+          userSubscription.shotsRemaining = Math.max(0, userSubscription.shotsRemaining - 1);
+          localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
+          updatePlanBadgeDisplay();
+        }
+
+      } catch (err) {
+        clearInterval(progressTimer);
+        console.error("Generation failed:", err);
+        alert((currentLang === 'ko' ? "생성 실패: " : "Generation failed: ") + err.message + "\n\n(Tip: 우측 상단 [fal.ai Key] 모달에 유효한 API Key를 등록하시면 실시간 클라우드 렌더링이 작동합니다.)");
+      } finally {
+        btn.disabled = false;
+        const dict = i18n[currentLang] || i18n.en;
+        btnText.textContent = dict.btnGenerateText || "Generate High-Converting AI Model Shot";
+        setTimeout(() => statusBox.classList.add("hidden"), 1000);
+      }
+    }
+
+    function renderResult(url) {
+      document.getElementById("canvasEmptyState").classList.add("hidden");
+      const img = document.getElementById("resultImage");
+      img.src = url;
+      img.classList.remove("hidden");
+      document.getElementById("canvasBadge").classList.remove("hidden");
+
+      const btnDownload = document.getElementById("btnDownload");
+      btnDownload.href = url;
+      document.getElementById("resultActions").classList.remove("hidden");
+      addToRecentGallery(url);
+    }
+
+    function copyPromptToClipboard() {
+      const p = document.getElementById("promptInput").value;
+      navigator.clipboard.writeText(p);
+      alert(currentLang === 'ko' ? "프롬프트가 클립보드에 복사되었습니다!" : "Prompt copied to clipboard!");
+    }
+
+    function updateComparisonSlider(val) {
+      document.getElementById("sliderBeforeClip").style.width = `${val}%`;
+      document.getElementById("sliderDividerLine").style.left = `${val}%`;
+    }
+
+    function loadComparisonSample(category) {
+      const samples = {
+        apparel: {
+          before: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80",
+          after: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80"
+        },
+        cosmetics: {
+          before: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1400&q=80",
+          after: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=1400&q=80"
+        },
+        watch: {
+          before: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1400&q=80",
+          after: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1400&q=80"
+        },
+        shoes: {
+          before: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1400&q=80",
+          after: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1400&q=80"
+        }
+      };
+
+      const s = samples[category] || samples.apparel;
+      document.getElementById("sliderBeforeImg").src = s.before;
+      document.getElementById("sliderAfterImg").src = s.after;
+
+      document.querySelectorAll(".comp-btn").forEach(b => {
+        b.classList.remove("border-brand-accent", "bg-brand-accent/20", "text-white");
+        b.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
+      });
+      event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
+      event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/20", "text-white");
+    }
+
+    function startCheckout(planId, price, title, quota) {
+      selectedPlanForCheckout = { planId, price, title, quota };
+      
+      document.getElementById("checkoutPlanTitle").textContent = `${title} ($${price}/mo)`;
+      document.getElementById("checkoutPlanDesc").textContent = `$${price}/month • ${quota} Commercial AI Model Shots`;
+      document.getElementById("legalConsentCheckbox").checked = false;
+      document.getElementById("consentError").classList.add("hidden");
+
+      renderPayPalSmartButtons(planId, price, title, quota);
+      document.getElementById("checkoutModal").classList.remove("hidden");
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById("checkoutModal").classList.add("hidden");
+    }
+
+    function renderPayPalSmartButtons(planId, price, title, quota) {
+      const area = document.getElementById("paypal-smart-button-area");
+      area.innerHTML = "";
+
+      if (window.paypal && paypal.Buttons) {
+        paypal.Buttons({
+          style: {
+            layout: 'vertical',
+            color: 'gold',
+            shape: 'rect',
+            label: 'pay'
+          },
+          onClick: (data, actions) => {
+            const consent = document.getElementById("legalConsentCheckbox").checked;
+            if (!consent) {
+              document.getElementById("consentError").classList.remove("hidden");
+              return actions.reject();
+            }
+            document.getElementById("consentError").classList.add("hidden");
+            return actions.resolve();
+          },
+          createOrder: (data, actions) => {
+            return actions.order.create({
+              purchase_units: [{
+                description: `Lumina Commerce AI - ${title}`,
+                amount: {
+                  currency_code: 'USD',
+                  value: price.toString()
+                }
+              }]
+            });
+          },
+          onApprove: (data, actions) => {
+            return actions.order.capture().then((details) => {
+              activateSubscription(planId, quota);
+              closeCheckoutModal();
+              alert(`🎉 Payment completed! Welcome to ${title}. ${quota} commercial shots have been credited to your account.`);
+            });
+          },
+          onError: (err) => {
+            console.error("PayPal Error:", err);
+            alert("PayPal checkout error. Please try again or use the test mode button below.");
+          }
+        }).render("#paypal-smart-button-area");
+      }
+    }
+
+    function simulateSuccessfulPayment() {
+      const consent = document.getElementById("legalConsentCheckbox").checked;
+      if (!consent) {
+        document.getElementById("consentError").classList.remove("hidden");
+        return;
+      }
+      if (!selectedPlanForCheckout) return;
+
+      activateSubscription(selectedPlanForCheckout.planId, selectedPlanForCheckout.quota);
+      closeCheckoutModal();
+      alert(`🎉 [Staging Simulation] Successfully activated ${selectedPlanForCheckout.title}! ${selectedPlanForCheckout.quota} shots credited.`);
+    }
+
+    function activateSubscription(planId, quota) {
+      userSubscription = {
+        plan: planId,
+        shotsRemaining: quota,
+        totalQuota: quota
+      };
+      localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
+      updatePlanBadgeDisplay();
+      switchNav('studio');
+    }
+
+    function openPaypalModal() {
+      document.getElementById("paypalConfigModal").classList.remove("hidden");
+    }
+    function closePaypalModal() {
+      document.getElementById("paypalConfigModal").classList.add("hidden");
+    }
+    function savePaypalClientId() {
+      const val = document.getElementById("paypalClientIdInput").value.trim();
+      if (!val) return;
+      localStorage.setItem("lumina_paypal_client_id", val);
+      closePaypalModal();
+      alert("PayPal Client ID saved. Refreshing page to reload PayPal SDK...");
+      location.reload();
+    }
+
+    function openFalKeyModal() {
+      document.getElementById("falKeyModal").classList.remove("hidden");
+    }
+    function closeFalKeyModal() {
+      document.getElementById("falKeyModal").classList.add("hidden");
+    }
+    function saveFalApiKey() {
+      const key = document.getElementById("falApiKeyInput").value.trim();
+      localStorage.setItem("lumina_fal_key", key);
+      closeFalKeyModal();
+      alert(currentLang === 'ko' ? "fal.ai API Key가 로컬에 안전하게 저장되었습니다!" : "fal.ai API Key securely saved locally!");
+    }
+    function clearFalApiKey() {
+      localStorage.removeItem("lumina_fal_key");
+      document.getElementById("falApiKeyInput").value = "";
+      closeFalKeyModal();
+      alert(currentLang === 'ko' ? "fal.ai Key가 제거되었습니다 (데모 시뮬레이션 모드로 전환)." : "fal.ai Key removed (Switched to demo preview mode).");
+    }
+
+    function openLegalModal(type) {
+      const title = document.getElementById("legalModalTitle");
+      const body = document.getElementById("legalModalBody");
+      
+      if (type === 'refund') {
+        title.textContent = "Refund & Cancellation Policy (Strict 5-Shot Limit)";
+        body.innerHTML = `
+          <p><strong>1. Digital Goods & Compute Consumption</strong><br>
+          Lumina Commerce AI provisions real-time cloud GPU resources immediately upon generation. Hardware and API compute costs are strictly incurred per image rendered.</p>
+          <p><strong>2. Refund Eligibility</strong><br>
+          Full refund is eligible within 7 days of purchase <em>ONLY IF fewer than 5 images have been generated</em>. Once more than 5 images are rendered, the plan is strictly NON-REFUNDABLE under international digital goods merchant terms.</p>
+          <p><strong>3. Cancellation</strong><br>
+          Subscriptions can be canceled at any time from your PayPal account settings, stopping recurring charges at the end of the billing cycle.</p>
+        `;
+      } else {
+        title.textContent = "Terms of Service";
+        body.innerHTML = `
+          <p><strong>1. Commercial License</strong><br>
+          All generated AI model shots are 100% royalty-free for commercial use across Amazon, Coupang, Shopify, social ads, and marketing materials.</p>
+          <p><strong>2. Content Guidelines</strong><br>
+          Users may not upload unlawful, offensive, or infringing material. The service employs automated safety filters.</p>
+          <p><strong>3. Service Availability</strong><br>
+          Operated via serverless cloud architecture with 99.9% uptime SLA, independent of local host machines.</p>
+        `;
+      }
+      document.getElementById("legalModal").classList.remove("hidden");
+    }
+    function closeLegalModal() {
+      document.getElementById("legalModal").classList.add("hidden");
+    }
+
+    // RECENT GALLERY HISTORY
+    let recentGallery = JSON.parse(localStorage.getItem("lumina_recent_gallery") || "[]");
+
+    function renderRecentGallery() {
+      const container = document.getElementById("recentGalleryContainer");
+      const thumbnails = document.getElementById("recentGalleryThumbnails");
+      const count = document.getElementById("galleryCount");
+      if (!thumbnails || !container) return;
+      if (!recentGallery.length) {
+        container.classList.add("hidden");
+        return;
+      }
+      container.classList.remove("hidden");
+      count.textContent = `${recentGallery.length} saved`;
+      thumbnails.innerHTML = "";
+      recentGallery.forEach((item, idx) => {
+        const thumb = document.createElement("div");
+        thumb.className = "shrink-0 w-16 h-16 rounded-xl overflow-hidden border border-white/15 cursor-pointer hover:border-brand-accent transition group relative";
+        thumb.innerHTML = `
+          <img src="${item.url}" alt="Shot ${idx + 1}" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+            <i data-lucide="zoom-in" class="w-4 h-4 text-white"></i>
+          </div>
+        `;
+        thumb.onclick = () => renderResult(item.url);
+        thumbnails.appendChild(thumb);
+      });
+      lucide.createIcons();
+    }
+
+    function addToRecentGallery(url) {
+      recentGallery.unshift({ url, timestamp: Date.now() });
+      if (recentGallery.length > 6) recentGallery.pop();
+      localStorage.setItem("lumina_recent_gallery", JSON.stringify(recentGallery));
+      renderRecentGallery();
+    }
+
+    // 1-CLICK SAMPLE PRODUCTS
+    const sampleProducts = {
+      dress: {
+        name: "Emerald Silk Slip Dress",
+        persona: "female_editorial",
+        scene: "luxury_marble",
+        img: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80",
+        prompt: "award-winning commercial product photoshoot. Elegant European female runway model wearing a tailored emerald green silk slip dress, confident gentle expression. Placed in a luxury white marble studio with soft warm sunbeams casting soft organic shadows. Shot on Hasselblad H6D-100c, 8k resolution, photorealistic silk fabric texture, ultra sharp focus."
+      },
+      bag: {
+        name: "Italian Leather Tote Bag",
+        persona: "female_editorial",
+        scene: "parisian_street",
+        img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80",
+        prompt: "award-winning commercial product photoshoot. Chic female fashion model casually holding a handcrafted cognac brown Italian leather tote bag. Set on an outdoor Parisian cafe terrace with blurred cobblestone street in background. Hasselblad H6D-100c, rich grain leather texture, golden hour bokeh lighting, 8k resolution."
+      },
+      watch: {
+        name: "Luxury Chronograph Gold Watch",
+        persona: "male_casual",
+        scene: "sunlit_loft",
+        img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
+        prompt: "award-winning commercial product photoshoot. Charismatic handsome male model wearing a luxury gold chronograph wristwatch on wrist, fitted dark navy blazer cuff. Set in a minimalist Scandinavian penthouse loft with natural window lighting. Hasselblad H6D-100c, sapphire glass reflection, crisp metallic details, 8k resolution."
+      },
+      serum: {
+        name: "Radiance Vitamin C Serum",
+        persona: "beauty_hands",
+        scene: "nature_garden",
+        img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
+        prompt: "award-winning commercial product photoshoot. Flawless manicured female hands gently presenting an amber glass vitamin C serum bottle with dropper. Surrounded by dewy green botanical leaves and morning sunlight refraction. Macro beauty photography, pristine glass refraction, 8k resolution, clean commercial aesthetic."
+      }
+    };
+
+    function loadSampleProduct(type) {
+      const sample = sampleProducts[type];
+      if (!sample) return;
+
+      currentUploadedDataUrl = sample.img;
+      document.getElementById("uploadPreviewImg").src = sample.img;
+      document.getElementById("uploadPreviewName").textContent = sample.name;
+      document.getElementById("uploadPreviewBar").classList.remove("hidden");
+      document.getElementById("dropzone").classList.add("hidden");
+
+      // Auto select persona & scene
+      selectPersona(sample.persona);
+      selectScene(sample.scene);
+      document.getElementById("promptInput").value = sample.prompt;
+
+      // Highlight active sample button
+      document.querySelectorAll(".sample-btn").forEach(btn => {
+        btn.classList.remove("border-brand-accent", "bg-brand-accent/20", "text-white");
+        btn.classList.add("border-white/10", "bg-dark-900", "text-slate-300");
+      });
+      if (window.event && window.event.currentTarget) {
+        window.event.currentTarget.classList.remove("border-white/10", "bg-dark-900", "text-slate-300");
+        window.event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/20", "text-white");
+      }
+    }
+
+    // DIRECTOR SEYUN OWNER PASS TOGGLE
+    function toggleOwnerPass() {
+      if (userSubscription.plan === 'owner') {
+        userSubscription = { plan: 'none', shotsRemaining: 0, totalQuota: 0 };
+        localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
+        updatePlanBadgeDisplay();
+        alert(currentLang === 'ko' ? "일반 구독자 모드로 전환되었습니다." : "Switched to standard user mode.");
+      } else {
+        userSubscription = { plan: 'owner', shotsRemaining: 999999, totalQuota: 999999 };
+        localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
+        updatePlanBadgeDisplay();
+        alert(currentLang === 'ko' 
+          ? "👑 [S-Probiz 대표 Seyun] 오너 무제한 모드가 활성화되었습니다!\n과금/차감 없이 무제한으로 AI 모델 컷 생성이 가능합니다." 
+          : "👑 [S-Probiz Director Seyun] Owner Unlimited Pass Activated!\nGenerate unlimited AI model shots without credit deduction.");
+      }
+      updateOwnerToggleUI();
+    }
+
+    function updateOwnerToggleUI() {
+      const btn = document.getElementById("ownerToggleText");
+      if (btn) {
+        btn.textContent = userSubscription.plan === 'owner' ? "Owner (Active ∞)" : "Owner Pass (Seyun)";
+      }
+    }
+
+  </script>
 </body>
-
 </html>

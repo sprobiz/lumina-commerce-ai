@@ -1,19 +1,21 @@
 {
-  "name": "lumina-ai-saas",
-  "version": "1.0.0",
-  "description": "Lumina AI - ComfyUI 기반 고화질 AI 이미지 생성 및 PayPal 결제 구독 SaaS",
-  "main": "server.py",
+  "name": "lumina-commerce-ai",
+  "version": "2.0.0",
+  "description": "Lumina Commerce AI - High-Converting eCommerce AI Model Shot & Commercial Studio SaaS",
+  "main": "index.html",
   "scripts": {
-    "start": "python server.py"
+    "start": "python -m http.server 8000"
   },
   "keywords": [
-    "ai",
-    "comfyui",
-    "image-generation",
-    "saas",
+    "ecommerce",
+    "ai-model-shot",
+    "amazon-seller",
+    "coupang",
+    "flux-schnell",
+    "fal-ai",
     "paypal",
-    "stable-diffusion"
+    "saas"
   ],
-  "author": "Lumina AI Team",
+  "author": "Seyun (S-Probiz, Connect AI Lab)",
   "license": "MIT"
 }
