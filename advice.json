@@ -1,0 +1,35 @@
+{
+  "project_name": "Lumina AI",
+  "analyzed_at": "2026-11-17",
+  "status": "Ready for fal.ai migration",
+  "architecture_summary": {
+    "frontend": "Vanilla JS (app.js), Tailwind CSS, Responsive Modals",
+    "backend": "Python FastAPI/HTTP Server (server.py)",
+    "database": "SQLite (database.py, service.db)",
+    "payment": "PayPal Subscriptions & One-time Pass (paypal_service.py)",
+    "current_generation_engine": "Local ComfyUI (comfy_service.py) -> Deprecate",
+    "target_generation_engine": "fal.ai Serverless API (Flux Schnell / Qwen Image)"
+  },
+  "action_items": [
+    {
+      "step": 1,
+      "task": "Migrate comfy_service.py to fal_service.py",
+      "purpose": "Eliminate 24h local PC running dependency, achieve 24/7 uptime on Vercel"
+    },
+    {
+      "step": 2,
+      "task": "Configure Zero-Cost Serverless Setup",
+      "details": "Frontend/Backend on Vercel, pay-as-you-go GPU on fal.ai (~$0.002 per image, 95% margin)"
+    },
+    {
+      "step": 3,
+      "task": "Niche Rebranding",
+      "candidates": [
+        "Consistent Character/Thumbnail Generator for YouTubers",
+        "E-commerce Fitting Model Generator",
+        "App Icon & Vector Logo Generator"
+      ]
+    }
+  ],
+  "kickoff_prompt_for_new_agent": "ADVICE.md 문서를 읽고, 로컬 ComfyUI 파이프라인을 fal.ai 서버리스 API로 전환하여 24시간 무중단 Vercel 배포 준비를 완료해 줘."
+}
