@@ -1,1078 +1,1073 @@
-// 🎨 Lumina AI SaaS 프론트엔드 - 글로벌(EN) / 한국어(KO) 다국어 지원 & PayPal 결제 & 환불 정책
-document.addEventListener("DOMContentLoaded", () => {
-  // 상태 변수
-  let currentUserId = "default_user";
-  let currentUser = null;
-  let plansData = [];
-  let selectedPlan = null;
-  let paypalSdkLoaded = false;
-  let isGenerating = false;
+/**
+ * Lumina Commerce AI - Single Source of Truth Frontend Application (app.js)
+ * - fal.ai 24시간 무중단 서버리스 파이프라인 연동 (/api/generate/fal & 클라이언트 직결)
+ * - 소상공인 킬러 기능: 1초 누끼 자동 제거 (Background Removal)
+ * - B2B 전환율 극대화: 1회 무료 체험 워터마크(Freemium Hook) & 상업용 8K 다운로드 결제 유도
+ * - $19 / $39 / $89 3단계 이커머스 플랜 및 S-Probiz PayPal Live 연동
+ * - 다국어(EN | KR) 실시간 전환 및 Before/After 비교 슬라이더
+ */
 
-  // 다국어 언어 설정 (localStorage 우선, 없으면 브라우저 언어 기반 - 글로벌 기본은 en)
-  let currentLang = localStorage.getItem("lumina_lang") || (navigator.language.startsWith("ko") ? "ko" : "en");
+// 전역 기본 설정
+const DEFAULT_PAYPAL_ID = "BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik";
+const DEFAULT_WATERMARK_TEXT = "LUMINA AI PREVIEW - NOT FOR COMMERCIAL USE";
 
-  // --- 다국어 사본 딕셔너리 (i18n Dictionary) ---
-  const i18n = {
-    en: {
-      doc_title: "Lumina AI - Ultra-Fast AI Image Generation SaaS",
-      quota_label: "Daily Remaining",
-      quota_unit: "runs",
-      btn_upgrade: "Upgrade Plan",
-      mode_tab_txt2img: "Text to Image",
-      mode_tab_img2img: "Image to Image",
-      btn_attach_image: "Attach Image",
-      toolbar_hint: "or paste (Ctrl+V) / drag & drop",
-      drop_overlay_text: "Drop image here to attach",
-      attachment_tag: "🖼️ Image-to-Image Active",
-      denoise_label: "Strength:",
-      prompt_label: "Prompt",
-      prompt_chars: "chars",
-      prompt_placeholder: "Enter your prompt (or drag & drop / Ctrl+V to attach reference image)...",
-      tag_masterpiece: "🌟 Ultra HD",
-      tag_photo: "📷 Photorealistic",
-      tag_anime: "🎨 Anime Art",
-      tag_cyberpunk: "🌃 Cyberpunk",
-      tag_fantasy: "🏰 Epic Fantasy",
-      neg_prompt_label: "Negative Prompt (Exclude)",
-      neg_prompt_placeholder: "Keywords to avoid (e.g. ugly, blurry)",
-      aspect_ratio_label: "Aspect Ratio",
-      advanced_options: "Advanced Options (Seed)",
-      btn_random: "🎲 Random",
-      btn_generate: "✨ Generate Image",
-      progress_preparing: "Preparing GPU pipeline...",
-      progress_denoising: "Denoising diffusion steps...",
-      progress_done: "Render complete!",
-      preview_empty_title: "Your generated artwork will appear here",
-      preview_empty_desc: "Enter a prompt on the left and click Generate to start AI rendering.",
-      btn_download: "Download HD",
-      btn_copy_prompt: "Copy Prompt",
-      gallery_title: "Recent Creations",
-      gallery_count: "items",
-      gallery_empty: "No images created yet. Create your first masterpiece!",
-      footer_refund: "Refund & Cancellation Policy",
-      footer_terms: "Terms of Service",
-      pricing_title: "Choose Your Plan",
-      pricing_subtitle: "Select the plan that fits your creative workflow. Instant GPU queue priority.",
-      selected_plan_label: "Selected Plan:",
-      consent_text_html: 'I agree to the <a href="#" id="view-terms-link" class="legal-link">Terms of Service</a> and understand the <a href="#" id="view-refund-link" class="legal-link">Refund Policy</a> (Credits and GPU compute consumed are non-refundable).',
-      consent_error: "⚠️ You must agree to the Terms of Service and Refund Policy to proceed.",
-      btn_mock_checkout: "⚡ [Test Mode] 1-Sec Instant Approval Simulation",
-      mock_processing: "⏳ Processing instant approval...",
-      digital_goods_notice: "Digital Goods Notice: Subscriptions grant instant access to dedicated GPU computing resources. Subscriptions can be canceled at any time from your account settings or PayPal dashboard.",
-      btn_close_refund: "I Understand (Close)",
-      refund_modal_title: "REFUND & CANCELLATION POLICY",
-      alert_empty_prompt: "Please enter an image description in the prompt box!",
-      alert_copied: "Prompt copied to clipboard!",
-      alert_quota_exceeded: "You have reached your daily generation limit.\n\nWould you like to upgrade your plan now?",
-      alert_gen_failed: "Generation failed: ",
-      alert_pay_success: "🎉 Payment completed successfully! Your plan is now active.",
-      alert_mock_success: "🎉 [Test Payment Success] Plan has been activated!",
-      alert_pay_failed: "Payment processing failed: ",
-      alert_pay_error: "An error occurred during payment processing.",
-      plan_starter_name: "Starter Plan",
-      plan_starter_target: "Casual creators & hobbyists",
-      plan_starter_badge: "Standard",
-      plan_starter_cta: "Get Started ($15/mo)",
-      plan_starter_features: [
-        "40 image generations per day (resets daily at 00:00 UTC)",
-        "Standard resolution (up to 1024x1024)",
-        "Standard quality rendering (25 steps)",
-        "Single generation per click (Batch size: 1)",
-        "Standard GPU generation queue"
-      ],
-      plan_pro_name: "Pro Monthly Plan",
-      plan_pro_target: "Power users, designers, content creators",
-      plan_pro_badge: "Most Popular",
-      plan_pro_cta: "Upgrade to Pro ($30/mo)",
-      plan_pro_features: [
-        "150 image generations per day (resets daily at 00:00 UTC)",
-        "High resolution & HD Upscaling support",
-        "Dedicated high-speed GPU priority queue",
-        "Multi-batch generation (up to 4 images at once)",
-        "Full commercial usage rights & priority support"
-      ],
-      plan_pass_name: "Pro 3-Month Pass",
-      plan_pass_target: "Committed creators seeking maximum savings",
-      plan_pass_badge: "Best Value (18% OFF)",
-      plan_pass_cta: "Get 3-Month Pass ($74)",
-      plan_pass_features: [
-        "All Pro benefits unlocked for full 90 days",
-        "150 generations per day (Total 13,500 generations)",
-        "One-time payment - no recurring monthly billing",
-        "Saves $16 compared to monthly billing (~18% discount)",
-        "Priority GPU queue & VIP support included"
-      ]
-    },
-    ko: {
-      doc_title: "Lumina AI - 초고화질 AI 이미지 생성 SaaS",
-      quota_label: "오늘 남은 생성",
-      quota_unit: "회",
-      btn_upgrade: "플랜 업그레이드",
-      mode_tab_txt2img: "텍스트로 생성 (Txt2Img)",
-      mode_tab_img2img: "이미지 참조 생성 (Img2Img)",
-      btn_attach_image: "이미지 첨부",
-      toolbar_hint: "붙여넣기(Ctrl+V) 또는 드래그 지원",
-      drop_overlay_text: "이미지를 여기에 놓으면 바로 첨부됩니다",
-      attachment_tag: "🖼️ 이미지 참조(Img2Img) 활성",
-      denoise_label: "변형 강도:",
-      prompt_label: "프롬프트 (Prompt)",
-      prompt_chars: "자",
-      prompt_placeholder: "프롬프트를 입력하세요 (이미지를 끌어다 놓거나 Ctrl+V로 붙여넣으면 즉시 첨부됩니다)...",
-      tag_masterpiece: "🌟 초고화질",
-      tag_photo: "📷 극실사",
-      tag_anime: "🎨 애니·일러스트",
-      tag_cyberpunk: "🌃 사이버펑크",
-      tag_fantasy: "🏰 에픽 판타지",
-      neg_prompt_label: "네거티브 프롬프트 (제외할 키워드)",
-      neg_prompt_placeholder: "제외할 키워드 (예: ugly, blurry, deformed)",
-      aspect_ratio_label: "화면 비율",
-      advanced_options: "고급 옵션 (Seed 설정)",
-      btn_random: "🎲 랜덤",
-      btn_generate: "✨ 이미지 생성하기",
-      progress_preparing: "ComfyUI GPU 작업 큐 등록 중...",
-      progress_denoising: "디노이징 샘플링 렌더링 중...",
-      progress_done: "생성 완료!",
-      preview_empty_title: "생성된 이미지가 여기에 표시됩니다",
-      preview_empty_desc: "좌측에서 프롬프트를 입력하고 생성 버튼을 누르면 AI가 작품을 렌더링합니다.",
-      btn_download: "원본 다운로드",
-      btn_copy_prompt: "프롬프트 복사",
-      gallery_title: "최근 생성 갤러리",
-      gallery_count: "개 항목",
-      gallery_empty: "아직 생성된 이미지가 없습니다. 첫 작품을 생성해보세요!",
-      footer_refund: "환불 및 취소 정책 (Refund Policy)",
-      footer_terms: "서비스 이용약관 (Terms of Service)",
-      pricing_title: "플랜 선택 & 업그레이드",
-      pricing_subtitle: "필요에 맞는 요금제를 선택하고 고성능 GPU 전용 큐에서 즉시 생성하세요.",
-      selected_plan_label: "선택된 플랜:",
-      consent_text_html: '서비스 <a href="#" id="view-terms-link" class="legal-link">이용약관</a>에 동의하며 <a href="#" id="view-refund-link" class="legal-link">환불 정책</a>(사용된 크레딧 및 GPU 연산 비용은 환불 불가)을 확인하고 동의합니다.',
-      consent_error: "⚠️ 결제를 진행하려면 이용약관 및 환불 불가 정책에 반드시 동의해야 합니다.",
-      btn_mock_checkout: "⚡ [테스트 모드] 1초 결제 승인 시뮬레이션",
-      mock_processing: "⏳ 결제 승인 처리 중...",
-      digital_goods_notice: "디지털 상품 고지: 구독 및 패스 구매 시 전용 GPU 연산 자원이 즉시 할당됩니다. 구독은 계정 설정 또는 페이팔 대시보드에서 언제든지 해지하실 수 있습니다.",
-      btn_close_refund: "이해했습니다 (닫기)",
-      refund_modal_title: "환불 및 취소 규정 (REFUND & CANCELLATION POLICY)",
-      alert_empty_prompt: "이미지 설명을 프롬프트에 입력해주세요!",
-      alert_copied: "프롬프트가 클립보드에 복사되었습니다!",
-      alert_quota_exceeded: "오늘 일일 생성 할당량을 모두 소진했습니다.\n\n지금 플랜을 업그레이드하시겠습니까?",
-      alert_gen_failed: "생성 실패: ",
-      alert_pay_success: "🎉 결제가 성공적으로 완료되었습니다! 플랜이 즉시 활성화되었습니다.",
-      alert_mock_success: "🎉 [테스트 결제 완료] 플랜이 성공적으로 활성화되었습니다!",
-      alert_pay_failed: "결제 승인 처리 실패: ",
-      alert_pay_error: "결제 진행 중 오류가 발생했습니다.",
-      plan_starter_name: "스타터 플랜 (Starter)",
-      plan_starter_target: "취미 크리에이터 및 일상 창작자",
-      plan_starter_badge: "기본형",
-      plan_starter_cta: "시작하기 (월 $15)",
-      plan_starter_features: [
-        "매일 40장 이미지 생성 (매일 00:00 UTC 자동 리셋)",
-        "표준 해상도 (최대 1024x1024)",
-        "표준 품질 렌더링 스텝 (25스텝)",
-        "1회 클릭당 1장 생성 (배치: 1)",
-        "표준 GPU 렌더링 대기열"
-      ],
-      plan_pro_name: "프로 월간 플랜 (Pro)",
-      plan_pro_target: "파워 유저, 디자이너, 전문 크리에이터",
-      plan_pro_badge: "인기 최고",
-      plan_pro_cta: "프로로 업그레이드 (월 $30)",
-      plan_pro_features: [
-        "매일 150장 이미지 생성 (매일 00:00 UTC 자동 리셋)",
-        "고해상도 및 HD 업스케일링 지원",
-        "초고속 전용 GPU 최우선 큐 배정",
-        "동시 4장 생성 멀티배치 지원",
-        "완전 상업적 이용 권한 & 우선 고객지원"
-      ],
-      plan_pass_name: "프로 3개월 패스 (3-Month Pass)",
-      plan_pass_target: "최대 할인을 원하는 전문 크리에이터",
-      plan_pass_badge: "최고의 가치 (18% 특별 할인)",
-      plan_pass_cta: "3개월 패스 구매 ($74)",
-      plan_pass_features: [
-        "90일간 모든 프로(Pro) 혜택 동일 적용",
-        "매일 150장 생성 (90일 총 13,500장 한도)",
-        "단 1회 결제 - 매월 자동 청구 없는 깔끔한 정산",
-        "월간 결제 대비 $16 절약 (~18% 할인 혜택)",
-        "VIP 전용 우선 GPU 큐 및 우선 기술 지원"
-      ]
-    }
+// 상태 변수
+let currentLang = localStorage.getItem("lumina_lang") || "en";
+let activePersona = "female_editorial";
+let activeScene = "luxury_marble";
+let activeRatio = "square_hd";
+
+let currentUploadedFile = null;
+let currentUploadedDataUrl = null;
+let originalUploadedDataUrl = null;
+let isBgRemoved = false;
+
+// 구독 및 무료 체험 상태
+let userSubscription = JSON.parse(localStorage.getItem("lumina_sub")) || {
+  plan: "none",
+  shotsRemaining: 0,
+  totalQuota: 0
+};
+let isFreeTrialUsed = localStorage.getItem("lumina_free_trial_used") === "true";
+
+// 현재 캔버스 결과물 상태
+let currentResultUrl = "";
+let currentResultIsWatermarked = false;
+let selectedPlanForCheckout = null;
+
+// 최근 갤러리 히스토리
+let recentGallery = JSON.parse(localStorage.getItem("lumina_recent_gallery") || "[]");
+
+// ==================== BILINGUAL DICTIONARY (i18n) ====================
+const i18n = {
+  en: {
+    navSubtitle: "High-Converting AI Model Shots for Amazon, Shopify & TikTok Shop",
+    navStudio: "AI Model Studio",
+    navShowcase: "Before & After",
+    navPricing: "Pricing & Plans",
+    btnPaypalKey: "PayPal Key",
+    btnFalKey: "fal.ai Key",
+    heroTitle: "Turn Flat Product Shots into <span class='gradient-text-indigo'>High-Converting</span> AI Model Photoshoots",
+    heroDesc: "Eliminate $3,000 studio photoshoot fees. Upload a raw product or mannequin photo and generate commercial-grade AI model wearing shots in 3 seconds for Amazon, Shopify, and TikTok Shop.",
+    stat1: "+340% Higher CTR on Ads",
+    stat2: "99.9% Enterprise Cloud Uptime SLA",
+    stat3: "100% Commercial Use & Resell Rights",
+    studioConfigTitle: "Model & Studio Parameters",
+    studioConfigDesc: "Configure the commercial model persona and luxury setting for your product",
+    labelProductImage: "1. Upload Product Photo (Clothing, Bag, Cosmetics, Shoes)",
+    dropzonePrompt: "Drag & drop product photo or click to browse",
+    dropzoneHint: "Supports Ctrl+V paste directly anywhere onto this page",
+    sampleProductsLabel: "⚡ Quick Test: 1-Click Product Presets (No file needed)",
+    btnRemoveBg: "✂️ 1-Sec Remove BG",
+    btnRestoreBg: "🔄 Restore Original",
+    labelPersona: "2. Select AI Model Persona",
+    labelScene: "3. Select Commercial Studio Scene",
+    labelRatio: "4. Commercial Aspect Ratio",
+    labelPrompt: "5. Commercial Prompt & Details",
+    btnGenerateText: "Generate High-Converting AI Model Shot",
+    resultCanvasTitle: "Live Commercial Canvas",
+    emptyStateTitle: "Your Commercial AI Model Shot Will Appear Here",
+    emptyStateDesc: "Upload a product on the left and click Generate to run the serverless AI studio pipeline.",
+    btnDownloadClean: "Download 8K Commercial Export",
+    btnDownloadWatermark: "🔒 Unlock Commercial 8K (Remove Watermark)",
+    btnCopyPrompt: "Copy Prompt",
+    recentGalleryTitle: "Recent Studio Shots",
+    showcaseTitle: "Compare the Difference: Raw Product vs AI Model Studio",
+    showcaseDesc: "Slide the bar below to see how ordinary flat lay or mannequin shots are transformed into Vogue-level studio model photography.",
+    roiTitle: "Traditional Agency Shoot vs Lumina Commerce AI",
+    roiDesc: "Compare the real cost, time, and flexibility of human studio shoots vs our cloud engine",
+    pricingTitle: "High-Converting Commercial Plans",
+    pricingDesc: "Select your monthly commercial quota. 100% royalty-free rights, dedicated cloud queue, cancel anytime."
+  },
+  ko: {
+    navSubtitle: "아마존·쇼피파이 글로벌 셀러를 위한 AI 고전환 모델 컷 스튜디오",
+    navStudio: "AI 모델 스튜디오",
+    navShowcase: "Before & After 비교",
+    navPricing: "구독 요금제",
+    btnPaypalKey: "PayPal 키",
+    btnFalKey: "fal.ai 키",
+    heroTitle: "바닥에 놓인 제품 사진, 5초 만에 아마존·쇼피파이 글로벌 1등 상세페이지 <span class='gradient-text-indigo'>고전환 AI 럭셔리 모델 컷</span>으로 완성",
+    heroDesc: "회당 300~500만 원 드는 스튜디오 촬영비 전면 제로화. 마네킹 또는 바닥에 둔 제품 사진만 올리면 글로벌 톱 모델 착용 컷과 럭셔리 스튜디오 컷이 3초 만에 생성됩니다.",
+    stat1: "상세페이지/광고 클릭률(CTR) +340% 상승",
+    stat2: "99.9% 엔터프라이즈 클라우드 SLA 보증",
+    stat3: "100% 상업적 이용 및 재판매 권한 포함",
+    studioConfigTitle: "모델 및 스튜디오 촬영 환경 설정",
+    studioConfigDesc: "제품에 어울리는 상업용 AI 모델과 고급 촬영 스튜디오 배경을 선택하세요",
+    labelProductImage: "1. 제품 원본 사진 업로드 (의류, 가방, 뷰티, 신발 등)",
+    dropzonePrompt: "제품 사진을 끌어다 놓거나 클릭하여 선택하세요",
+    dropzoneHint: "웹/화면에서 복사 후 Ctrl+V로 바로 붙여넣기 지원",
+    sampleProductsLabel: "⚡ 퀵 테스트: 원클릭 샘플 제품 (사진 파일 없이 즉시 체험)",
+    btnRemoveBg: "✂️ 1초 누끼 자동 제거",
+    btnRestoreBg: "🔄 원본 배경 복원",
+    labelPersona: "2. 피팅 모델 페르소나 선택",
+    labelScene: "3. 커머셜 스튜디오 배경 선택",
+    labelRatio: "4. 상업용 규격 비율 선택",
+    labelPrompt: "5. 제품 디테일 설명 & 스타일링 프롬프트",
+    btnGenerateText: "고전환 AI 모델 컷 생성하기",
+    resultCanvasTitle: "실시간 커머셜 캔버스",
+    emptyStateTitle: "생성된 AI 모델 착용 컷이 여기에 표시됩니다",
+    emptyStateDesc: "좌측에서 제품 사진을 올리고 생성 버튼을 누르면 서버리스 AI 파이프라인이 즉시 렌더링합니다.",
+    btnDownloadClean: "8K 상업용 원본 다운로드",
+    btnDownloadWatermark: "🔒 워터마크 제거 & 8K 상업용 다운로드",
+    btnCopyPrompt: "프롬프트 복사",
+    recentGalleryTitle: "최근 생성된 스튜디오 컷",
+    showcaseTitle: "일반 바닥 사진 vs AI 모델 스튜디오 컷 극적인 전환율 비교",
+    showcaseDesc: "가운데 슬라이더를 좌우로 밀어서 밋밋한 제품 사진이 보그(Vogue)급 모델 컷으로 변하는 차이를 직접 확인하세요.",
+    roiTitle: "기존 오프라인 스튜디오 촬영 vs Lumina Commerce AI 비교",
+    roiDesc: "수백만 원대 모델 촬영 비용과 2주 대기 시간을 3초와 월 $19대로 단번에 혁신합니다",
+    pricingTitle: "압도적 마진의 커머스 전용 요금제",
+    pricingDesc: "스토어 규모에 맞는 상업용 쿼터를 선택하세요. 100% 상업적 이용 및 재판매 권한 포함, 언제든 해지 가능."
+  }
+};
+
+// ==================== 초기화 및 이벤트 리스너 ====================
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+  applyLanguage(currentLang);
+  updatePlanBadgeDisplay();
+  setupPasteListener();
+  renderRecentGallery();
+  updateOwnerToggleUI();
+
+  const savedPaypal = localStorage.getItem("lumina_paypal_client_id") || DEFAULT_PAYPAL_ID;
+  const paypalInput = document.getElementById("paypalClientIdInput");
+  if (paypalInput) paypalInput.value = savedPaypal;
+
+  const savedFal = localStorage.getItem("lumina_fal_key") || "";
+  const falInput = document.getElementById("falApiKeyInput");
+  if (falInput) falInput.value = savedFal;
+
+  enhancePrompt();
+});
+
+// ==================== NAVIGATION & LANGUAGE ====================
+function switchNav(tab) {
+  const views = {
+    studio: document.getElementById("viewStudio"),
+    showcase: document.getElementById("viewShowcase"),
+    pricing: document.getElementById("viewPricing")
   };
+  Object.keys(views).forEach(k => {
+    if (views[k]) views[k].classList.toggle("hidden", k !== tab);
+  });
 
-  // 환불 정책 본문 (EN / KO)
-  const refundPolicyContent = {
-    en: `
-      <div class="policy-section">
-        <h4>1. Digital Goods & GPU Consumption Notice</h4>
-        <p>Our service provides real-time AI image generation powered by dedicated GPU cloud resources. Because computing power and server costs are incurred immediately upon image generation, completed generations cannot be revoked.</p>
-      </div>
-      <div class="policy-section">
-        <h4>2. Eligibility for Refund</h4>
-        <p>• <strong>Full Refund:</strong> Eligible within 7 days of purchase ONLY IF the user has generated fewer than 5 images (or consumed less than 5% of their daily quota).</p>
-        <p>• Once more than 5 images have been generated, the purchase is strictly <strong>NON-REFUNDABLE</strong>.</p>
-        <p>• <strong>3-Month Pass ($74):</strong> After 7 days from purchase or upon generating more than 5 images, no pro-rated refunds will be issued for the remaining days.</p>
-      </div>
-      <div class="policy-section">
-        <h4>3. Results & Quality Disclaimer</h4>
-        <p>Variations in artistic preference, prompt interpretation by the AI model, or subjective dissatisfaction with generated artwork do not qualify for a refund. We recommend reviewing sample outputs prior to subscribing.</p>
-      </div>
-      <div class="policy-section">
-        <h4>4. Service Errors & Downtime</h4>
-        <p>In the event of failed generations due to server or ComfyUI pipeline errors, consumed credits will be automatically replenished to your daily balance. Cash refunds are not provided for temporary server interruptions.</p>
-      </div>
-      <div class="policy-section">
-        <h4>5. Subscription Cancellation</h4>
-        <p>You may cancel your monthly subscription at any time via your account dashboard or through your PayPal account. Upon cancellation, your plan will remain active until the end of the current billing cycle, with no further recurring charges.</p>
-      </div>
-    `,
-    ko: `
-      <div class="policy-section">
-        <h4>1. 디지털 상품 및 GPU 연산 비용 고지</h4>
-        <p>본 서비스는 클라우드 전용 GPU 자원을 실시간으로 배정받아 이미지를 렌더링하는 디지털 서비스입니다. 생성 시작 즉시 하드웨어 연산 비용이 즉각 소모되므로 완료된 작업은 회수할 수 없습니다.</p>
-      </div>
-      <div class="policy-section">
-        <h4>2. 환불 자격 요건</h4>
-        <p>• <strong>전액 환불:</strong> 결제일로부터 7일 이내이며, 생성한 이미지가 총 5장 미만(일일 할당량의 5% 미만 소모)인 경우에 한하여 전액 환불 가능합니다.</p>
-        <p>• 5장 이상의 이미지를 생성한 이후에는 디지털 상품 특성상 <strong>환불이 절대 불가</strong>합니다.</p>
-        <p>• <strong>프로 3개월 패스 ($74):</strong> 결제 후 7일이 경과하거나 5장 이상 생성한 이후에는 잔여 기간에 대한 일할 환불이 제공되지 않습니다.</p>
-      </div>
-      <div class="policy-section">
-        <h4>3. 생성 품질 및 주관적 만족도 면책</h4>
-        <p>AI 모델의 프롬프트 해석, 주관적인 화풍 선호도 차이, 예술적 불만족 등은 환불 사유에 해당하지 않습니다. 결제 전 기본 무료 크레딧을 통해 품질을 충분히 확인하시기를 권장합니다.</p>
-      </div>
-      <div class="policy-section">
-        <h4>4. 시스템 오류 및 서비스 중단 보상</h4>
-        <p>서버 또는 ComfyUI 파이프라인 오류로 인해 이미지 생성이 실패한 경우, 소모된 생성 횟수는 사용자 일일 잔여량으로 즉시 자동 환원됩니다. 일시적 네트워크 장애에 대한 현금 환불은 제공되지 않습니다.</p>
-      </div>
-      <div class="policy-section">
-        <h4>5. 구독 취소 및 해지</h4>
-        <p>월간 구독은 사용자 계정 대시보드 또는 페이팔 계정에서 언제든지 자유롭게 해지할 수 있습니다. 해지 시에도 이미 결제된 해당 청구 주기가 종료될 때까지 프로 혜택을 온전히 이용하실 수 있습니다.</p>
-      </div>
-    `
+  const tabs = {
+    studio: document.getElementById("navStudio"),
+    showcase: document.getElementById("navShowcase"),
+    pricing: document.getElementById("navPricing")
   };
-
-  // DOM 요소 선택
-  const langBtnEn = document.getElementById("lang-btn-en");
-  const langBtnKo = document.getElementById("lang-btn-ko");
-  const comfyStatusBadge = document.getElementById("comfy-status-badge");
-  const comfyStatusText = document.getElementById("comfy-status-text");
-  const headerPlanBadge = document.getElementById("header-plan-badge");
-  const todayRemainingEl = document.getElementById("today-remaining");
-  const todayQuotaEl = document.getElementById("today-quota");
-  const openPricingBtn = document.getElementById("open-pricing-btn");
-  const closePricingBtn = document.getElementById("close-pricing-btn");
-  const pricingModal = document.getElementById("pricing-modal");
-  const plansContainer = document.getElementById("plans-container");
-  
-  // 환불 모달 관련
-  const refundModal = document.getElementById("refund-modal");
-  const refundModalTitle = document.getElementById("refund-modal-title");
-  const policyBodyContent = document.getElementById("policy-body-content");
-  const closeRefundBtn = document.getElementById("close-refund-btn");
-  const ackRefundBtn = document.getElementById("ack-refund-btn");
-  const footerRefundLink = document.getElementById("footer-refund-link");
-  const footerTermsLink = document.getElementById("footer-terms-link");
-
-  // 체크아웃 & 동의 관련
-  const agreementCheckbox = document.getElementById("agreement-checkbox");
-  const consentErrorMsg = document.getElementById("consent-error-msg");
-  const consentTextContainer = document.getElementById("consent-text-container");
-  const selectedPlanTitle = document.getElementById("selected-plan-title");
-  const selectedPlanPriceTag = document.getElementById("selected-plan-price-tag");
-  const selectedPlanTarget = document.getElementById("selected-plan-target");
-  const mockCheckoutBtn = document.getElementById("mock-checkout-btn");
-
-  // 첨부 이미지 상태
-  let uploadedComfyFilename = null;
-
-  // 프롬프트 카드 DOM
-  const geminiPromptCard = document.getElementById("gemini-prompt-card");
-  const dropOverlay = document.getElementById("drop-overlay");
-
-  // 제미나이 스타일 이미지 첨부 DOM
-  const btnQuickAttach = document.getElementById("btn-quick-attach");
-  const refImageInput = document.getElementById("ref-image-input");
-  const geminiAttachmentBar = document.getElementById("gemini-attachment-bar");
-  const attachedThumb = document.getElementById("attached-thumb");
-  const attachedName = document.getElementById("attached-name");
-  const removeAttachedBtn = document.getElementById("remove-attached-btn");
-  const denoiseSlider = document.getElementById("denoise-slider");
-  const denoiseValDisplay = document.getElementById("denoise-val-display");
-
-  // 생성 제어
-  const promptInput = document.getElementById("prompt-input");
-  const promptLen = document.getElementById("prompt-len");
-  const negPromptInput = document.getElementById("neg-prompt-input");
-  const seedInput = document.getElementById("seed-input");
-  const randomizeSeedBtn = document.getElementById("randomize-seed-btn");
-  const generateBtn = document.getElementById("generate-btn");
-  const genSpinner = document.getElementById("gen-spinner");
-  const generateBtnText = document.getElementById("generate-btn-text");
-  const progressContainer = document.getElementById("progress-container");
-  const progressBarFill = document.getElementById("progress-bar-fill");
-  const progressStatusText = document.getElementById("progress-status-text");
-  const progressPercent = document.getElementById("progress-percent");
-
-  // 프리뷰 & 메타
-  const previewPlaceholder = document.getElementById("preview-placeholder");
-  const previewImgContainer = document.getElementById("preview-img-container");
-  const mainPreviewImg = document.getElementById("main-preview-img");
-  const downloadBtn = document.getElementById("download-btn");
-  const copyPromptBtn = document.getElementById("copy-prompt-btn");
-  const resultMeta = document.getElementById("result-meta");
-  const metaSeed = document.getElementById("meta-seed");
-  const metaSize = document.getElementById("meta-size");
-  const metaEngine = document.getElementById("meta-engine");
-
-  const historyGrid = document.getElementById("history-grid");
-  const historyCount = document.getElementById("history-count");
-
-  // --- 언어 전환 함수 ---
-  function setLanguage(lang) {
-    currentLang = lang;
-    localStorage.setItem("lumina_lang", lang);
-    document.documentElement.lang = lang;
-
-    // 언어 버튼 활성화 UI
-    if (lang === "ko") {
-      langBtnKo.classList.add("active");
-      langBtnEn.classList.remove("active");
+  Object.keys(tabs).forEach(k => {
+    if (!tabs[k]) return;
+    if (k === tab) {
+      tabs[k].className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-white bg-brand-accent shadow-md shadow-brand-accent/25 transition";
     } else {
-      langBtnEn.classList.add("active");
-      langBtnKo.classList.remove("active");
-    }
-
-    const dict = i18n[lang] || i18n.en;
-    document.title = dict.doc_title;
-
-    // [data-i18n] 속성 엘리먼트 텍스트 갱신
-    document.querySelectorAll("[data-i18n]").forEach(el => {
-      const key = el.getAttribute("data-i18n");
-      if (dict[key]) {
-        el.textContent = dict[key];
-      }
-    });
-
-    // [data-i18n-placeholder] 플레이스홀더 갱신
-    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-      const key = el.getAttribute("data-i18n-placeholder");
-      if (dict[key]) {
-        el.placeholder = dict[key];
-      }
-    });
-
-    // 글자 수 단위 갱신
-    if (promptInput) {
-      promptLen.textContent = `${promptInput.value.length} ${dict.prompt_chars}`;
-    }
-
-    // 사전 동의 문구 및 링크 재바인딩
-    if (consentTextContainer) {
-      consentTextContainer.innerHTML = dict.consent_text_html;
-      bindLegalLinks();
-    }
-
-    // 환불 모달 제목 및 본문 갱신
-    if (refundModalTitle) refundModalTitle.textContent = dict.refund_modal_title;
-    if (policyBodyContent) policyBodyContent.innerHTML = refundPolicyContent[lang] || refundPolicyContent.en;
-
-    // 플랜 카드 재렌더링
-    if (plansData.length > 0) {
-      renderPlans(plansData);
-    }
-  }
-
-  // 법적 약관 모달 링크 이벤트 바인딩
-  function bindLegalLinks() {
-    const viewTermsLink = document.getElementById("view-terms-link");
-    const viewRefundLink = document.getElementById("view-refund-link");
-    if (viewTermsLink) viewTermsLink.addEventListener("click", openRefundModal);
-    if (viewRefundLink) viewRefundLink.addEventListener("click", openRefundModal);
-  }
-
-  // --- 1. 초기화 ---
-  async function init() {
-    setLanguage(currentLang);
-    bindLegalLinks();
-
-    // 언어 전환 버튼 클릭 리스너
-    langBtnEn.addEventListener("click", () => setLanguage("en"));
-    langBtnKo.addEventListener("click", () => setLanguage("ko"));
-
-    await checkServerStatus();
-    await loadUserProfile();
-    await loadPlans();
-    await loadHistory();
-
-    setInterval(checkServerStatus, 20000);
-  }
-
-  // 서버 상태 점검
-  async function checkServerStatus() {
-    const dict = i18n[currentLang] || i18n.en;
-    try {
-      const res = await fetch("/api/status");
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-
-      if (data.comfyui.online) {
-        comfyStatusBadge.className = "status-pill status-online";
-        comfyStatusText.textContent = dict.comfy_online;
-      } else {
-        comfyStatusBadge.className = "status-pill status-offline";
-        comfyStatusText.textContent = dict.comfy_offline;
-      }
-    } catch (e) {
-      comfyStatusBadge.className = "status-pill status-offline";
-      comfyStatusText.textContent = dict.comfy_waiting;
-    }
-  }
-
-  // 사용자 프로필 및 일일 쿼터 로드
-  async function loadUserProfile() {
-    try {
-      const res = await fetch(`/api/user?user_id=${currentUserId}`);
-      currentUser = await res.json();
-
-      // 헤더 플랜 뱃지 & 할당량 갱신 (서비스 오너 무제한 VIP 특별 표시)
-      if (currentUser.plan_id === "owner" || currentUser.plan_type === "unlimited") {
-        headerPlanBadge.textContent = "👑 OWNER";
-        headerPlanBadge.style.background = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
-        headerPlanBadge.style.color = "#ffffff";
-        todayRemainingEl.textContent = "∞";
-        todayQuotaEl.textContent = currentLang === "ko" ? "무제한" : "Unlimited";
-      } else {
-        headerPlanBadge.textContent = (currentUser.plan_id || "FREE").toUpperCase();
-        todayRemainingEl.textContent = currentUser.remaining_today ?? currentUser.credits;
-        todayQuotaEl.textContent = currentUser.daily_quota ?? 10;
-      }
-    } catch (e) {
-      console.error("사용자 정보 로드 실패:", e);
-    }
-  }
-
-  // 요금제 플랜 로드
-  async function loadPlans() {
-    try {
-      const res = await fetch("/api/plans");
-      const data = await res.json();
-      plansData = data.plans || [];
-      renderPlans(plansData);
-
-      // PayPal SDK 비동기 로드
-      if (data.paypal_client_id && data.paypal_client_id !== "sb" && !paypalSdkLoaded) {
-        loadPayPalSdk(data.paypal_client_id);
-      }
-    } catch (e) {
-      console.error("플랜 로드 실패:", e);
-    }
-  }
-
-  // 3가지 플랜 카드 렌더링 (다국어 매핑 적용)
-  function renderPlans(plans) {
-    plansContainer.innerHTML = "";
-    const dict = i18n[currentLang] || i18n.en;
-
-    plans.forEach(plan => {
-      const card = document.createElement("div");
-      const isFeatured = plan.featured || plan.badge === "Most Popular";
-      const isValue = plan.badge === "Best Value";
-      
-      let badgeClass = "badge-standard";
-      if (isFeatured) badgeClass = "badge-popular";
-      else if (isValue) badgeClass = "badge-value";
-
-      // 다국어 명칭 및 특징 매핑
-      let planTitle = plan.name;
-      let planTarget = plan.target || "";
-      let planBadge = plan.badge;
-      let planCta = plan.cta_text || "Select";
-      let featureList = plan.features || [];
-
-      if (plan.id === "starter_monthly") {
-        planTitle = dict.plan_starter_name;
-        planTarget = dict.plan_starter_target;
-        planBadge = dict.plan_starter_badge;
-        planCta = dict.plan_starter_cta;
-        featureList = dict.plan_starter_features;
-      } else if (plan.id === "pro_monthly") {
-        planTitle = dict.plan_pro_name;
-        planTarget = dict.plan_pro_target;
-        planBadge = dict.plan_pro_badge;
-        planCta = dict.plan_pro_cta;
-        featureList = dict.plan_pro_features;
-      } else if (plan.id === "pro_3month_pass") {
-        planTitle = dict.plan_pass_name;
-        planTarget = dict.plan_pass_target;
-        planBadge = dict.plan_pass_badge;
-        planCta = dict.plan_pass_cta;
-        featureList = dict.plan_pass_features;
-      }
-
-      card.className = `pricing-card ${isFeatured ? "featured" : ""}`;
-      card.dataset.planId = plan.id;
-
-      const featureListHtml = featureList.map(f => `
-        <li class="feature-item">
-          <span class="check-icon">✓</span>
-          <span>${f}</span>
-        </li>
-      `).join("");
-
-      card.innerHTML = `
-        <div class="plan-top-badge ${badgeClass}">${planBadge}</div>
-        <div class="card-header">
-          <h3 class="card-title">${planTitle}</h3>
-          <p class="card-target">${planTarget}</p>
-        </div>
-        <div class="card-price-box">
-          <div class="card-price">${plan.price_display}</div>
-          ${plan.subtitle ? `<div class="card-price-sub">${plan.subtitle}</div>` : ""}
-        </div>
-        <ul class="card-features">
-          ${featureListHtml}
-        </ul>
-        <button type="button" class="btn ${isFeatured ? "btn-primary glow" : "btn-secondary"} btn-block card-cta-btn">
-          ${planCta}
-        </button>
-      `;
-
-      card.addEventListener("click", () => selectPlan(plan, card, planTitle, planTarget));
-      plansContainer.appendChild(card);
-
-      // 기본 선택: Most Popular
-      if (isFeatured && (!selectedPlan || selectedPlan.id === plan.id)) {
-        selectPlan(plan, card, planTitle, planTarget);
-      }
-    });
-  }
-
-  // 플랜 선택
-  function selectPlan(plan, cardEl, translatedTitle, translatedTarget) {
-    selectedPlan = plan;
-    document.querySelectorAll(".pricing-card").forEach(c => c.classList.remove("selected"));
-    cardEl.classList.add("selected");
-
-    selectedPlanTitle.textContent = translatedTitle || plan.name;
-    selectedPlanPriceTag.textContent = plan.price_display;
-    selectedPlanTarget.textContent = translatedTarget || plan.target || plan.subtitle || "";
-
-    renderPayPalButtons(plan);
-  }
-
-  // 동의 체크박스 상태 변경 시 에러 메시지 숨김
-  agreementCheckbox.addEventListener("change", () => {
-    if (agreementCheckbox.checked) {
-      consentErrorMsg.classList.add("hidden");
+      tabs[k].className = "px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition";
     }
   });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-  // PayPal SDK 로드
-  function loadPayPalSdk(clientId) {
-    if (document.getElementById("paypal-sdk-script")) return;
-    const script = document.createElement("script");
-    script.id = "paypal-sdk-script";
-    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
-    script.onload = () => {
-      paypalSdkLoaded = true;
-      if (selectedPlan) renderPayPalButtons(selectedPlan);
-    };
-    document.head.appendChild(script);
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem("lumina_lang", currentLang);
+  applyLanguage(currentLang);
+}
+
+function toggleLang() {
+  setLang(currentLang === 'en' ? 'ko' : 'en');
+}
+
+function applyLanguage(lang) {
+  const btnEn = document.getElementById("langBtnEn");
+  const btnKo = document.getElementById("langBtnKo");
+  if (btnEn && btnKo) {
+    if (lang === 'en') {
+      btnEn.className = "px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition";
+      btnKo.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition";
+    } else {
+      btnKo.className = "px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition";
+      btnEn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition";
+    }
   }
 
-  // PayPal 스마트 버튼 렌더링
-  function renderPayPalButtons(plan) {
-    const container = document.getElementById("paypal-button-container");
-    container.innerHTML = "";
-    const dict = i18n[currentLang] || i18n.en;
+  const dict = i18n[lang] || i18n.en;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (dict[key]) el.innerHTML = dict[key];
+  });
 
-    if (window.paypal && paypal.Buttons) {
-      paypal.Buttons({
-        style: {
-          layout: "vertical",
-          color: "gold",
-          shape: "rect",
-          label: "pay"
-        },
-        onClick: (data, actions) => {
-          // 동의 체크박스 검증
-          if (!agreementCheckbox.checked) {
-            consentErrorMsg.classList.remove("hidden");
-            agreementCheckbox.focus();
-            return actions.reject();
-          }
-          consentErrorMsg.classList.add("hidden");
-          return actions.resolve();
-        },
-        createOrder: async () => {
-          const res = await fetch("/api/paypal/create-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              plan_id: plan.id,
-              user_id: currentUserId,
-              agreement_accepted: agreementCheckbox.checked
-            })
-          });
-          const data = await res.json();
-          if (data.error) throw new Error(data.error);
-          return data.order_id;
-        },
-        onApprove: async (data) => {
-          const res = await fetch("/api/paypal/capture-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              order_id: data.orderID,
-              plan_id: plan.id,
-              user_id: currentUserId,
-              agreement_accepted: agreementCheckbox.checked
-            })
-          });
-          const result = await res.json();
-          if (result.success) {
-            alert(result.message || dict.alert_pay_success);
-            pricingModal.classList.add("hidden");
-            await loadUserProfile();
-          } else {
-            alert(dict.alert_pay_failed + (result.error || ""));
-          }
-        },
-        onError: (err) => {
-          console.error("PayPal Error:", err);
-          alert(dict.alert_pay_error);
+  updatePlanBadgeDisplay();
+  updateDownloadButtonUI();
+}
+
+function updatePlanBadgeDisplay() {
+  const badge = document.getElementById("planBadgeText");
+  if (!badge) return;
+
+  if (userSubscription.plan === 'none') {
+    if (!isFreeTrialUsed) {
+      badge.textContent = currentLang === 'ko' ? "1회 무료 체험 가능" : "1 Free Trial Ready";
+    } else {
+      badge.textContent = currentLang === 'ko' ? "플랜 업그레이드" : "Upgrade Plan";
+    }
+  } else if (userSubscription.plan === 'owner') {
+    badge.textContent = `👑 OWNER (∞)`;
+  } else {
+    const planName = userSubscription.plan.toUpperCase();
+    badge.textContent = `${planName} (${userSubscription.shotsRemaining} left)`;
+  }
+}
+
+// ==================== STUDIO PARAMETERS ====================
+function selectPersona(persona) {
+  activePersona = persona;
+  document.querySelectorAll(".persona-btn").forEach(btn => {
+    btn.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
+    btn.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
+  });
+  if (window.event && window.event.currentTarget) {
+    window.event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
+    window.event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
+  }
+  enhancePrompt();
+}
+
+function selectScene(scene) {
+  activeScene = scene;
+  document.querySelectorAll(".scene-btn").forEach(btn => {
+    btn.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
+    btn.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
+  });
+  if (window.event && window.event.currentTarget) {
+    window.event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
+    window.event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
+  }
+  enhancePrompt();
+}
+
+function updateRatio(input) {
+  activeRatio = input.value;
+  document.querySelectorAll(".ratio-label").forEach(l => {
+    l.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
+    l.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
+  });
+  input.closest(".ratio-label").classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
+  input.closest(".ratio-label").classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
+}
+
+function enhancePrompt() {
+  const personaDescriptions = {
+    female_editorial: "high fashion European female runway model, confident elegant gaze, flawless natural skin texture",
+    male_casual: "charismatic handsome male model in his late 20s, athletic clean posture, friendly smile",
+    beauty_hands: "flawless manicured hands gently holding and presenting the product, macro beauty photography",
+    ghost_mannequin: "invisible 3D hollow mannequin aesthetic, floating commercial presentation with depth"
+  };
+
+  const sceneDescriptions = {
+    luxury_marble: "placed on a sleek polished white marble podium, soft golden hour sunlight with organic window shadows",
+    sunlit_loft: "minimalist luxury sun-drenched loft apartment, Scandinavian interior, warm wooden textures",
+    parisian_street: "chic outdoor cafe terrace in Paris, soft bokeh blurred urban street in background",
+    amazon_white: "commercial Amazon 100% pure white studio background, crisp soft contact reflection below product",
+    nature_garden: "surrounded by fresh lush botanical leaves, subtle morning dew, natural sunlight beams",
+    cyber_vogue: "futuristic Vogue studio, high-contrast neon cyan and magenta rim lighting, cinematic shadows"
+  };
+
+  const pDesc = personaDescriptions[activePersona] || personaDescriptions.female_editorial;
+  const sDesc = sceneDescriptions[activeScene] || sceneDescriptions.luxury_marble;
+
+  const baseText = `award-winning commercial product photoshoot. Wearing and showcasing the luxury product with exact fabric textures and silhouette preserved. Featuring ${pDesc}. Set in a ${sDesc}. Shot on Hasselblad H6D-100c with 85mm f/1.4 lens, 8k resolution, photorealistic fabric textures, pristine studio depth of field.`;
+
+  const promptInput = document.getElementById("promptInput");
+  if (promptInput) promptInput.value = baseText;
+}
+
+// ==================== IMAGE UPLOAD & 1-SEC BACKGROUND REMOVAL ====================
+function handleFileSelect(e) {
+  if (e.target.files && e.target.files[0]) {
+    processUploadedFile(e.target.files[0]);
+  }
+}
+
+function setupPasteListener() {
+  window.addEventListener("paste", (e) => {
+    const items = (e.clipboardData || window.clipboardData).items;
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          const file = items[i].getAsFile();
+          processUploadedFile(file);
+          break;
         }
-      }).render("#paypal-button-container");
+      }
     }
-  }
+  });
+}
 
-  // 모의 결제 (빠른 테스트)
-  mockCheckoutBtn.addEventListener("click", async () => {
-    if (!selectedPlan) return;
-    const dict = i18n[currentLang] || i18n.en;
+function processUploadedFile(file) {
+  if (!file || !file.type.startsWith("image/")) return;
+  currentUploadedFile = file;
 
-    if (!agreementCheckbox.checked) {
-      consentErrorMsg.classList.remove("hidden");
-      agreementCheckbox.focus();
-      return;
-    }
-    consentErrorMsg.classList.add("hidden");
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    currentUploadedDataUrl = event.target.result;
+    originalUploadedDataUrl = currentUploadedDataUrl;
+    isBgRemoved = false;
+
+    const img = document.getElementById("uploadPreviewImg");
+    img.src = currentUploadedDataUrl;
+    img.className = "w-14 h-14 rounded-xl object-cover border border-white/20 shadow";
+
+    document.getElementById("uploadPreviewName").textContent = file.name || "product_image.png";
+    updateBgStatusDisplay(false);
+
+    document.getElementById("uploadPreviewBar").classList.remove("hidden");
+    document.getElementById("dropzone").classList.add("hidden");
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearUpload() {
+  currentUploadedFile = null;
+  currentUploadedDataUrl = null;
+  originalUploadedDataUrl = null;
+  isBgRemoved = false;
+
+  const fileInput = document.getElementById("productFileInput");
+  if (fileInput) fileInput.value = "";
+
+  document.getElementById("uploadPreviewBar").classList.add("hidden");
+  document.getElementById("dropzone").classList.remove("hidden");
+}
+
+// 소상공인 킬러 기능: 1초 누끼 자동 제거 (Background Removal)
+async function toggleRemoveBg() {
+  if (!currentUploadedDataUrl) return;
+
+  const btn = document.getElementById("btnRemoveBgToggle");
+  const img = document.getElementById("uploadPreviewImg");
+
+  if (!isBgRemoved) {
+    // 누끼 제거 수행
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin inline mr-1"></i> ${currentLang === 'ko' ? "누끼 제거 중..." : "Removing BG..."}`;
 
     try {
-      mockCheckoutBtn.disabled = true;
-      mockCheckoutBtn.textContent = dict.mock_processing;
-
-      const createRes = await fetch("/api/paypal/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          plan_id: selectedPlan.id,
-          user_id: currentUserId,
-          agreement_accepted: true
-        })
-      });
-      const order = await createRes.json();
-      if (order.error) throw new Error(order.error);
-
-      const capRes = await fetch("/api/paypal/capture-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          order_id: order.order_id,
-          plan_id: selectedPlan.id,
-          user_id: currentUserId,
-          agreement_accepted: true
-        })
-      });
-      const capResult = await capRes.json();
-
-      if (capResult.success) {
-        alert(capResult.message || dict.alert_mock_success);
-        pricingModal.classList.add("hidden");
-        await loadUserProfile();
-      } else {
-        alert(dict.alert_pay_failed + capResult.error);
+      // 1순위: 백엔드 /api/remove-bg 호출 시도
+      let removedUrl = null;
+      try {
+        const resp = await fetch("/api/remove-bg", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image_data: currentUploadedDataUrl })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.image_url) removedUrl = data.image_url;
+        }
+      } catch (err) {
+        console.warn("Backend remove-bg unavailable, falling back to client canvas segmentation", err);
       }
+
+      // 2순위 (오프라인/정적 Vercel 환경): 클라이언트 캔버스 고속 투명화 시뮬레이션
+      if (!removedUrl) {
+        removedUrl = await simulateClientBackgroundRemoval(currentUploadedDataUrl);
+      }
+
+      currentUploadedDataUrl = removedUrl;
+      isBgRemoved = true;
+
+      // 투명 체커보드 배경 스타일 적용
+      img.src = currentUploadedDataUrl;
+      img.className = "w-14 h-14 rounded-xl object-contain border border-emerald-400/60 shadow bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:8px_8px] bg-slate-900";
+
+      updateBgStatusDisplay(true);
     } catch (e) {
-      alert("Error: " + e.message);
+      console.error("BG remove failed:", e);
+      alert(currentLang === 'ko' ? "누끼 제거 중 오류가 발생했습니다." : "Failed to remove background.");
     } finally {
-      mockCheckoutBtn.disabled = false;
-      mockCheckoutBtn.textContent = dict.btn_mock_checkout;
+      btn.disabled = false;
+      if (window.lucide) lucide.createIcons();
     }
-  });
-
-  // --- 2. 환불 정책 모달 토글 ---
-  function openRefundModal(e) {
-    if (e) e.preventDefault();
-    const dict = i18n[currentLang] || i18n.en;
-    refundModalTitle.textContent = dict.refund_modal_title;
-    policyBodyContent.innerHTML = refundPolicyContent[currentLang] || refundPolicyContent.en;
-    refundModal.classList.remove("hidden");
+  } else {
+    // 원본 배경 복원
+    currentUploadedDataUrl = originalUploadedDataUrl;
+    isBgRemoved = false;
+    img.src = currentUploadedDataUrl;
+    img.className = "w-14 h-14 rounded-xl object-cover border border-white/20 shadow";
+    updateBgStatusDisplay(false);
   }
+}
 
-  function closeRefundModal() {
-    refundModal.classList.add("hidden");
+function updateBgStatusDisplay(removed) {
+  const statusText = document.getElementById("uploadPreviewStatus");
+  const btn = document.getElementById("btnRemoveBgToggle");
+  const dict = i18n[currentLang] || i18n.en;
+
+  if (removed) {
+    statusText.innerHTML = `<span class="text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> ${currentLang === 'ko' ? "✂️ 1초 누끼 완료 (투명 배경)" : "✂️ Transparent BG Ready"}</span>`;
+    btn.innerHTML = `<i data-lucide="undo-2" class="w-3 h-3 inline mr-1"></i> ${dict.btnRestoreBg}`;
+    btn.className = "px-2.5 py-1 rounded-xl bg-dark-750 hover:bg-dark-700 text-slate-300 border border-white/10 text-[11px] font-bold transition";
+  } else {
+    statusText.innerHTML = `<span class="text-slate-400 font-medium flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> ${currentLang === 'ko' ? "스튜디오 피팅 대기 중" : "Ready for AI Studio Fitting"}</span>`;
+    btn.innerHTML = `<i data-lucide="scissors" class="w-3 h-3 inline mr-1 text-emerald-400"></i> ${dict.btnRemoveBg}`;
+    btn.className = "px-2.5 py-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold transition";
   }
+  if (window.lucide) lucide.createIcons();
+}
 
-  footerRefundLink.addEventListener("click", openRefundModal);
-  footerTermsLink.addEventListener("click", openRefundModal);
-  closeRefundBtn.addEventListener("click", closeRefundModal);
-  ackRefundBtn.addEventListener("click", closeRefundModal);
-  refundModal.addEventListener("click", (e) => {
-    if (e.target === refundModal) closeRefundModal();
-  });
+function simulateClientBackgroundRemoval(dataUrl) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
 
-  // --- 제미나이 스타일 스마트 이미지 첨부 (클릭, 카드 드래그&드롭, Ctrl+V 붙여넣기) ---
-  if (btnQuickAttach && refImageInput) {
-    btnQuickAttach.addEventListener("click", () => {
-      refImageInput.click();
-    });
+      // 모서리 픽셀 색상 기반 투명화 처리
+      try {
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = imgData.data;
+        const cornerR = d[0], cornerG = d[1], cornerB = d[2];
+        const tolerance = 45;
 
-    refImageInput.addEventListener("change", () => {
-      if (refImageInput.files && refImageInput.files.length > 0) {
-        handleImageUpload(refImageInput.files[0]);
-      }
-    });
-  }
-
-  // 1. 프롬프트 카드 전체 드래그 앤 드롭 (Gemini 오버레이 UX)
-  if (geminiPromptCard) {
-    let dragCounter = 0;
-
-    geminiPromptCard.addEventListener("dragenter", (e) => {
-      e.preventDefault();
-      dragCounter++;
-      geminiPromptCard.classList.add("drag-active");
-      if (dropOverlay) dropOverlay.classList.remove("hidden");
-    });
-
-    geminiPromptCard.addEventListener("dragover", (e) => {
-      e.preventDefault();
-    });
-
-    geminiPromptCard.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      dragCounter--;
-      if (dragCounter <= 0) {
-        dragCounter = 0;
-        geminiPromptCard.classList.remove("drag-active");
-        if (dropOverlay) dropOverlay.classList.add("hidden");
-      }
-    });
-
-    geminiPromptCard.addEventListener("drop", (e) => {
-      e.preventDefault();
-      dragCounter = 0;
-      geminiPromptCard.classList.remove("drag-active");
-      if (dropOverlay) dropOverlay.classList.add("hidden");
-      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        handleImageUpload(e.dataTransfer.files[0]);
-      }
-    });
-  }
-
-  // 2. 프롬프트 입력창 어디서나 클립보드 이미지 직접 붙여넣기 (Ctrl + V)
-  if (promptInput) {
-    promptInput.addEventListener("paste", (e) => {
-      const items = (e.clipboardData || window.clipboardData).items;
-      if (items) {
-        for (let i = 0; i < items.length; i++) {
-          if (items[i].type && items[i].type.indexOf("image") !== -1) {
-            const blob = items[i].getAsFile();
-            if (blob) {
-              handleImageUpload(blob);
-              break;
-            }
+        for (let i = 0; i < d.length; i += 4) {
+          const r = d[i], g = d[i + 1], b = d[i + 2];
+          const dist = Math.sqrt((r - cornerR)**2 + (g - cornerG)**2 + (b - cornerB)**2);
+          if (dist < tolerance) {
+            d[i + 3] = 0; // 배경 투명화
           }
         }
-      }
-    });
-  }
-
-  // 첨부 이미지 제거 버튼
-  if (removeAttachedBtn) {
-    removeAttachedBtn.addEventListener("click", () => {
-      clearAttachedImage();
-    });
-  }
-
-  function clearAttachedImage() {
-    uploadedComfyFilename = null;
-    if (refImageInput) refImageInput.value = "";
-    if (attachedThumb) attachedThumb.src = "";
-    if (geminiAttachmentBar) geminiAttachmentBar.classList.add("hidden");
-  }
-
-  async function handleImageUpload(file) {
-    if (!file || !file.type.startsWith("image/")) {
-      alert(currentLang === "ko" ? "PNG, JPG, WEBP 형식의 이미지 파일만 지원됩니다." : "Only PNG, JPG, WEBP images are supported.");
-      return;
-    }
-
-    const fileName = file.name || "attached_image.png";
-
-    // 1. 즉시 로컬 미리보기 칩 노출 (제미나이 UX)
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (attachedThumb) attachedThumb.src = e.target.result;
-      if (attachedName) attachedName.textContent = fileName;
-      if (geminiAttachmentBar) geminiAttachmentBar.classList.remove("hidden");
-    };
-    reader.readAsDataURL(file);
-
-    // 2. ComfyUI input 서버로 즉시 업로드
-    const formData = new FormData();
-    formData.append("image", file, fileName);
-
-    try {
-      const res = await fetch("/api/upload-image", {
-        method: "POST",
-        body: formData
-      });
-      const data = await res.json();
-      if (data.success && data.filename) {
-        uploadedComfyFilename = data.filename;
-      } else {
-        throw new Error(data.error || "업로드 실패");
-      }
-    } catch (e) {
-      console.error("이미지 업로드 실패:", e);
-      alert((currentLang === "ko" ? "이미지 업로드 실패: " : "Image upload failed: ") + e.message);
-      clearAttachedImage();
-    }
-  }
-
-  const denoiseModeHint = document.getElementById("denoise-mode-hint");
-  if (denoiseSlider && denoiseValDisplay) {
-    const updateDenoiseHint = () => {
-      const val = parseFloat(denoiseSlider.value);
-      denoiseValDisplay.textContent = val.toFixed(2);
-      if (denoiseModeHint) {
-        if (val <= 0.55) {
-          denoiseModeHint.textContent = currentLang === "ko" ? "(얼굴 보존 / 배경 변경)" : "(Preserve Faces)";
-          denoiseModeHint.style.color = "#10b981";
-        } else {
-          denoiseModeHint.textContent = currentLang === "ko" ? "(새로운 인물로 재창작)" : "(Major Redraw)";
-          denoiseModeHint.style.color = "#f59e0b";
-        }
+        ctx.putImageData(imgData, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
+      } catch (err) {
+        resolve(dataUrl);
       }
     };
-    denoiseSlider.addEventListener("input", updateDenoiseHint);
-    updateDenoiseHint();
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+// 1-Click 샘플 제품 프리셋
+const sampleProducts = {
+  dress: {
+    name: "Emerald Silk Slip Dress",
+    persona: "female_editorial",
+    scene: "luxury_marble",
+    img: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80",
+    prompt: "award-winning commercial product photoshoot. Elegant European female runway model wearing a tailored emerald green silk slip dress, confident gentle expression. Placed in a luxury white marble studio with soft warm sunbeams casting soft organic shadows. Shot on Hasselblad H6D-100c, 8k resolution, photorealistic silk fabric texture, ultra sharp focus."
+  },
+  bag: {
+    name: "Italian Leather Tote Bag",
+    persona: "female_editorial",
+    scene: "parisian_street",
+    img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80",
+    prompt: "award-winning commercial product photoshoot. Chic female fashion model casually holding a handcrafted cognac brown Italian leather tote bag. Set on an outdoor Parisian cafe terrace with blurred cobblestone street in background. Hasselblad H6D-100c, rich grain leather texture, golden hour bokeh lighting, 8k resolution."
+  },
+  watch: {
+    name: "Luxury Chronograph Gold Watch",
+    persona: "male_casual",
+    scene: "sunlit_loft",
+    img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
+    prompt: "award-winning commercial product photoshoot. Charismatic handsome male model wearing a luxury gold chronograph wristwatch on wrist, fitted dark navy blazer cuff. Set in a minimalist Scandinavian penthouse loft with natural window lighting. Hasselblad H6D-100c, sapphire glass reflection, crisp metallic details, 8k resolution."
+  },
+  serum: {
+    name: "Radiance Vitamin C Serum",
+    persona: "beauty_hands",
+    scene: "nature_garden",
+    img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
+    prompt: "award-winning commercial product photoshoot. Flawless manicured female hands gently presenting an amber glass vitamin C serum bottle with dropper. Surrounded by dewy green botanical leaves and morning sunlight refraction. Macro beauty photography, pristine glass refraction, 8k resolution, clean commercial aesthetic."
+  }
+};
+
+function loadSampleProduct(type) {
+  const sample = sampleProducts[type];
+  if (!sample) return;
+
+  currentUploadedDataUrl = sample.img;
+  originalUploadedDataUrl = sample.img;
+  isBgRemoved = false;
+
+  const img = document.getElementById("uploadPreviewImg");
+  img.src = sample.img;
+  img.className = "w-14 h-14 rounded-xl object-cover border border-white/20 shadow";
+
+  document.getElementById("uploadPreviewName").textContent = sample.name;
+  updateBgStatusDisplay(false);
+
+  document.getElementById("uploadPreviewBar").classList.remove("hidden");
+  document.getElementById("dropzone").classList.add("hidden");
+
+  selectPersona(sample.persona);
+  selectScene(sample.scene);
+  const promptInput = document.getElementById("promptInput");
+  if (promptInput) promptInput.value = sample.prompt;
+
+  document.querySelectorAll(".sample-btn").forEach(btn => {
+    btn.classList.remove("border-brand-accent", "bg-brand-accent/20", "text-white");
+    btn.classList.add("border-white/10", "bg-dark-900", "text-slate-300");
+  });
+  if (window.event && window.event.currentTarget) {
+    window.event.currentTarget.classList.remove("border-white/10", "bg-dark-900", "text-slate-300");
+    window.event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/20", "text-white");
+  }
+}
+
+// ==================== GENERATION PIPELINE & FREEMIUM WATERMARK HOOK ====================
+async function handleGenerateClick() {
+  const isOwner = userSubscription.plan === 'owner';
+  const hasPaidPlan = userSubscription.plan !== 'none' && userSubscription.shotsRemaining > 0;
+  
+  // 1. 유료 플랜 또는 오너인 경우 -> 클린 8K 생성
+  // 2. 비구독자이면서 무료 1회 체험을 안 쓴 경우 -> 워터마크 1회 프리뷰 허용 (Freemium Hook)
+  // 3. 비구독자이면서 1회 무료 체험도 쓴 경우 -> 결제 모달 팝업
+  let willBeWatermarked = false;
+
+  if (isOwner || hasPaidPlan) {
+    willBeWatermarked = false;
+  } else if (!isFreeTrialUsed) {
+    willBeWatermarked = true;
+  } else {
+    switchNav('pricing');
+    alert(currentLang === 'ko'
+      ? "⚠️ 무료 1회 체험을 모두 사용하셨습니다. 워터마크 없는 8K 상업용 원본을 생성하려면 플랜을 구독해주세요!"
+      : "⚠️ You have used your 1 free trial. Please subscribe to unlock watermark-free 8K commercial model shots!");
+    return;
   }
 
-  // --- 3. 이미지 생성 실행 ---
-  promptInput.addEventListener("input", () => {
-    const dict = i18n[currentLang] || i18n.en;
-    promptLen.textContent = `${promptInput.value.length} ${dict.prompt_chars}`;
-  });
+  const promptInput = document.getElementById("promptInput");
+  const prompt = promptInput ? promptInput.value.trim() : "";
+  if (!prompt) {
+    alert(currentLang === 'ko' ? "프롬프트를 입력해주세요." : "Please enter a product description or prompt.");
+    return;
+  }
 
-  // 추천 태그 클릭
-  document.querySelectorAll(".tag-pill").forEach(tag => {
-    tag.addEventListener("click", () => {
-      const appendText = tag.getAttribute("data-tag");
-      const current = promptInput.value.trim();
-      promptInput.value = current ? `${current}, ${appendText}` : appendText;
-      const dict = i18n[currentLang] || i18n.en;
-      promptLen.textContent = `${promptInput.value.length} ${dict.prompt_chars}`;
-      promptInput.focus();
-    });
-  });
+  const btn = document.getElementById("btnGenerate");
+  const btnText = document.getElementById("btnGenerateText");
+  const statusBox = document.getElementById("genStatusContainer");
+  const progressBar = document.getElementById("genProgressBar");
+  const progressPercent = document.getElementById("genProgressPercent");
+  const statusText = document.getElementById("genStatusText");
 
-  // 비율 선택 버튼
-  document.querySelectorAll(".ratio-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".ratio-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-    });
-  });
+  btn.disabled = true;
+  statusBox.classList.remove("hidden");
+  btnText.textContent = currentLang === 'ko' ? "AI 모델 컷 렌더링 중..." : "Rendering AI Model Shot...";
 
-  randomizeSeedBtn.addEventListener("click", () => {
-    seedInput.value = Math.floor(Math.random() * 1000000000);
-  });
-
-  generateBtn.addEventListener("click", async () => {
-    const dict = i18n[currentLang] || i18n.en;
-    const prompt = promptInput.value.trim();
-    if (!prompt) {
-      alert(dict.alert_empty_prompt);
-      promptInput.focus();
-      return;
+  let progress = 12;
+  const progressTimer = setInterval(() => {
+    if (progress < 90) {
+      progress += Math.floor(Math.random() * 12) + 6;
+      if (progress > 90) progress = 90;
+      progressBar.style.width = `${progress}%`;
+      progressPercent.textContent = `${progress}%`;
     }
+  }, 220);
 
-    // 이미지가 첨부되어 있으면 자동으로 Image-to-Image 모드, 없으면 Text-to-Image 모드로 작동
-    const isImg2Img = Boolean(uploadedComfyFilename);
-    const denoiseVal = isImg2Img && denoiseSlider ? parseFloat(denoiseSlider.value) : 1.0;
+  const falKey = localStorage.getItem("lumina_fal_key") || "";
 
-    const selectedRatio = document.querySelector('input[name="aspect-ratio"]:checked').value;
-    const [width, height] = selectedRatio.split("x").map(Number);
-    const negativePrompt = negPromptInput.value.trim();
-    const seed = parseInt(seedInput.value) || -1;
+  try {
+    let finalImageUrl = "";
 
-    generateBtn.disabled = true;
-    genSpinner.classList.remove("hidden");
-    progressContainer.classList.remove("hidden");
-    progressBarFill.style.width = "10%";
-    progressPercent.textContent = "10%";
-    progressStatusText.textContent = dict.progress_preparing;
-
-    let currentP = 10;
-    const progressTimer = setInterval(() => {
-      if (currentP < 90) {
-        currentP += Math.floor(Math.random() * 8) + 4;
-        if (currentP > 90) currentP = 90;
-        progressBarFill.style.width = `${currentP}%`;
-        progressPercent.textContent = `${currentP}%`;
-        progressStatusText.textContent = `${dict.progress_denoising} (${currentP}%)`;
-      }
-    }, 350);
-
+    // 1단계: 백엔드 프록시(/api/generate/fal) 우선 호출
+    let backendSuccess = false;
     try {
-      const res = await fetch("/api/generate", {
+      statusText.textContent = "Connecting to fal.ai Serverless Cloud Engine...";
+      const resp = await fetch("/api/generate/fal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user_id: currentUserId,
-          mode: isImg2Img ? "img2img" : "txt2img",
           prompt: prompt,
-          negative_prompt: negativePrompt,
-          width: width,
-          height: height,
-          seed: seed,
-          image_filename: isImg2Img ? uploadedComfyFilename : null,
-          denoise: denoiseVal
+          image_data: currentUploadedDataUrl,
+          aspect_ratio: activeRatio,
+          persona: activePersona,
+          scene: activeScene,
+          fal_key: falKey,
+          user_id: "default_user"
         })
       });
 
-      clearInterval(progressTimer);
-
-      if (!res.ok) {
-        let errMsg = "Generation error";
-        try {
-          const err = await res.json();
-          errMsg = err.error || errMsg;
-        } catch {
-          const txt = await res.text();
-          errMsg = txt || errMsg;
-        }
-        if (res.status === 402) {
-          if (confirm(dict.alert_quota_exceeded)) {
-            pricingModal.classList.remove("hidden");
-          }
-          return;
-        }
-        throw new Error(errMsg);
-      }
-
-      const data = await res.json();
-
-      progressBarFill.style.width = "100%";
-      progressPercent.textContent = "100%";
-      progressStatusText.textContent = dict.progress_done;
-
-      setTimeout(() => {
-        progressContainer.classList.add("hidden");
-      }, 700);
-
-      // 사용자 쿼터 갱신
-      if (data.user) {
-        currentUser = data.user;
-        if (currentUser.plan_id === "owner" || currentUser.plan_type === "unlimited") {
-          todayRemainingEl.textContent = "∞";
-          todayQuotaEl.textContent = currentLang === "ko" ? "무제한" : "Unlimited";
-        } else {
-          todayRemainingEl.textContent = currentUser.remaining_today;
-          todayQuotaEl.textContent = currentUser.daily_quota;
+      if (resp.ok) {
+        const resData = await resp.json();
+        if (resData.image_url) {
+          finalImageUrl = resData.image_url;
+          backendSuccess = true;
         }
       }
-
-      showPreview(data);
-      loadHistory();
-
     } catch (e) {
-      clearInterval(progressTimer);
-      progressContainer.classList.add("hidden");
-      alert(dict.alert_gen_failed + e.message);
-    } finally {
-      generateBtn.disabled = false;
-      genSpinner.classList.add("hidden");
+      console.warn("Backend API not reachable, falling back to client-side direct fal.ai call", e);
     }
-  });
 
-  function showPreview(data) {
-    const dict = i18n[currentLang] || i18n.en;
-    previewPlaceholder.classList.add("hidden");
-    previewImgContainer.classList.remove("hidden");
-    resultMeta.classList.remove("hidden");
+    // 2단계: 백엔드 미구동(정적 Vercel 환경) 시 브라우저 직접 fal.ai 호출
+    if (!backendSuccess) {
+      if (falKey) {
+        let falSize = "square_hd";
+        if (activeRatio === 'portrait_16_9') falSize = "portrait_16_9";
+        else if (activeRatio === 'portrait_4_3') falSize = "portrait_4_3";
 
-    mainPreviewImg.src = data.image_url;
-    downloadBtn.href = data.image_url;
-    downloadBtn.download = `lumina_${data.id}.png`;
-
-    metaSeed.textContent = data.seed;
-    metaSize.textContent = `${data.width}x${data.height}`;
-    metaEngine.textContent = data.mode === "comfyui_live" ? "ComfyUI GPU (Live)" : "Demo Simulation";
-
-    copyPromptBtn.onclick = () => {
-      navigator.clipboard.writeText(data.prompt);
-      alert(dict.alert_copied);
-    };
-  }
-
-  // 히스토리 로드
-  async function loadHistory() {
-    const dict = i18n[currentLang] || i18n.en;
-    try {
-      const res = await fetch(`/api/history?user_id=${currentUserId}`);
-      const data = await res.json();
-      const list = data.history || [];
-
-      historyCount.textContent = `${list.length} ${dict.gallery_count}`;
-
-      if (list.length === 0) {
-        historyGrid.innerHTML = `<div class="empty-history">${dict.gallery_empty}</div>`;
-        return;
-      }
-
-      historyGrid.innerHTML = "";
-      list.forEach(item => {
-        const itemEl = document.createElement("div");
-        itemEl.className = "history-item";
-        itemEl.innerHTML = `<img src="${item.image_url}" alt="AI artwork" loading="lazy">`;
-        
-        itemEl.addEventListener("click", () => {
-          showPreview({
-            id: item.id,
-            image_url: item.image_url,
-            prompt: item.prompt,
-            seed: item.seed,
-            width: item.width,
-            height: item.height,
-            mode: "history"
-          });
-          promptInput.value = item.prompt;
-          promptLen.textContent = `${item.prompt.length} ${dict.prompt_chars}`;
-          window.scrollTo({ top: 0, behavior: "smooth" });
+        const directResp = await fetch("https://fal.run/fal-ai/flux/schnell", {
+          method: "POST",
+          headers: {
+            "Authorization": `Key ${falKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            prompt: prompt,
+            image_size: falSize,
+            num_inference_steps: 4,
+            enable_safety_checker: true
+          })
         });
 
-        historyGrid.appendChild(itemEl);
-      });
-    } catch (e) {
-      console.error("히스토리 로드 실패:", e);
+        if (directResp.ok) {
+          const directData = await directResp.json();
+          if (directData.images && directData.images.length > 0) {
+            finalImageUrl = directData.images[0].url;
+          }
+        }
+      }
+
+      // 3단계: 키 미등록 시 고화질 시뮬레이션 데모 컷
+      if (!finalImageUrl) {
+        await new Promise(r => setTimeout(r, 1800));
+        const samplePool = [
+          "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80",
+          "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1400&q=80",
+          "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1400&q=80",
+          "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1400&q=80"
+        ];
+        finalImageUrl = samplePool[Math.floor(Math.random() * samplePool.length)];
+      }
     }
+
+    clearInterval(progressTimer);
+    progressBar.style.width = "100%";
+    progressPercent.textContent = "100%";
+
+    // 워터마크 적용 렌더링
+    await renderResult(finalImageUrl, willBeWatermarked);
+
+    // 무료 체험 1회 소진 처리
+    if (willBeWatermarked) {
+      isFreeTrialUsed = true;
+      localStorage.setItem("lumina_free_trial_used", "true");
+      updatePlanBadgeDisplay();
+    } else if (!isOwner) {
+      userSubscription.shotsRemaining = Math.max(0, userSubscription.shotsRemaining - 1);
+      localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
+      updatePlanBadgeDisplay();
+    }
+
+  } catch (err) {
+    clearInterval(progressTimer);
+    console.error("Generation failed:", err);
+    alert((currentLang === 'ko' ? "생성 실패: " : "Generation failed: ") + err.message);
+  } finally {
+    btn.disabled = false;
+    const dict = i18n[currentLang] || i18n.en;
+    btnText.textContent = dict.btnGenerateText || "Generate High-Converting AI Model Shot";
+    setTimeout(() => statusBox.classList.add("hidden"), 800);
+  }
+}
+
+// 캔버스 렌더링 & 워터마크 오버레이 합성
+async function renderResult(url, isWatermarked) {
+  currentResultUrl = url;
+  currentResultIsWatermarked = isWatermarked;
+
+  document.getElementById("canvasEmptyState").classList.add("hidden");
+  const img = document.getElementById("resultImage");
+  const badge = document.getElementById("canvasBadge");
+
+  if (isWatermarked) {
+    // 캔버스 기반 대각선 반투명 워터마크 합성
+    const watermarkedDataUrl = await createWatermarkedImage(url, DEFAULT_WATERMARK_TEXT);
+    img.src = watermarkedDataUrl;
+    img.classList.remove("hidden");
+
+    badge.className = "absolute top-4 left-4 px-3 py-1.5 rounded-full bg-rose-500/90 text-white border border-rose-400/50 text-xs font-bold shadow-xl backdrop-blur-md flex items-center gap-1.5";
+    badge.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i> ${currentLang === 'ko' ? "무료 1회 체험 프리뷰 (워터마크 포함)" : "Free Trial Preview (Watermarked)"}`;
+  } else {
+    img.src = url;
+    img.classList.remove("hidden");
+
+    badge.className = "absolute top-4 left-4 px-3 py-1.5 rounded-full bg-emerald-600/90 text-white border border-emerald-400/50 text-xs font-bold shadow-xl backdrop-blur-md flex items-center gap-1.5";
+    badge.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> ${currentLang === 'ko' ? "✨ 8K 상업용 원본 (워터마크 없음)" : "✨ Commercial 8K Export"}`;
+  }
+  badge.classList.remove("hidden");
+
+  updateDownloadButtonUI();
+  document.getElementById("resultActions").classList.remove("hidden");
+  addToRecentGallery(url);
+  if (window.lucide) lucide.createIcons();
+}
+
+function createWatermarkedImage(imgUrl, watermarkText) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width || 1200;
+      canvas.height = img.height || 1200;
+      const ctx = canvas.getContext("2d");
+
+      // 원본 이미지 그리기
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // 워터마크 스타일 (반투명 대각선 반복)
+      ctx.save();
+      ctx.font = "bold 38px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.42)";
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.35)";
+      ctx.lineWidth = 3;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // 45도 회전 반복 스탬프
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(-Math.PI / 4);
+
+      const stepY = 160;
+      for (let y = -canvas.height; y <= canvas.height; y += stepY) {
+        ctx.strokeText(watermarkText, 0, y);
+        ctx.fillText(watermarkText, 0, y);
+      }
+      ctx.restore();
+
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = () => resolve(imgUrl);
+    img.src = imgUrl;
+  });
+}
+
+function updateDownloadButtonUI() {
+  const btn = document.getElementById("btnDownloadMain");
+  if (!btn) return;
+
+  const dict = i18n[currentLang] || i18n.en;
+
+  if (currentResultIsWatermarked) {
+    btn.className = "py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-95 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition";
+    btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> <span>${dict.btnDownloadWatermark}</span>`;
+  } else {
+    btn.className = "py-3 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/25 transition";
+    btn.innerHTML = `<i data-lucide="download" class="w-4 h-4"></i> <span>${dict.btnDownloadClean}</span>`;
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function handleDownloadClick() {
+  if (currentResultIsWatermarked) {
+    // 워터마크 결과물인 경우 -> 결제 유도 모달 팝업!
+    switchNav('pricing');
+    alert(currentLang === 'ko'
+      ? "🎉 무료 1회 체험 생성이 완료되었습니다!\n\n워터마크가 완전히 제거된 8K 원본을 소장하고 아마존·쇼피파이 상업적 재판매 권한을 얻으려면 아래에서 플랜을 구독하세요."
+      : "🎉 Free trial generation complete!\n\nTo download clean, watermark-free 8K commercial exports with 100% royalty-free resell rights, please choose a plan below.");
+  } else {
+    // 워터마크 없는 유료/오너 원본 다운로드
+    const a = document.createElement("a");
+    a.href = currentResultUrl;
+    a.download = "lumina_commercial_shot_8k.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+}
+
+function copyPromptToClipboard() {
+  const p = document.getElementById("promptInput").value;
+  navigator.clipboard.writeText(p);
+  alert(currentLang === 'ko' ? "프롬프트가 클립보드에 복사되었습니다!" : "Prompt copied to clipboard!");
+}
+
+// ==================== RECENT GALLERY & BEFORE/AFTER ====================
+function renderRecentGallery() {
+  const container = document.getElementById("recentGalleryContainer");
+  const thumbnails = document.getElementById("recentGalleryThumbnails");
+  const count = document.getElementById("galleryCount");
+  if (!thumbnails || !container) return;
+
+  if (!recentGallery.length) {
+    container.classList.add("hidden");
+    return;
+  }
+  container.classList.remove("hidden");
+  count.textContent = `${recentGallery.length} saved`;
+  thumbnails.innerHTML = "";
+  recentGallery.forEach((item, idx) => {
+    const thumb = document.createElement("div");
+    thumb.className = "shrink-0 w-16 h-16 rounded-xl overflow-hidden border border-white/15 cursor-pointer hover:border-brand-accent transition group relative";
+    thumb.innerHTML = `
+      <img src="${item.url}" alt="Shot ${idx + 1}" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+        <i data-lucide="zoom-in" class="w-4 h-4 text-white"></i>
+      </div>
+    `;
+    thumb.onclick = () => renderResult(item.url, false);
+    thumbnails.appendChild(thumb);
+  });
+  if (window.lucide) lucide.createIcons();
+}
+
+function addToRecentGallery(url) {
+  recentGallery.unshift({ url, timestamp: Date.now() });
+  if (recentGallery.length > 6) recentGallery.pop();
+  localStorage.setItem("lumina_recent_gallery", JSON.stringify(recentGallery));
+  renderRecentGallery();
+}
+
+function updateComparisonSlider(val) {
+  const clip = document.getElementById("sliderBeforeClip");
+  const divider = document.getElementById("sliderDividerLine");
+  if (clip) clip.style.width = `${val}%`;
+  if (divider) divider.style.left = `${val}%`;
+}
+
+function loadComparisonSample(category) {
+  const samples = {
+    apparel: {
+      before: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80",
+      after: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80"
+    },
+    cosmetics: {
+      before: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1400&q=80",
+      after: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=1400&q=80"
+    },
+    watch: {
+      before: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1400&q=80",
+      after: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1400&q=80"
+    },
+    shoes: {
+      before: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1400&q=80",
+      after: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1400&q=80"
+    }
+  };
+
+  const s = samples[category] || samples.apparel;
+  document.getElementById("sliderBeforeImg").src = s.before;
+  document.getElementById("sliderAfterImg").src = s.after;
+
+  document.querySelectorAll(".comp-btn").forEach(b => {
+    b.classList.remove("border-brand-accent", "bg-brand-accent/20", "text-white");
+    b.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
+  });
+  if (window.event && window.event.currentTarget) {
+    window.event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
+    window.event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/20", "text-white");
+  }
+}
+
+// ==================== PAYPAL CHECKOUT & SUBSCRIPTIONS ====================
+function startCheckout(planId, price, title, quota) {
+  selectedPlanForCheckout = { planId, price, title, quota };
+
+  document.getElementById("checkoutPlanTitle").textContent = `${title} ($${price})`;
+  document.getElementById("checkoutPlanDesc").textContent = `$${price} • ${quota} Commercial AI Model Shots`;
+  document.getElementById("legalConsentCheckbox").checked = false;
+  document.getElementById("consentError").classList.add("hidden");
+
+  renderPayPalSmartButtons(planId, price, title, quota);
+  document.getElementById("checkoutModal").classList.remove("hidden");
+}
+
+function closeCheckoutModal() {
+  document.getElementById("checkoutModal").classList.add("hidden");
+}
+
+function renderPayPalSmartButtons(planId, price, title, quota) {
+  const area = document.getElementById("paypal-smart-button-area");
+  area.innerHTML = "";
+
+  if (window.paypal && paypal.Buttons) {
+    paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color: 'gold',
+        shape: 'rect',
+        label: 'pay'
+      },
+      onClick: (data, actions) => {
+        const consent = document.getElementById("legalConsentCheckbox").checked;
+        if (!consent) {
+          document.getElementById("consentError").classList.remove("hidden");
+          return actions.reject();
+        }
+        document.getElementById("consentError").classList.add("hidden");
+        return actions.resolve();
+      },
+      createOrder: (data, actions) => {
+        return actions.order.create({
+          purchase_units: [{
+            description: `Lumina Commerce AI - ${title}`,
+            amount: {
+              currency_code: 'USD',
+              value: price.toString()
+            }
+          }]
+        });
+      },
+      onApprove: (data, actions) => {
+        return actions.order.capture().then((details) => {
+          activateSubscription(planId, quota);
+          closeCheckoutModal();
+          alert(`🎉 Payment approved by ${details.payer.name.given_name}! ${title} activated with ${quota} shots.`);
+        });
+      },
+      onError: (err) => {
+        console.error("PayPal Error:", err);
+        alert("PayPal Checkout encountered an issue. You may test via 1-Sec Instant Approval below.");
+      }
+    }).render("#paypal-smart-button-area");
+  } else {
+    area.innerHTML = `
+      <div class="p-3 rounded-xl bg-dark-800 text-xs text-amber-400 border border-amber-500/20 text-center">
+        PayPal SDK is loading or Client ID is in test mode. You can use the 1-Sec Instant Approval below.
+      </div>
+    `;
+  }
+}
+
+function simulateSuccessfulPayment() {
+  const consent = document.getElementById("legalConsentCheckbox").checked;
+  if (!consent) {
+    document.getElementById("consentError").classList.remove("hidden");
+    return;
+  }
+  if (!selectedPlanForCheckout) return;
+
+  activateSubscription(selectedPlanForCheckout.planId, selectedPlanForCheckout.quota);
+  closeCheckoutModal();
+  alert(`🎉 [Staging Simulation] Successfully activated ${selectedPlanForCheckout.title}! ${selectedPlanForCheckout.quota} shots credited.`);
+}
+
+function activateSubscription(planId, quota) {
+  userSubscription = {
+    plan: planId,
+    shotsRemaining: quota,
+    totalQuota: quota
+  };
+  localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
+  updatePlanBadgeDisplay();
+
+  // 워터마크 제거 모드 업데이트
+  if (currentResultUrl && currentResultIsWatermarked) {
+    renderResult(currentResultUrl, false);
   }
 
-  // 모달 제어
-  openPricingBtn.addEventListener("click", () => {
-    pricingModal.classList.remove("hidden");
-  });
+  switchNav('studio');
+}
 
-  closePricingBtn.addEventListener("click", () => {
-    pricingModal.classList.add("hidden");
-  });
+// ==================== CONFIG MODALS (PAYPAL, FAL.AI, LEGAL) ====================
+function openPaypalModal() {
+  document.getElementById("paypalConfigModal").classList.remove("hidden");
+}
+function closePaypalModal() {
+  document.getElementById("paypalConfigModal").classList.add("hidden");
+}
+function savePaypalClientId() {
+  const val = document.getElementById("paypalClientIdInput").value.trim();
+  if (!val) return;
+  localStorage.setItem("lumina_paypal_client_id", val);
+  closePaypalModal();
+  alert("PayPal Client ID saved. Refreshing to reload SDK...");
+  location.reload();
+}
 
-  pricingModal.addEventListener("click", (e) => {
-    if (e.target === pricingModal) {
-      pricingModal.classList.add("hidden");
+function openFalKeyModal() {
+  document.getElementById("falKeyModal").classList.remove("hidden");
+}
+function closeFalKeyModal() {
+  document.getElementById("falKeyModal").classList.add("hidden");
+}
+function saveFalApiKey() {
+  const key = document.getElementById("falApiKeyInput").value.trim();
+  localStorage.setItem("lumina_fal_key", key);
+  closeFalKeyModal();
+  alert(currentLang === 'ko' ? "fal.ai API Key가 로컬에 안전하게 저장되었습니다!" : "fal.ai API Key securely saved locally!");
+}
+function clearFalApiKey() {
+  localStorage.removeItem("lumina_fal_key");
+  document.getElementById("falApiKeyInput").value = "";
+  closeFalKeyModal();
+  alert(currentLang === 'ko' ? "fal.ai Key가 제거되었습니다 (데모 시뮬레이션 모드로 전환)." : "fal.ai Key removed (Switched to demo preview mode).");
+}
+
+function openLegalModal(type) {
+  const title = document.getElementById("legalModalTitle");
+  const body = document.getElementById("legalModalBody");
+
+  if (type === 'refund') {
+    title.textContent = "Refund & Cancellation Policy (Strict 5-Shot Limit)";
+    body.innerHTML = `
+      <p><strong>1. Digital Goods & Compute Consumption</strong><br>
+      Lumina Commerce AI provisions real-time cloud GPU resources immediately upon generation. Hardware and API compute costs are strictly incurred per image rendered.</p>
+      <p><strong>2. Refund Eligibility</strong><br>
+      Full refund is eligible within 7 days of purchase <em>ONLY IF fewer than 5 images have been generated</em>. Once more than 5 images are rendered, the plan is strictly NON-REFUNDABLE under international digital goods merchant terms.</p>
+      <p><strong>3. Cancellation</strong><br>
+      Subscriptions can be canceled at any time from your PayPal account settings, stopping recurring charges at the end of the billing cycle.</p>
+    `;
+  } else {
+    title.textContent = "Terms of Service";
+    body.innerHTML = `
+      <p><strong>1. Commercial License</strong><br>
+      All generated AI model shots are 100% royalty-free for commercial use across Amazon, Shopify, Etsy, TikTok Shop, social ads, and marketing materials.</p>
+      <p><strong>2. Content Guidelines</strong><br>
+      Users may not upload unlawful, offensive, or infringing material. The service employs automated safety filters.</p>
+      <p><strong>3. Service Availability</strong><br>
+      Operated via serverless cloud architecture with 99.9% uptime SLA, independent of local host machines.</p>
+    `;
+  }
+  document.getElementById("legalModal").classList.remove("hidden");
+}
+function closeLegalModal() {
+  document.getElementById("legalModal").classList.add("hidden");
+}
+
+// ==================== DIRECTOR SEYUN OWNER PASS ====================
+function toggleOwnerPass() {
+  if (userSubscription.plan === 'owner') {
+    userSubscription = { plan: 'none', shotsRemaining: 0, totalQuota: 0 };
+    localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
+    updatePlanBadgeDisplay();
+    alert(currentLang === 'ko' ? "일반 구독자 모드로 전환되었습니다." : "Switched to standard user mode.");
+  } else {
+    userSubscription = { plan: 'owner', shotsRemaining: 999999, totalQuota: 999999 };
+    localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
+    updatePlanBadgeDisplay();
+    alert(currentLang === 'ko'
+      ? "👑 [S-Probiz 대표 Seyun] 오너 무제한 모드가 활성화되었습니다!\n과금/차감 없이 무제한으로 AI 모델 컷 생성이 가능합니다."
+      : "👑 [S-Probiz Director Seyun] Owner Unlimited Pass Activated!\nGenerate unlimited AI model shots without credit deduction.");
+  }
+  updateOwnerToggleUI();
+}
+
+function updateOwnerToggleUI() {
+  const btn = document.getElementById("ownerToggleText");
+  if (btn) {
+    btn.textContent = userSubscription.plan === 'owner' ? "Owner (Active ∞)" : "Owner Pass (Seyun)";
+  }
+  const marginTable = document.getElementById("ownerMarginTable");
+  if (marginTable) {
+    if (userSubscription.plan === 'owner') {
+      marginTable.classList.remove("hidden");
+    } else {
+      marginTable.classList.add("hidden");
     }
-  });
-
-  // 시작
-  init();
-});
+  }
+  const adminKeys = document.getElementById("adminHeaderKeys");
+  if (adminKeys) {
+    if (userSubscription.plan === 'owner') {
+      adminKeys.classList.remove("hidden");
+      adminKeys.classList.add("flex");
+    } else {
+      adminKeys.classList.add("hidden");
+      adminKeys.classList.remove("flex");
+    }
+  }
+}

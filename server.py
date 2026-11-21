@@ -1,8 +1,9 @@
 """
-server.py - ComfyStudio AI 이미지 SaaS 백엔드 메인 서버 (aiohttp)
-- 3가지 SaaS 요금제 (Starter $15, Pro $30, Pro 3-Month $74)
-- PayPal 결제 및 분쟁 방지 필수 동의 로직
-- 일일 할당량(Daily Quota) 관리
+server.py - Lumina Commerce AI 백엔드 메인 서버 (aiohttp)
+- fal.ai 24시간 무중단 클라우드 서버리스 엔진 연동 (로컬 ComfyUI 의존성 제로)
+- 가상 피팅(Virtual Try-on) 및 1초 누끼 자동 제거(/api/remove-bg)
+- 1회 무료 체험 워터마크(Freemium Hook) 및 B2B 유료 구독 전환 ($19 / $39 / $89)
+- PayPal Live 스마트 결제 및 분쟁 방지 필수 동의 연동
 """
 
 import os
@@ -20,7 +21,7 @@ from database import (
     record_generation,
     get_generation_history
 )
-from comfy_service import ComfyService
+from fal_service import FalService
 from paypal_service import PayPalService
 
 # 설정 파일 로드
@@ -28,18 +29,22 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.json")
 with open(CONFIG_PATH, "r", encoding="utf-8") as f:
     config = json.load(f)
 
-# DB 초기화
-init_db(initial_credits=config["service"].get("initial_free_credits", 10))
+# DB 초기화 (신규 유저 1회 무료 체험 기본값)
+init_db(initial_credits=config["service"].get("initial_free_credits", 1))
 
-# 서비스 인스턴스 초기화
-comfy_service = ComfyService(
-    base_url=config["comfyui"].get("base_url", "http://127.0.0.1:8188"),
-    output_dir=config["service"].get("output_dir", "./outputs"),
-    timeout_seconds=config["comfyui"].get("timeout_seconds", 300)
+# fal.ai 서버리스 클라우드 서비스 인스턴스 초기화
+fal_config = config.get("fal_ai", {})
+fal_service = FalService(
+    api_key=os.environ.get("FAL_KEY") or fal_config.get("api_key", ""),
+    model_endpoint=fal_config.get("model_endpoint", "fal-ai/flux/schnell"),
+    tryon_endpoint=fal_config.get("tryon_endpoint", "fal-ai/fashn-tryon"),
+    biremove_endpoint=fal_config.get("biremove_endpoint", "fal-ai/bria/background/remove"),
+    timeout_seconds=fal_config.get("timeout_seconds", 60)
 )
 
+# PayPal 결제 서비스 인스턴스 초기화
 paypal_service = PayPalService(
-    mode=config["paypal"].get("mode", "sandbox"),
+    mode=config["paypal"].get("mode", "live"),
     client_id=config["paypal"].get("client_id", ""),
     client_secret=config["paypal"].get("client_secret", ""),
     plans=config["paypal"].get("plans", [])
@@ -48,58 +53,56 @@ paypal_service = PayPalService(
 routes = web.RouteTableDef()
 
 REFUND_POLICY_TEXT = """
-REFUND & CANCELLATION POLICY
+LUMINA COMMERCE AI - TERMS & REFUND POLICY (STRICT 5-SHOT LIMIT)
 
-1. Digital Goods & GPU Consumption Notice
-Our service provides real-time AI image generation powered by dedicated GPU cloud resources. Because computing power and server costs are incurred immediately upon image generation, completed generations cannot be revoked.
+1. Digital Goods & Compute Consumption Notice
+Lumina Commerce AI provisions real-time cloud GPU resources immediately upon generation via dedicated serverless infrastructure. Because hardware computing power is strictly incurred per image rendered, completed generations cannot be revoked.
 
 2. Eligibility for Refund
-- Full Refund: Eligible within 7 days of purchase ONLY IF the user has generated fewer than 5 images (or consumed less than 5% of their daily quota).
-- Once more than 5 images have been generated, the purchase is strictly NON-REFUNDABLE.
-- 3-Month Pass ($74): After 7 days from purchase or upon generating more than 5 images, no pro-rated refunds will be issued for the remaining days.
+- Full refund is eligible within 7 days of purchase ONLY IF fewer than 5 images have been generated.
+- Once more than 5 images are rendered, the purchase is strictly NON-REFUNDABLE under international digital goods merchant terms.
+- 3-Month Pass ($89): After 7 days or upon generating more than 5 images, no pro-rated refunds will be issued for remaining days.
 
-3. Results & Quality Disclaimer
-Variations in artistic preference, prompt interpretation by the AI model, or subjective dissatisfaction with generated artwork do not qualify for a refund. We recommend reviewing sample outputs prior to subscribing.
+3. Commercial License
+Subscribers receive 100% royalty-free commercial rights to use, modify, and resell all generated model shots across Amazon, Shopify, Etsy, TikTok Shop, and global advertising channels.
 
-4. Service Errors & Downtime
-In the event of failed generations due to server or ComfyUI pipeline errors, consumed credits will be automatically replenished to your daily balance. Cash refunds are not provided for temporary server interruptions.
-
-5. Subscription Cancellation
-You may cancel your monthly subscription at any time via your account dashboard or through your PayPal account. Upon cancellation, your plan will remain active until the end of the current billing cycle, with no further recurring charges.
+4. Subscription Cancellation
+You may cancel recurring monthly billing at any time directly through your PayPal account dashboard, preventing future charges at the end of the current billing cycle.
 """.strip()
 
 @routes.get("/api/status")
 async def handle_status(request):
-    """서버 및 연동 컴포넌트 상태 확인"""
-    is_comfy = await comfy_service.is_comfy_online()
-    paypal_ready = paypal_service.is_configured()
+    """서버 및 fal.ai / PayPal 연동 상태 확인"""
     return web.json_response({
         "status": "online",
-        "comfyui": {
-            "online": is_comfy,
-            "url": comfy_service.base_url,
-            "mode": "live" if is_comfy else "fallback_demo"
+        "service": "Lumina Commerce AI v2.0",
+        "fal_ai": {
+            "configured": fal_service.is_configured(),
+            "model": fal_service.model_endpoint,
+            "tryon_endpoint": fal_service.tryon_endpoint,
+            "biremove_endpoint": fal_service.biremove_endpoint,
+            "mode": "live_cloud" if fal_service.is_configured() else "demo_preview"
         },
         "paypal": {
-            "configured": paypal_ready,
+            "configured": paypal_service.is_configured(),
             "mode": paypal_service.mode,
-            "client_id": paypal_service.client_id if paypal_ready else None
+            "client_id": paypal_service.client_id if paypal_service.is_configured() else None
         }
     })
 
 @routes.get("/api/user")
 async def handle_get_user(request):
-    """현재 사용자 정보 및 플랜/할당량 반환"""
+    """현재 사용자 정보 및 쿼터 반환"""
     user_id = request.query.get("user_id", "default_user")
     user = get_user(user_id)
     return web.json_response(user)
 
 @routes.get("/api/plans")
 async def handle_get_plans(request):
-    """요금제 플랜 및 환불 정책 반환"""
+    """3단계 이커머스 플랜 ($19/$39/$89) 및 환불 정책 반환"""
     return web.json_response({
         "plans": config["paypal"].get("plans", []),
-        "paypal_client_id": paypal_service.client_id if paypal_service.is_configured() else "sb",
+        "paypal_client_id": paypal_service.client_id if paypal_service.is_configured() else "BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik",
         "refund_policy": REFUND_POLICY_TEXT
     })
 
@@ -107,29 +110,31 @@ async def handle_get_plans(request):
 async def handle_refund_policy(request):
     return web.Response(text=REFUND_POLICY_TEXT, content_type="text/plain; charset=utf-8")
 
-@routes.post("/api/upload-image")
-async def handle_upload_image(request):
-    """Image-to-Image 용 참조 이미지 업로드 및 ComfyUI 전달"""
+@routes.post("/api/remove-bg")
+async def handle_remove_bg(request):
+    """
+    1초 누끼 자동 제거 (Background Removal) 엔드포인트
+    - 원본 제품 사진에서 배경을 투명화하여 가상 피팅 정밀도 향상
+    """
     try:
-        reader = await request.multipart()
-        field = await reader.next()
-        if not field:
-            return web.json_response({"error": "업로드할 이미지가 없습니다."}, status=400)
+        data = await request.json()
+        image_data = data.get("image_data")
+        if not image_data:
+            return web.json_response({"error": "이미지 데이터가 필요합니다."}, status=400)
 
-        filename = field.filename or "upload.png"
-        content = await field.read()
-
-        comfy_filename = await comfy_service.upload_image(content, filename)
-        return web.json_response({
-            "success": True,
-            "filename": comfy_filename
-        })
+        result = await fal_service.remove_background(image_data)
+        return web.json_response(result)
     except Exception as e:
-        return web.json_response({"error": f"이미지 업로드 실패: {str(e)}"}, status=500)
+        return web.json_response({"error": f"누끼 제거 실패: {str(e)}"}, status=500)
 
+@routes.post("/api/generate/fal")
 @routes.post("/api/generate")
-async def handle_generate(request):
-    """이미지 생성 요청"""
+async def handle_generate_fal(request):
+    """
+    fal.ai 서버리스 AI 모델 컷 생성 엔드포인트
+    - 1회 무료 체험자에게는 워터마크(Freemium Hook) 합성 지침 전달
+    - 유료 구독자 및 Owner에게는 깨끗한 8K 상업용 원본 제공
+    """
     try:
         data = await request.json()
     except Exception:
@@ -137,34 +142,45 @@ async def handle_generate(request):
 
     user_id = data.get("user_id", "default_user")
     prompt = data.get("prompt", "").strip()
-    negative_prompt = data.get("negative_prompt", "").strip()
-    width = int(data.get("width", 512))
-    height = int(data.get("height", 512))
+    image_data = data.get("image_data")
+    aspect_ratio = data.get("aspect_ratio", "square_hd")
+    persona = data.get("persona", "female_editorial")
+    scene = data.get("scene", "luxury_marble")
     seed = data.get("seed")
-    image_filename = data.get("image_filename")
-    denoise = float(data.get("denoise", 0.85)) if data.get("denoise") is not None else 1.0
+
+    # 클라이언트가 브라우저에서 직접 입력한 fal_key가 있을 경우 우선 적용
+    client_fal_key = data.get("fal_key", "").strip()
+    if client_fal_key:
+        fal_service.set_api_key(client_fal_key)
 
     if not prompt:
         return web.json_response({"error": "프롬프트를 입력해주세요."}, status=400)
 
-    # 1. 생성 가능 여부 확인 (플랜 쿼터 또는 기본 크레딧)
+    # 1. 생성 가능 여부 확인
     allowed, reason_or_type = can_generate(user_id)
     if not allowed:
-        return web.json_response({"error": reason_or_type}, status=402)
+        return web.json_response({
+            "error": reason_or_type,
+            "requires_upgrade": True
+        }, status=402)
 
     gen_type = reason_or_type
+    is_watermarked = (gen_type == "free_trial")
 
     try:
-        # 2. 이미지 생성
-        result = await comfy_service.generate_image(
+        # 2. fal.ai 클라우드 렌더링
+        result = await fal_service.generate_image(
             prompt=prompt,
-            negative_prompt=negative_prompt,
-            width=width,
-            height=height,
-            seed=seed,
-            image_filename=image_filename,
-            denoise=denoise
+            image_data=image_data,
+            aspect_ratio=aspect_ratio,
+            persona=persona,
+            scene=scene,
+            seed=seed
         )
+
+        result["is_watermarked"] = is_watermarked
+        result["watermark_text"] = config["service"].get("watermark_text", "LUMINA AI PREVIEW - NOT FOR COMMERCIAL USE")
+        result["gen_type"] = gen_type
 
         # 3. 사용량 차감 및 DB 기록
         record_generation_use(user_id, gen_type)
@@ -173,11 +189,12 @@ async def handle_generate(request):
             gen_id=result["id"],
             user_id=user_id,
             prompt=prompt,
-            negative_prompt=negative_prompt,
-            width=width,
-            height=height,
+            negative_prompt=data.get("negative_prompt", ""),
+            width=1024,
+            height=1024,
             seed=result["seed"],
-            image_url=result["image_url"]
+            image_url=result["image_url"],
+            is_watermarked=is_watermarked
         )
 
         user_info = get_user(user_id)
@@ -197,7 +214,7 @@ async def handle_paypal_create_order(request):
 
     if not agreement_accepted:
         return web.json_response({
-            "error": "이용약관 및 환불 정책(GPU 자원 소모성 상품 고지)에 동의해야 결제를 진행할 수 있습니다."
+            "error": "이용약관 및 환불 정책(디지털 재화 5회 제한 고지)에 동의해야 결제를 진행할 수 있습니다."
         }, status=400)
 
     if not plan_id:
@@ -229,7 +246,7 @@ async def handle_paypal_capture_order(request):
             # 유저 플랜 적용
             apply_plan_to_user(user_id, plan)
 
-            # 거래 기록 저장 (분쟁 방지용 법적 동의 플래그 1 기록)
+            # 거래 기록 저장
             record_transaction(
                 order_id=order_id,
                 user_id=user_id,
@@ -247,7 +264,7 @@ async def handle_paypal_capture_order(request):
                 "success": True,
                 "plan": plan,
                 "user": updated_user,
-                "message": f"🎉 {plan['name']}이 활성화되었습니다! 매일 {plan.get('daily_generations', 40)}회 생성이 제공됩니다."
+                "message": f"🎉 {plan['name']}이 활성화되었습니다! 워터마크 없는 8K 상업용 생성이 제공됩니다."
             })
         else:
             return web.json_response({"error": "결제 승인에 실패했습니다."}, status=400)
@@ -271,12 +288,6 @@ async def handle_index(request):
     response.headers["Expires"] = "0"
     return response
 
-@routes.get("/manual")
-async def handle_manual(request):
-    """상용 배포 인터랙티브 대시보드 서빙"""
-    public_dir = os.path.abspath(os.path.dirname(__file__))
-    return web.FileResponse(os.path.join(public_dir, "DEPLOYMENT_DASHBOARD.html"))
-
 @web.middleware
 async def cors_middleware(request, handler):
     if request.method == "OPTIONS":
@@ -292,8 +303,7 @@ async def cors_middleware(request, handler):
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     
-    # 캐시 방지 헤더 (HTML, JS, CSS 실시간 반영)
-    if request.path.endswith((".html", ".js", ".css")) or request.path in ["/", "/manual"]:
+    if request.path.endswith((".html", ".js", ".css")) or request.path == "/":
         response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "0"
@@ -317,5 +327,5 @@ if __name__ == "__main__":
     app = create_app()
     port = config["server"].get("port", 8000)
     host = config["server"].get("host", "0.0.0.0")
-    print(f"[Lumina AI] Server running at http://localhost:{port}")
+    print(f"[Lumina Commerce AI] Serverless backend running at http://localhost:{port}")
     web.run_app(app, host=host, port=port)

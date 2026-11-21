@@ -313,15 +313,23 @@
                 <div class="flex items-center gap-3.5">
                   <img id="uploadPreviewImg" src="" alt="Product" class="w-14 h-14 rounded-xl object-cover border border-white/20 shadow">
                   <div>
-                    <p id="uploadPreviewName" class="text-xs font-bold text-white max-w-[220px] truncate">product.png</p>
-                    <span class="text-[11px] text-emerald-400 font-bold flex items-center gap-1 mt-0.5">
-                      <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Ready for AI Studio Fitting
-                    </span>
+                    <p id="uploadPreviewName" class="text-xs font-bold text-white max-w-[190px] truncate">product.png</p>
+                    <div id="uploadPreviewStatus" class="mt-0.5">
+                      <span class="text-[11px] text-slate-400 font-medium flex items-center gap-1">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Ready for AI Studio Fitting
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <button type="button" onclick="clearUpload()" class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition" title="Remove Product">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                  <button type="button" id="btnRemoveBgToggle" onclick="toggleRemoveBg()" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold transition flex items-center gap-1" title="1-Sec Background Removal">
+                    <i data-lucide="scissors" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span data-i18n="btnRemoveBg">✂️ 1-Sec Remove BG</span>
+                  </button>
+                  <button type="button" onclick="clearUpload()" class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition" title="Remove Product">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -476,9 +484,9 @@
 
             <!-- ACTION BUTTONS -->
             <div id="resultActions" class="hidden grid grid-cols-2 gap-3 pt-2">
-              <a id="btnDownload" href="#" download="lumina_commercial_shot.png" class="py-3 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/25 transition">
-                <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="btnDownload">Download 8K</span>
-              </a>
+              <button id="btnDownloadMain" onclick="handleDownloadClick()" class="py-3 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/25 transition">
+                <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="btnDownloadClean">Download 8K</span>
+              </button>
               <button onclick="copyPromptToClipboard()" class="py-3 rounded-xl bg-dark-800 hover:bg-dark-750 border border-white/15 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition">
                 <i data-lucide="copy" class="w-4 h-4"></i> <span data-i18n="btnCopyPrompt">Copy Prompt</span>
               </button>
@@ -638,30 +646,30 @@
           </button>
         </div>
 
-        <!-- 3. AGENCY PLAN ($89 - BEST VALUE) -->
+        <!-- 3. PRO 3-MONTH PASS ($89 - BEST VALUE) -->
         <div class="glass-card glass-card-hover rounded-3xl p-7 flex flex-col justify-between space-y-6 relative">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="px-3 py-1 rounded-lg bg-dark-750 text-amber-400 text-xs font-bold border border-amber-400/20">Agency Scale</span>
+              <span class="px-3 py-1 rounded-lg bg-dark-750 text-amber-400 text-xs font-bold border border-amber-400/20">Pro 3-Month Pass</span>
               <span class="text-xs text-slate-400 font-medium">Agencies & Brand Owners</span>
             </div>
             <div>
               <div class="flex items-baseline gap-1">
                 <span class="text-4xl md:text-5xl font-black text-white">$89</span>
-                <span class="text-xs text-slate-400">/ month</span>
+                <span class="text-xs text-slate-400">one-time (90 Days)</span>
               </div>
-              <p class="text-xs text-slate-400 mt-1 font-mono">~$0.059 per shot (Wholesale rate)</p>
+              <p class="text-xs text-slate-400 mt-1 font-mono">~$0.049 per shot (Wholesale rate)</p>
             </div>
             <ul class="space-y-3 text-xs text-slate-300 pt-3 border-t border-white/10">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> <strong>1,500 AI Model Shots</strong> / mo</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> <strong>1,800 AI Model Shots</strong> for 90 days</li>
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Multi-Brand Product Batch Processing</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Custom Prompt Brand Guidelines</li>
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> VIP Dedicated fal.ai Cloud Queue</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Priority 1-on-1 Support</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> One-time payment (No recurring surprises)</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Priority 1-on-1 Commercial Support</li>
             </ul>
           </div>
-          <button onclick="startCheckout('agency', 89, 'Agency Scale Plan', 1500)" class="w-full py-3.5 rounded-2xl bg-dark-750 hover:bg-dark-700 border border-white/15 text-white font-bold text-xs md:text-sm transition">
-            Subscribe Agency ($89)
+          <button onclick="startCheckout('pro_pass_3m', 89, 'Pro 3-Month Pass', 1800)" class="w-full py-3.5 rounded-2xl bg-dark-750 hover:bg-dark-700 border border-white/15 text-white font-bold text-xs md:text-sm transition">
+            Get 3-Month Pass ($89)
           </button>
         </div>
 
@@ -888,595 +896,7 @@
     </div>
   </div>
 
-  <!-- ==================== CORE JAVASCRIPT ==================== -->
-  <script>
-    const DEFAULT_PAYPAL_ID = "BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik";
-    
-    let currentLang = localStorage.getItem("lumina_lang") || "en";
-    let activePersona = "female_editorial";
-    let activeScene = "luxury_marble";
-    let activeRatio = "square_hd";
-    let currentUploadedFile = null;
-    let currentUploadedDataUrl = null;
-
-    // 100% Gated Subscription State
-    let userSubscription = JSON.parse(localStorage.getItem("lumina_sub")) || {
-      plan: "none",
-      shotsRemaining: 0,
-      totalQuota: 0
-    };
-
-    let selectedPlanForCheckout = null;
-
-    // BILINGUAL DICTIONARY
-    const i18n = {
-      en: {
-        navSubtitle: "High-Converting AI Model Shots for Amazon, Shopify & TikTok Shop",
-        navStudio: "AI Model Studio",
-        navShowcase: "Before & After",
-        navPricing: "Pricing & Plans",
-        btnPaypalKey: "PayPal Key",
-        btnFalKey: "fal.ai Key",
-        heroTitle: "Turn Flat Product Shots into <span class='gradient-text-indigo'>High-Converting</span> AI Model Photoshoots",
-        heroDesc: "Eliminate $3,000 studio photoshoot fees. Upload a raw product or mannequin photo and generate commercial-grade AI model wearing shots in 3 seconds for Amazon, Shopify, and TikTok Shop.",
-        stat1: "+340% Higher CTR on Ads",
-        stat2: "99.9% Enterprise Cloud Uptime SLA",
-        stat3: "100% Commercial Use & Resell Rights",
-        studioConfigTitle: "Model & Studio Parameters",
-        studioConfigDesc: "Configure the commercial model persona and luxury setting for your product",
-        labelProductImage: "1. Upload Product Photo (Clothing, Bag, Cosmetics, Shoes)",
-        dropzonePrompt: "Drag & drop product photo or click to browse",
-        dropzoneHint: "Supports Ctrl+V paste directly anywhere onto this page",
-        labelPersona: "2. Select AI Model Persona",
-        labelScene: "3. Select Commercial Studio Scene",
-        labelRatio: "4. Commercial Aspect Ratio",
-        labelPrompt: "5. Commercial Prompt & Details",
-        btnGenerateText: "Generate High-Converting AI Model Shot",
-        resultCanvasTitle: "Live Commercial Canvas",
-        emptyStateTitle: "Your Commercial AI Model Shot Will Appear Here",
-        emptyStateDesc: "Upload a product on the left and click Generate to run the serverless AI studio pipeline.",
-        btnDownload: "Download 8K",
-        btnCopyPrompt: "Copy Prompt",
-        showcaseTitle: "Compare the Difference: Raw Product vs AI Model Studio",
-        showcaseDesc: "Slide the bar below to see how ordinary flat lay or mannequin shots are transformed into Vogue-level studio model photography.",
-        pricingTitle: "High-Converting Commercial Plans",
-        pricingDesc: "Select your monthly commercial quota. 100% royalty-free rights, dedicated cloud queue, cancel anytime."
-      },
-      ko: {
-        navSubtitle: "아마존·쇼피파이 글로벌 셀러를 위한 AI 고전환 모델 컷 스튜디오",
-        navStudio: "AI 모델 스튜디오",
-        navShowcase: "Before & After 비교",
-        navPricing: "구독 요금제",
-        btnPaypalKey: "PayPal 키",
-        btnFalKey: "fal.ai 키",
-        heroTitle: "바닥에 놓인 제품 사진, 5초 만에 아마존·쇼피파이 글로벌 1등 상세페이지 <span class='gradient-text-indigo'>고전환 AI 럭셔리 모델 컷</span>으로 완성",
-        heroDesc: "회당 300~500만 원 드는 스튜디오 촬영비 전면 제로화. 마네킹 또는 바닥에 둔 제품 사진만 올리면 글로벌 톱 모델 착용 컷과 럭셔리 스튜디오 컷이 3초 만에 생성됩니다.",
-        stat1: "상세페이지/광고 클릭률(CTR) +340% 상승",
-        stat2: "99.9% 엔터프라이즈 클라우드 SLA 보증",
-        stat3: "100% 상업적 이용 및 재판매 권한 포함",
-        studioConfigTitle: "모델 및 스튜디오 촬영 환경 설정",
-        studioConfigDesc: "제품에 어울리는 상업용 AI 모델과 고급 촬영 스튜디오 배경을 선택하세요",
-        labelProductImage: "1. 제품 원본 사진 업로드 (의류, 가방, 뷰티, 신발 등)",
-        dropzonePrompt: "제품 사진을 끌어다 놓거나 클릭하여 선택하세요",
-        dropzoneHint: "웹/화면에서 복사 후 Ctrl+V로 바로 붙여넣기 지원",
-        labelPersona: "2. 피팅 모델 페르소나 선택",
-        labelScene: "3. 커머셜 스튜디오 배경 선택",
-        labelRatio: "4. 상업용 규격 비율 선택",
-        labelPrompt: "5. 제품 디테일 설명 & 스타일링 프롬프트",
-        btnGenerateText: "고전환 AI 모델 컷 생성하기",
-        resultCanvasTitle: "실시간 커머셜 캔버스",
-        emptyStateTitle: "생성된 AI 모델 착용 컷이 여기에 표시됩니다",
-        emptyStateDesc: "좌측에서 제품 사진을 올리고 생성 버튼을 누르면 서버리스 AI 파이프라인이 즉시 렌더링합니다.",
-        btnDownload: "8K 원본 다운로드",
-        btnCopyPrompt: "프롬프트 복사",
-        showcaseTitle: "일반 바닥 사진 vs AI 모델 스튜디오 컷 극적인 전환율 비교",
-        showcaseDesc: "가운데 슬라이더를 좌우로 밀어서 밋밋한 제품 사진이 보그(Vogue)급 모델 컷으로 변하는 차이를 직접 확인하세요.",
-        pricingTitle: "압도적 마진의 커머스 전용 요금제",
-        pricingDesc: "스토어 규모에 맞는 상업용 쿼터를 선택하세요. 100% 상업적 이용 및 재판매 권한 포함, 언제든 해지 가능."
-      }
-    };
-
-    window.addEventListener("DOMContentLoaded", () => {
-      lucide.createIcons();
-      applyLanguage(currentLang);
-      updatePlanBadgeDisplay();
-      setupPasteListener();
-
-      const savedPaypal = localStorage.getItem("lumina_paypal_client_id") || DEFAULT_PAYPAL_ID;
-      document.getElementById("paypalClientIdInput").value = savedPaypal;
-
-      const savedFal = localStorage.getItem("lumina_fal_key") || "";
-      document.getElementById("falApiKeyInput").value = savedFal;
-
-      enhancePrompt();
-    });
-
-    function switchNav(tab) {
-      document.getElementById("viewStudio").classList.toggle("hidden", tab !== 'studio');
-      document.getElementById("viewShowcase").classList.toggle("hidden", tab !== 'showcase');
-      document.getElementById("viewPricing").classList.toggle("hidden", tab !== 'pricing');
-
-      const tabs = {
-        studio: document.getElementById("navStudio"),
-        showcase: document.getElementById("navShowcase"),
-        pricing: document.getElementById("navPricing")
-      };
-
-      Object.keys(tabs).forEach(k => {
-        if (k === tab) {
-          tabs[k].className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-white bg-brand-accent shadow-md shadow-brand-accent/25 transition";
-        } else {
-          tabs[k].className = "px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition";
-        }
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function setLang(lang) {
-      currentLang = lang;
-      localStorage.setItem("lumina_lang", currentLang);
-      applyLanguage(currentLang);
-    }
-
-    function toggleLang() {
-      setLang(currentLang === 'en' ? 'ko' : 'en');
-    }
-
-    function applyLanguage(lang) {
-      const btnEn = document.getElementById("langBtnEn");
-      const btnKo = document.getElementById("langBtnKo");
-      if (btnEn && btnKo) {
-        if (lang === 'en') {
-          btnEn.className = "px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition";
-          btnKo.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition";
-        } else {
-          btnKo.className = "px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition";
-          btnEn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition";
-        }
-      }
-
-      const dict = i18n[lang] || i18n.en;
-      
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (dict[key]) el.innerHTML = dict[key];
-      });
-
-      updatePlanBadgeDisplay();
-    }
-
-    function updatePlanBadgeDisplay() {
-      const badge = document.getElementById("planBadgeText");
-      if (userSubscription.plan === 'none') {
-        badge.textContent = currentLang === 'ko' ? "플랜 업그레이드" : "Upgrade Plan";
-      } else if (userSubscription.plan === 'owner') {
-        badge.textContent = `👑 OWNER (∞)`;
-      } else {
-        const planName = userSubscription.plan.toUpperCase();
-        badge.textContent = `${planName} (${userSubscription.shotsRemaining} left)`;
-      }
-    }
-
-    function selectPersona(persona) {
-      activePersona = persona;
-      document.querySelectorAll(".persona-btn").forEach(btn => {
-        btn.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
-        btn.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
-      });
-      event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
-      event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
-      enhancePrompt();
-    }
-
-    function selectScene(scene) {
-      activeScene = scene;
-      document.querySelectorAll(".scene-btn").forEach(btn => {
-        btn.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
-        btn.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
-      });
-      event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
-      event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
-      enhancePrompt();
-    }
-
-    function updateRatio(input) {
-      activeRatio = input.value;
-      document.querySelectorAll(".ratio-label").forEach(l => {
-        l.classList.remove("border-brand-accent", "bg-brand-accent/15", "text-white");
-        l.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
-      });
-      input.closest(".ratio-label").classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
-      input.closest(".ratio-label").classList.add("border-brand-accent", "bg-brand-accent/15", "text-white");
-    }
-
-    function enhancePrompt() {
-      const personaDescriptions = {
-        female_editorial: "high fashion European female runway model, confident elegant gaze, flawless natural skin texture",
-        male_casual: "charismatic handsome male model in his late 20s, athletic clean posture, friendly smile",
-        beauty_hands: "flawless manicured hands gently holding and presenting the product, macro beauty photography",
-        ghost_mannequin: "invisible 3D hollow mannequin aesthetic, floating commercial presentation with depth"
-      };
-
-      const sceneDescriptions = {
-        luxury_marble: "placed on a sleek polished white marble podium, soft golden hour sunlight with organic window shadows",
-        sunlit_loft: "minimalist luxury sun-drenched loft apartment, Scandinavian interior, warm wooden textures",
-        parisian_street: "chic outdoor cafe terrace in Paris, soft bokeh blurred urban street in background",
-        amazon_white: "commercial Amazon 100% pure white studio background, crisp soft contact reflection below product",
-        nature_garden: "surrounded by fresh lush botanical leaves, subtle morning dew, natural sunlight beams",
-        cyber_vogue: "futuristic Vogue studio, high-contrast neon cyan and magenta rim lighting, cinematic shadows"
-      };
-
-      const pDesc = personaDescriptions[activePersona] || personaDescriptions.female_editorial;
-      const sDesc = sceneDescriptions[activeScene] || sceneDescriptions.luxury_marble;
-
-      const baseText = `award-winning commercial product photoshoot. Wearing and showcasing the luxury product. Featuring ${pDesc}. Set in a ${sDesc}. Shot on Hasselblad H6D-100c with 85mm f/1.4 lens, 8k resolution, photorealistic fabric textures, pristine studio depth of field.`;
-
-      document.getElementById("promptInput").value = baseText;
-    }
-
-    function handleFileSelect(e) {
-      if (e.target.files && e.target.files[0]) {
-        processUploadedFile(e.target.files[0]);
-      }
-    }
-
-    function setupPasteListener() {
-      window.addEventListener("paste", (e) => {
-        const items = (e.clipboardData || window.clipboardData).items;
-        if (items) {
-          for (let i = 0; i < items.length; i++) {
-            if (items[i].type.indexOf("image") !== -1) {
-              const file = items[i].getAsFile();
-              processUploadedFile(file);
-              break;
-            }
-          }
-        }
-      });
-    }
-
-    function processUploadedFile(file) {
-      if (!file || !file.type.startsWith("image/")) return;
-      currentUploadedFile = file;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        currentUploadedDataUrl = event.target.result;
-        document.getElementById("uploadPreviewImg").src = currentUploadedDataUrl;
-        document.getElementById("uploadPreviewName").textContent = file.name || "product_image.png";
-        document.getElementById("uploadPreviewBar").classList.remove("hidden");
-        document.getElementById("dropzone").classList.add("hidden");
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function clearUpload() {
-      currentUploadedFile = null;
-      currentUploadedDataUrl = null;
-      document.getElementById("productFileInput").value = "";
-      document.getElementById("uploadPreviewBar").classList.add("hidden");
-      document.getElementById("dropzone").classList.remove("hidden");
-    }
-
-    async function handleGenerateClick() {
-      if (userSubscription.plan === 'none' || userSubscription.shotsRemaining <= 0) {
-        if (userSubscription.plan !== 'owner') {
-          switchNav('pricing');
-          alert(currentLang === 'ko' 
-            ? "⚠️ Lumina Commerce AI는 고화질 GPU 연산 원가 보호를 위해 100% 유료 구독제로 운영됩니다. 아래에서 플랜을 선택해주세요!" 
-            : "⚠️ Lumina Commerce AI operates on a 100% gated paid subscription. Please choose a plan below to generate commercial AI model shots!");
-          return;
-        }
-      }
-
-      const prompt = document.getElementById("promptInput").value.trim();
-      if (!prompt) {
-        alert(currentLang === 'ko' ? "프롬프트를 입력해주세요." : "Please enter a product description or prompt.");
-        return;
-      }
-
-      const btn = document.getElementById("btnGenerate");
-      const btnText = document.getElementById("btnGenerateText");
-      const statusBox = document.getElementById("genStatusContainer");
-      const progressBar = document.getElementById("genProgressBar");
-      const progressPercent = document.getElementById("genProgressPercent");
-      const statusText = document.getElementById("genStatusText");
-
-      btn.disabled = true;
-      statusBox.classList.remove("hidden");
-      btnText.textContent = currentLang === 'ko' ? "AI 모델 컷 렌더링 중..." : "Rendering AI Model Shot...";
-
-      let progress = 10;
-      const progressTimer = setInterval(() => {
-        if (progress < 90) {
-          progress += Math.floor(Math.random() * 12) + 5;
-          if (progress > 90) progress = 90;
-          progressBar.style.width = `${progress}%`;
-          progressPercent.textContent = `${progress}%`;
-        }
-      }, 250);
-
-      const falKey = localStorage.getItem("lumina_fal_key") || "";
-
-      try {
-        let finalImageUrl = "";
-
-        if (falKey) {
-          statusText.textContent = "Connecting to fal.ai Flux.1 Schnell Cloud Engine...";
-          
-          let falSize = "square_hd";
-          if (activeRatio === 'portrait_16_9') falSize = "portrait_16_9";
-          else if (activeRatio === 'portrait_4_3') falSize = "portrait_4_3";
-
-          const response = await fetch("https://fal.run/fal-ai/flux/schnell", {
-            method: "POST",
-            headers: {
-              "Authorization": `Key ${falKey}`,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              prompt: prompt,
-              image_size: falSize,
-              num_inference_steps: 4,
-              enable_safety_checker: true
-            })
-          });
-
-          if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.detail || "fal.ai API Error");
-          }
-
-          const data = await response.json();
-          if (data.images && data.images.length > 0) {
-            finalImageUrl = data.images[0].url;
-          } else {
-            throw new Error("No image returned from fal.ai");
-          }
-
-        } else {
-          statusText.textContent = currentLang === 'ko' ? "fal.ai 연동 시뮬레이션 렌더링 중..." : "Simulating fal.ai Cloud Pipeline (Sample)...";
-          await new Promise(r => setTimeout(r, 2200));
-
-          const samplePool = [
-            "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80"
-          ];
-          finalImageUrl = samplePool[Math.floor(Math.random() * samplePool.length)];
-        }
-
-        clearInterval(progressTimer);
-        progressBar.style.width = "100%";
-        progressPercent.textContent = "100%";
-
-        renderResult(finalImageUrl);
-
-        if (userSubscription.plan !== 'owner') {
-          userSubscription.shotsRemaining = Math.max(0, userSubscription.shotsRemaining - 1);
-          localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
-          updatePlanBadgeDisplay();
-        }
-
-      } catch (err) {
-        clearInterval(progressTimer);
-        console.error("Generation failed:", err);
-        alert((currentLang === 'ko' ? "생성 실패: " : "Generation failed: ") + err.message + "\n\n(Tip: 우측 상단 [fal.ai Key] 모달에 유효한 API Key를 등록하시면 실시간 클라우드 렌더링이 작동합니다.)");
-      } finally {
-        btn.disabled = false;
-        const dict = i18n[currentLang] || i18n.en;
-        btnText.textContent = dict.btnGenerateText || "Generate High-Converting AI Model Shot";
-        setTimeout(() => statusBox.classList.add("hidden"), 1000);
-      }
-    }
-
-    function renderResult(url) {
-      document.getElementById("canvasEmptyState").classList.add("hidden");
-      const img = document.getElementById("resultImage");
-      img.src = url;
-      img.classList.remove("hidden");
-      document.getElementById("canvasBadge").classList.remove("hidden");
-
-      const btnDownload = document.getElementById("btnDownload");
-      btnDownload.href = url;
-      document.getElementById("resultActions").classList.remove("hidden");
-    }
-
-    function copyPromptToClipboard() {
-      const p = document.getElementById("promptInput").value;
-      navigator.clipboard.writeText(p);
-      alert(currentLang === 'ko' ? "프롬프트가 클립보드에 복사되었습니다!" : "Prompt copied to clipboard!");
-    }
-
-    function updateComparisonSlider(val) {
-      document.getElementById("sliderBeforeClip").style.width = `${val}%`;
-      document.getElementById("sliderDividerLine").style.left = `${val}%`;
-    }
-
-    function loadComparisonSample(category) {
-      const samples = {
-        apparel: {
-          before: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80",
-          after: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80"
-        },
-        cosmetics: {
-          before: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1400&q=80",
-          after: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=1400&q=80"
-        },
-        watch: {
-          before: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1400&q=80",
-          after: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1400&q=80"
-        },
-        shoes: {
-          before: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1400&q=80",
-          after: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1400&q=80"
-        }
-      };
-
-      const s = samples[category] || samples.apparel;
-      document.getElementById("sliderBeforeImg").src = s.before;
-      document.getElementById("sliderAfterImg").src = s.after;
-
-      document.querySelectorAll(".comp-btn").forEach(b => {
-        b.classList.remove("border-brand-accent", "bg-brand-accent/20", "text-white");
-        b.classList.add("border-white/10", "bg-dark-800", "text-slate-300");
-      });
-      event.currentTarget.classList.remove("border-white/10", "bg-dark-800", "text-slate-300");
-      event.currentTarget.classList.add("border-brand-accent", "bg-brand-accent/20", "text-white");
-    }
-
-    function startCheckout(planId, price, title, quota) {
-      selectedPlanForCheckout = { planId, price, title, quota };
-      
-      document.getElementById("checkoutPlanTitle").textContent = `${title} ($${price}/mo)`;
-      document.getElementById("checkoutPlanDesc").textContent = `$${price}/month • ${quota} Commercial AI Model Shots`;
-      document.getElementById("legalConsentCheckbox").checked = false;
-      document.getElementById("consentError").classList.add("hidden");
-
-      renderPayPalSmartButtons(planId, price, title, quota);
-      document.getElementById("checkoutModal").classList.remove("hidden");
-    }
-
-    function closeCheckoutModal() {
-      document.getElementById("checkoutModal").classList.add("hidden");
-    }
-
-    function renderPayPalSmartButtons(planId, price, title, quota) {
-      const area = document.getElementById("paypal-smart-button-area");
-      area.innerHTML = "";
-
-      if (window.paypal && paypal.Buttons) {
-        paypal.Buttons({
-          style: {
-            layout: 'vertical',
-            color: 'gold',
-            shape: 'rect',
-            label: 'pay'
-          },
-          onClick: (data, actions) => {
-            const consent = document.getElementById("legalConsentCheckbox").checked;
-            if (!consent) {
-              document.getElementById("consentError").classList.remove("hidden");
-              return actions.reject();
-            }
-            document.getElementById("consentError").classList.add("hidden");
-            return actions.resolve();
-          },
-          createOrder: (data, actions) => {
-            return actions.order.create({
-              purchase_units: [{
-                description: `Lumina Commerce AI - ${title}`,
-                amount: {
-                  currency_code: 'USD',
-                  value: price.toString()
-                }
-              }]
-            });
-          },
-          onApprove: (data, actions) => {
-            return actions.order.capture().then((details) => {
-              activateSubscription(planId, quota);
-              closeCheckoutModal();
-              alert(`🎉 Payment completed! Welcome to ${title}. ${quota} commercial shots have been credited to your account.`);
-            });
-          },
-          onError: (err) => {
-            console.error("PayPal Error:", err);
-            alert("PayPal checkout error. Please try again or use the test mode button below.");
-          }
-        }).render("#paypal-smart-button-area");
-      }
-    }
-
-    function simulateSuccessfulPayment() {
-      const consent = document.getElementById("legalConsentCheckbox").checked;
-      if (!consent) {
-        document.getElementById("consentError").classList.remove("hidden");
-        return;
-      }
-      if (!selectedPlanForCheckout) return;
-
-      activateSubscription(selectedPlanForCheckout.planId, selectedPlanForCheckout.quota);
-      closeCheckoutModal();
-      alert(`🎉 [Staging Simulation] Successfully activated ${selectedPlanForCheckout.title}! ${selectedPlanForCheckout.quota} shots credited.`);
-    }
-
-    function activateSubscription(planId, quota) {
-      userSubscription = {
-        plan: planId,
-        shotsRemaining: quota,
-        totalQuota: quota
-      };
-      localStorage.setItem("lumina_sub", JSON.stringify(userSubscription));
-      updatePlanBadgeDisplay();
-      switchNav('studio');
-    }
-
-    function openPaypalModal() {
-      document.getElementById("paypalConfigModal").classList.remove("hidden");
-    }
-    function closePaypalModal() {
-      document.getElementById("paypalConfigModal").classList.add("hidden");
-    }
-    function savePaypalClientId() {
-      const val = document.getElementById("paypalClientIdInput").value.trim();
-      if (!val) return;
-      localStorage.setItem("lumina_paypal_client_id", val);
-      closePaypalModal();
-      alert("PayPal Client ID saved. Refreshing page to reload PayPal SDK...");
-      location.reload();
-    }
-
-    function openFalKeyModal() {
-      document.getElementById("falKeyModal").classList.remove("hidden");
-    }
-    function closeFalKeyModal() {
-      document.getElementById("falKeyModal").classList.add("hidden");
-    }
-    function saveFalApiKey() {
-      const key = document.getElementById("falApiKeyInput").value.trim();
-      localStorage.setItem("lumina_fal_key", key);
-      closeFalKeyModal();
-      alert(currentLang === 'ko' ? "fal.ai API Key가 로컬에 안전하게 저장되었습니다!" : "fal.ai API Key securely saved locally!");
-    }
-    function clearFalApiKey() {
-      localStorage.removeItem("lumina_fal_key");
-      document.getElementById("falApiKeyInput").value = "";
-      closeFalKeyModal();
-      alert(currentLang === 'ko' ? "fal.ai Key가 제거되었습니다 (데모 시뮬레이션 모드로 전환)." : "fal.ai Key removed (Switched to demo preview mode).");
-    }
-
-    function openLegalModal(type) {
-      const title = document.getElementById("legalModalTitle");
-      const body = document.getElementById("legalModalBody");
-      
-      if (type === 'refund') {
-        title.textContent = "Refund & Cancellation Policy (Strict 5-Shot Limit)";
-        body.innerHTML = `
-          <p><strong>1. Digital Goods & Compute Consumption</strong><br>
-          Lumina Commerce AI provisions real-time cloud GPU resources immediately upon generation. Hardware and API compute costs are strictly incurred per image rendered.</p>
-          <p><strong>2. Refund Eligibility</strong><br>
-          Full refund is eligible within 7 days of purchase <em>ONLY IF fewer than 5 images have been generated</em>. Once more than 5 images are rendered, the plan is strictly NON-REFUNDABLE under international digital goods merchant terms.</p>
-          <p><strong>3. Cancellation</strong><br>
-          Subscriptions can be canceled at any time from your PayPal account settings, stopping recurring charges at the end of the billing cycle.</p>
-        `;
-      } else {
-        title.textContent = "Terms of Service";
-        body.innerHTML = `
-          <p><strong>1. Commercial License</strong><br>
-          All generated AI model shots are 100% royalty-free for commercial use across Amazon, Shopify, Etsy, TikTok Shop, social ads, and marketing materials.</p>
-          <p><strong>2. Content Guidelines</strong><br>
-          Users may not upload unlawful, offensive, or infringing material. The service employs automated safety filters.</p>
-          <p><strong>3. Service Availability</strong><br>
-          Operated via serverless cloud architecture with 99.9% uptime SLA, independent of local host machines.</p>
-        `;
-      }
-      document.getElementById("legalModal").classList.remove("hidden");
-    }
-    function closeLegalModal() {
-      document.getElementById("legalModal").classList.add("hidden");
-    }
-  </script>
+  <!-- ==================== CORE JAVASCRIPT (SINGLE SOURCE OF TRUTH) ==================== -->
+  <script src="app.js"></script>
 </body>
 </html>

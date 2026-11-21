@@ -3,15 +3,17 @@
     "host": "0.0.0.0",
     "port": 8000
   },
-  "comfyui": {
-    "base_url": "http://127.0.0.1:8188",
-    "model_name": "qwen-image-2.1-turbo-Q4_K_M.gguf",
-    "timeout_seconds": 300
+  "fal_ai": {
+    "api_key": "YOUR_FAL_AI_KEY",
+    "model_endpoint": "fal-ai/flux/schnell",
+    "tryon_endpoint": "fal-ai/fashn-tryon",
+    "biremove_endpoint": "fal-ai/bria/background/remove",
+    "timeout_seconds": 60
   },
   "paypal": {
-    "mode": "sandbox",
-    "client_id": "YOUR_PAYPAL_SANDBOX_CLIENT_ID",
-    "client_secret": "YOUR_PAYPAL_SANDBOX_CLIENT_SECRET",
+    "mode": "live",
+    "client_id": "BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik",
+    "client_secret": "YOUR_PAYPAL_LIVE_CLIENT_SECRET",
     "webhook_id": "YOUR_PAYPAL_WEBHOOK_ID",
     "currency": "USD",
     "plans": [
@@ -20,74 +22,75 @@
         "name": "Starter Plan",
         "type": "subscription",
         "billing_cycle": "monthly",
-        "price": "15.00",
-        "price_display": "$15 / month",
-        "badge": "Standard",
-        "target": "Casual creators & hobbyists",
-        "daily_generations": 40,
+        "price": "19.00",
+        "price_display": "$19 / month",
+        "badge": "Starter",
+        "target": "New Amazon & Shopify Sellers",
+        "quota": 150,
+        "daily_generations": 5,
         "batch_size": 1,
-        "quality_steps": 25,
         "max_resolution": "1024x1024",
-        "cta_text": "Get Started ($15/mo)",
+        "cta_text": "Subscribe Starter ($19/mo)",
         "features": [
-          "40 image generations per day (resets daily at 00:00 UTC)",
-          "Standard resolution (up to 1024x1024)",
-          "Standard quality steps (25 steps)",
-          "Single generation per click (Batch size: 1)",
-          "Standard generation queue"
+          "150 AI Model Shots per month",
+          "Standard Commercial Studio Scenes",
+          "Amazon & Shopify 1:1 Standard Export",
+          "Standard Serverless Cloud Queue",
+          "100% Commercial Royalty-Free License"
         ]
       },
       {
         "id": "pro_monthly",
-        "name": "Pro Monthly Plan",
+        "name": "Pro Studio Plan",
         "type": "subscription",
         "billing_cycle": "monthly",
-        "price": "30.00",
-        "price_display": "$30 / month",
+        "price": "39.00",
+        "price_display": "$39 / month",
         "badge": "Most Popular",
         "featured": true,
-        "target": "Power users, designers, content creators",
-        "daily_generations": 150,
-        "batch_size": 4,
-        "quality_steps": 40,
-        "max_resolution": "2048x2048 (HD Upscale)",
-        "cta_text": "Upgrade to Pro ($30/mo)",
+        "target": "Top Amazon & Shopify D2C Brands",
+        "quota": 500,
+        "daily_generations": 17,
+        "batch_size": 1,
+        "max_resolution": "2048x2048 (8K Upscale)",
+        "cta_text": "Upgrade to Pro ($39/mo)",
         "features": [
-          "150 image generations per day (resets daily at 00:00 UTC)",
-          "High-resolution upscale & HD Fix support",
-          "Ultra-fine quality steps (35~40 steps)",
-          "4 variations per prompt (Batch size: 4)",
-          "Priority GPU execution queue"
+          "500 AI Model Shots per month",
+          "All Global Model Personas (Runway, Athletic, Beauty)",
+          "Luxury Marble & Parisian Street Scenes",
+          "Video Ad Ratio (9:16 Reels & TikTok)",
+          "Priority Serverless Cloud Queue",
+          "8K Commercial Resolution Export"
         ]
       },
       {
-        "id": "pro_3month",
+        "id": "pro_pass_3m",
         "name": "Pro 3-Month Pass",
         "type": "one_time",
         "billing_cycle": "3_months",
-        "price": "74.00",
-        "price_display": "$74 one-time",
-        "subtitle": "$24.66 / month billed once every 3 months (Save ~18%)",
-        "badge": "Best Value",
-        "daily_generations": 150,
+        "price": "89.00",
+        "price_display": "$89 one-time (3 Months)",
+        "subtitle": "Best value for agencies & multi-brand sellers",
+        "badge": "Agency Scale",
+        "quota": 1800,
         "duration_days": 90,
-        "batch_size": 4,
-        "quality_steps": 40,
-        "max_resolution": "2048x2048 (HD Upscale)",
-        "cta_text": "Get 3-Month Pass ($74)",
+        "batch_size": 1,
+        "max_resolution": "2048x2048 (8K Upscale)",
+        "cta_text": "Get 3-Month Pass ($89)",
         "features": [
-          "All Pro features included for 90 days",
-          "150 image generations per day (renewed daily)",
-          "No automatic recurring surprises (one-time checkout)",
-          "Save ~18% compared to monthly ($90)",
-          "Priority GPU execution queue"
+          "1,800 AI Model Shots total for 90 days",
+          "Multi-Brand Product Batch Fitting",
+          "VIP Dedicated fal.ai Cloud Queue",
+          "One-time payment with no recurring surprises",
+          "Priority 1-on-1 Commercial Support"
         ]
       }
     ]
   },
   "service": {
-    "initial_free_credits": 10,
-    "cost_per_image": 1,
+    "initial_free_credits": 1,
+    "freemium_watermark_enabled": true,
+    "watermark_text": "LUMINA AI PREVIEW - NOT FOR COMMERCIAL USE",
     "output_dir": "./outputs"
   }
 }
