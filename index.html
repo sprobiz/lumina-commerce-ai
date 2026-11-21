@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lumina Commerce AI - High-Converting eCommerce AI Model Studio</title>
-  
+
   <!-- Tailwind CSS & Lucide Icons & Google Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -56,7 +59,8 @@
   </script>
 
   <!-- PAYPAL SDK LOADER -->
-  <script id="paypal-sdk-script" src="https://www.paypal.com/sdk/js?client-id=BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik&currency=USD"></script>
+  <script id="paypal-sdk-script"
+    src="https://www.paypal.com/sdk/js?client-id=BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik&currency=USD"></script>
 
   <style>
     body {
@@ -66,7 +70,11 @@
       overflow-x: hidden;
       selection-background-color: #6366f1;
     }
-    ::selection { background: #6366f1; color: #ffffff; }
+
+    ::selection {
+      background: #6366f1;
+      color: #ffffff;
+    }
 
     /* Luxury Glassmorphism & Borders */
     .glass-card {
@@ -75,15 +83,18 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
+
     .glass-card-glow {
       background: rgba(14, 20, 36, 0.8);
       backdrop-filter: blur(18px);
       border: 1px solid rgba(99, 102, 241, 0.25);
       box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
     }
+
     .glass-card-hover {
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .glass-card-hover:hover {
       border-color: rgba(99, 102, 241, 0.45);
       transform: translateY(-2px);
@@ -96,9 +107,11 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
     .gradient-border {
       position: relative;
     }
+
     .gradient-border::before {
       content: '';
       position: absolute;
@@ -125,36 +138,60 @@
       -webkit-appearance: none;
       transition: transform 0.1s ease;
     }
+
     input[type=range].comparison-slider::-webkit-slider-thumb:hover {
       transform: scale(1.08);
     }
 
     /* Sleek Scrollbars */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #04060a; }
-    ::-webkit-scrollbar-thumb { background: #1a233a; border-radius: 999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #04060a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #1a233a;
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6366f1;
+    }
   </style>
 </head>
+
 <body class="min-h-screen flex flex-col bg-[#04060a] relative">
 
   <!-- BACKGROUND AMBIENT GLOWS -->
-  <div class="fixed top-0 left-1/4 w-[500px] h-[500px] bg-brand-accent/10 rounded-full blur-[140px] pointer-events-none animate-glow-pulse"></div>
-  <div class="fixed top-1/3 right-10 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px] pointer-events-none"></div>
-  <div class="fixed bottom-10 left-10 w-[450px] h-[450px] bg-emerald-500/5 rounded-full blur-[130px] pointer-events-none"></div>
+  <div
+    class="fixed top-0 left-1/4 w-[500px] h-[500px] bg-brand-accent/10 rounded-full blur-[140px] pointer-events-none animate-glow-pulse">
+  </div>
+  <div
+    class="fixed top-1/3 right-10 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px] pointer-events-none">
+  </div>
+  <div
+    class="fixed bottom-10 left-10 w-[450px] h-[450px] bg-emerald-500/5 rounded-full blur-[130px] pointer-events-none">
+  </div>
 
   <!-- ==================== TOP NAVIGATION BAR ==================== -->
   <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 md:px-8 py-3.5">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-      
+
       <!-- BRAND LOGO -->
       <div class="flex items-center gap-3 cursor-pointer shrink-0" onclick="switchNav('studio')">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-accent via-indigo-500 to-purple-500 flex items-center justify-center font-black text-white shadow-lg shadow-brand-accent/30 ring-1 ring-white/20">
+        <div
+          class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-accent via-indigo-500 to-purple-500 flex items-center justify-center font-black text-white shadow-lg shadow-brand-accent/30 ring-1 ring-white/20">
           <i data-lucide="sparkles" class="w-5 h-5 fill-white"></i>
         </div>
         <div>
           <span class="text-base md:text-xl font-black tracking-tight text-white flex items-center gap-1.5">
-            Lumina Commerce <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-accent/25 text-indigo-300 border border-brand-accent/40 font-bold uppercase tracking-wider">AI Studio</span>
+            Lumina Commerce <span
+              class="text-[10px] px-2 py-0.5 rounded-full bg-brand-accent/25 text-indigo-300 border border-brand-accent/40 font-bold uppercase tracking-wider">AI
+              Studio</span>
           </span>
           <p class="hidden sm:block text-[11px] text-slate-400 font-medium" data-i18n="navSubtitle">
             High-Converting AI Model Shots for Amazon, Shopify & TikTok Shop
@@ -163,49 +200,63 @@
       </div>
 
       <!-- CENTER NAV TABS -->
-      <div class="hidden lg:flex items-center gap-1.5 bg-dark-900/90 p-1.5 rounded-2xl border border-white/10 shadow-inner">
-        <button onclick="switchNav('studio')" id="navStudio" class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-white bg-brand-accent shadow-md shadow-brand-accent/25 transition">
+      <div
+        class="hidden lg:flex items-center gap-1.5 bg-dark-900/90 p-1.5 rounded-2xl border border-white/10 shadow-inner">
+        <button onclick="switchNav('studio')" id="navStudio"
+          class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-white bg-brand-accent shadow-md shadow-brand-accent/25 transition">
           <i data-lucide="camera" class="w-4 h-4 inline mr-1.5"></i> <span data-i18n="navStudio">AI Model Studio</span>
         </button>
-        <button onclick="switchNav('showcase')" id="navShowcase" class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition">
-          <i data-lucide="sliders" class="w-4 h-4 inline mr-1.5"></i> <span data-i18n="navShowcase">Before & After</span>
+        <button onclick="switchNav('showcase')" id="navShowcase"
+          class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition">
+          <i data-lucide="sliders" class="w-4 h-4 inline mr-1.5"></i> <span data-i18n="navShowcase">Before &
+            After</span>
         </button>
-        <button onclick="switchNav('pricing')" id="navPricing" class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition">
-          <i data-lucide="crown" class="w-4 h-4 inline mr-1.5 text-amber-400"></i> <span data-i18n="navPricing">Pricing & Plans</span>
+        <button onclick="switchNav('pricing')" id="navPricing"
+          class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-400 hover:text-white transition">
+          <i data-lucide="crown" class="w-4 h-4 inline mr-1.5 text-amber-400"></i> <span data-i18n="navPricing">Pricing
+            & Plans</span>
         </button>
       </div>
 
       <!-- RIGHT HEADER ACTIONS -->
       <div class="flex items-center gap-2 md:gap-2.5">
-        
+
         <!-- ADMIN / OWNER ONLY CONFIG KEYS (HIDDEN FROM PUBLIC CUSTOMERS) -->
         <div id="adminHeaderKeys" class="hidden items-center gap-2">
           <!-- PAYPAL KEY MODAL BUTTON -->
-          <button onclick="openPaypalModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-sky-500/30 text-[11px] font-bold text-sky-400 transition hover:border-sky-400 shadow-sm" title="PayPal Live Client ID Settings">
+          <button onclick="openPaypalModal()"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-sky-500/30 text-[11px] font-bold text-sky-400 transition hover:border-sky-400 shadow-sm"
+            title="PayPal Live Client ID Settings">
             <i data-lucide="wallet" class="w-3.5 h-3.5 text-sky-400"></i>
             <span class="hidden sm:inline" data-i18n="btnPaypalKey">PayPal Key</span>
           </button>
 
           <!-- FAL.AI KEY MODAL BUTTON -->
-          <button onclick="openFalKeyModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-emerald-500/30 text-[11px] font-bold text-emerald-400 transition hover:border-emerald-400 shadow-sm" title="fal.ai Cloud API Key">
+          <button onclick="openFalKeyModal()"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-800/90 hover:bg-dark-750 border border-emerald-500/30 text-[11px] font-bold text-emerald-400 transition hover:border-emerald-400 shadow-sm"
+            title="fal.ai Cloud API Key">
             <i data-lucide="cloud" class="w-3.5 h-3.5 text-emerald-400"></i>
             <span class="hidden sm:inline" data-i18n="btnFalKey">fal.ai Key</span>
           </button>
         </div>
 
         <!-- BILINGUAL LANGUAGE SWITCHER (EN | KR) -->
-        <div class="flex items-center bg-dark-900/90 p-1 rounded-xl border border-white/10 text-[11px] font-bold shadow-inner">
-          <button type="button" onclick="setLang('en')" id="langBtnEn" class="px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition">
+        <div
+          class="flex items-center bg-dark-900/90 p-1 rounded-xl border border-white/10 text-[11px] font-bold shadow-inner">
+          <button type="button" onclick="setLang('en')" id="langBtnEn"
+            class="px-2.5 py-1 rounded-lg text-white bg-brand-accent shadow-sm transition">
             EN
           </button>
           <span class="text-slate-600 px-1 font-normal select-none">|</span>
-          <button type="button" onclick="setLang('ko')" id="langBtnKo" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+          <button type="button" onclick="setLang('ko')" id="langBtnKo"
+            class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
             KR
           </button>
         </div>
 
         <!-- CURRENT PLAN STATUS / UPGRADE -->
-        <button onclick="switchNav('pricing')" id="userPlanBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-accent via-indigo-600 to-purple-600 hover:opacity-95 text-white font-extrabold text-xs shadow-lg shadow-brand-accent/30 transition transform active:scale-95">
+        <button onclick="switchNav('pricing')" id="userPlanBtn"
+          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-accent via-indigo-600 to-purple-600 hover:opacity-95 text-white font-extrabold text-xs shadow-lg shadow-brand-accent/30 transition transform active:scale-95">
           <i data-lucide="zap" class="w-3.5 h-3.5 fill-white"></i>
           <span id="planBadgeText">Upgrade Plan</span>
         </button>
@@ -214,14 +265,17 @@
     </div>
 
     <!-- MOBILE BOTTOM TABS -->
-    <div class="flex lg:hidden items-center justify-around gap-1 pt-2.5 mt-2 border-t border-white/10 text-[11px] font-bold">
+    <div
+      class="flex lg:hidden items-center justify-around gap-1 pt-2.5 mt-2 border-t border-white/10 text-[11px] font-bold">
       <button onclick="switchNav('studio')" class="px-2.5 py-1 text-slate-200 hover:text-white flex items-center gap-1">
         <i data-lucide="camera" class="w-3.5 h-3.5"></i> Studio
       </button>
-      <button onclick="switchNav('showcase')" class="px-2.5 py-1 text-slate-400 hover:text-white flex items-center gap-1">
+      <button onclick="switchNav('showcase')"
+        class="px-2.5 py-1 text-slate-400 hover:text-white flex items-center gap-1">
         <i data-lucide="sliders" class="w-3.5 h-3.5"></i> Before/After
       </button>
-      <button onclick="switchNav('pricing')" class="px-2.5 py-1 text-amber-400 hover:text-amber-300 flex items-center gap-1">
+      <button onclick="switchNav('pricing')"
+        class="px-2.5 py-1 text-amber-400 hover:text-amber-300 flex items-center gap-1">
         <i data-lucide="crown" class="w-3.5 h-3.5"></i> Pricing
       </button>
     </div>
@@ -232,16 +286,19 @@
 
     <!-- HERO SECTION WITH PROOF TICKER -->
     <section class="relative overflow-hidden rounded-3xl p-6 md:p-12 glass-card gradient-border shadow-2xl">
-      <div class="absolute -right-16 -bottom-16 w-96 h-96 bg-brand-accent/20 rounded-full blur-3xl pointer-events-none"></div>
-      
+      <div class="absolute -right-16 -bottom-16 w-96 h-96 bg-brand-accent/20 rounded-full blur-3xl pointer-events-none">
+      </div>
+
       <div class="relative z-10 max-w-3xl space-y-4">
-        
-        <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.15] tracking-tight" data-i18n="heroTitle">
+
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.15] tracking-tight"
+          data-i18n="heroTitle">
           Turn Flat Product Shots into <span class="gradient-text-indigo">High-Converting</span> AI Model Photoshoots
         </h1>
 
         <p class="text-sm md:text-base text-slate-300/90 leading-relaxed max-w-2xl font-normal" data-i18n="heroDesc">
-          Eliminate $3,000 studio photoshoot fees. Upload a raw product or mannequin photo and generate commercial-grade AI model wearing shots in 3 seconds for Amazon, Shopify, and TikTok Shop.
+          Eliminate $3,000 studio photoshoot fees. Upload a raw product or mannequin photo and generate commercial-grade
+          AI model wearing shots in 3 seconds for Amazon, Shopify, and TikTok Shop.
         </p>
 
         <!-- STATS PILLS -->
@@ -265,23 +322,25 @@
 
     <!-- ==================== VIEW 1: AI MODEL STUDIO ==================== -->
     <div id="viewStudio" class="space-y-8">
-      
+
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
+
         <!-- LEFT CONTROL PANEL (7 COLS) -->
         <div class="lg:col-span-7 space-y-6">
           <div class="glass-card rounded-3xl p-6 md:p-8 space-y-7 shadow-xl">
-            
+
             <div class="flex items-center justify-between border-b border-white/10 pb-4">
               <div>
-                <h2 class="text-lg md:text-xl font-black text-white flex items-center gap-2" data-i18n="studioConfigTitle">
+                <h2 class="text-lg md:text-xl font-black text-white flex items-center gap-2"
+                  data-i18n="studioConfigTitle">
                   <i data-lucide="sliders-horizontal" class="w-5 h-5 text-brand-accent"></i> Model & Studio Parameters
                 </h2>
                 <p class="text-xs text-slate-400 mt-0.5" data-i18n="studioConfigDesc">
                   Configure the commercial model persona and luxury setting for your product
                 </p>
               </div>
-              <span class="text-xs font-bold px-3 py-1 rounded-full bg-brand-accent/15 text-indigo-300 border border-brand-accent/30">
+              <span
+                class="text-xs font-bold px-3 py-1 rounded-full bg-brand-accent/15 text-indigo-300 border border-brand-accent/30">
                 5-Step Engine
               </span>
             </div>
@@ -293,9 +352,12 @@
                 <span class="text-[11px] text-slate-400 font-medium">PNG / JPG / WEBP</span>
               </label>
 
-              <div id="dropzone" onclick="document.getElementById('productFileInput').click()" class="border-2 border-dashed border-white/15 hover:border-brand-accent/70 bg-dark-900/70 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2.5 group">
-                <input type="file" id="productFileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
-                <div class="w-14 h-14 rounded-2xl bg-dark-800 border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-brand-accent/50 transition text-brand-accent shadow-md">
+              <div id="dropzone" onclick="document.getElementById('productFileInput').click()"
+                class="border-2 border-dashed border-white/15 hover:border-brand-accent/70 bg-dark-900/70 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2.5 group">
+                <input type="file" id="productFileInput" accept="image/*" class="hidden"
+                  onchange="handleFileSelect(event)">
+                <div
+                  class="w-14 h-14 rounded-2xl bg-dark-800 border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-brand-accent/50 transition text-brand-accent shadow-md">
                   <i data-lucide="upload-cloud" class="w-7 h-7"></i>
                 </div>
                 <div class="space-y-1">
@@ -309,24 +371,31 @@
               </div>
 
               <!-- UPLOAD PREVIEW CHIP -->
-              <div id="uploadPreviewBar" class="hidden flex items-center justify-between bg-dark-800/95 border border-brand-accent/40 rounded-2xl p-3 shadow-lg">
+              <div id="uploadPreviewBar"
+                class="hidden flex items-center justify-between bg-dark-800/95 border border-brand-accent/40 rounded-2xl p-3 shadow-lg">
                 <div class="flex items-center gap-3.5">
-                  <img id="uploadPreviewImg" src="" alt="Product" class="w-14 h-14 rounded-xl object-cover border border-white/20 shadow">
+                  <img id="uploadPreviewImg" src="" alt="Product"
+                    class="w-14 h-14 rounded-xl object-cover border border-white/20 shadow">
                   <div>
-                    <p id="uploadPreviewName" class="text-xs font-bold text-white max-w-[190px] truncate">product.png</p>
+                    <p id="uploadPreviewName" class="text-xs font-bold text-white max-w-[190px] truncate">product.png
+                    </p>
                     <div id="uploadPreviewStatus" class="mt-0.5">
                       <span class="text-[11px] text-slate-400 font-medium flex items-center gap-1">
-                        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Ready for AI Studio Fitting
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Ready for AI Studio
+                        Fitting
                       </span>
                     </div>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <button type="button" id="btnRemoveBgToggle" onclick="toggleRemoveBg()" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold transition flex items-center gap-1" title="1-Sec Background Removal">
+                  <button type="button" id="btnRemoveBgToggle" onclick="toggleRemoveBg()"
+                    class="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold transition flex items-center gap-1"
+                    title="1-Sec Background Removal">
                     <i data-lucide="scissors" class="w-3.5 h-3.5 text-emerald-400"></i>
                     <span data-i18n="btnRemoveBg">✂️ 1-Sec Remove BG</span>
                   </button>
-                  <button type="button" onclick="clearUpload()" class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition" title="Remove Product">
+                  <button type="button" onclick="clearUpload()"
+                    class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition" title="Remove Product">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                   </button>
                 </div>
@@ -335,24 +404,29 @@
 
             <!-- STEP 2: MODEL PERSONA SELECTOR -->
             <div class="space-y-2.5">
-              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelPersona">2. Select AI Model Persona</label>
+              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelPersona">2. Select AI Model
+                Persona</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                <button type="button" onclick="selectPersona('female_editorial')" class="persona-btn active p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-left text-xs font-bold text-white transition flex flex-col gap-1.5 shadow-sm">
+                <button type="button" onclick="selectPersona('female_editorial')"
+                  class="persona-btn active p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-left text-xs font-bold text-white transition flex flex-col gap-1.5 shadow-sm">
                   <span class="text-lg">💃</span>
                   <span>Female Runway</span>
                   <span class="text-[10px] text-slate-400 font-normal">Vogue editorial look</span>
                 </button>
-                <button type="button" onclick="selectPersona('male_casual')" class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
+                <button type="button" onclick="selectPersona('male_casual')"
+                  class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
                   <span class="text-lg">🕺</span>
                   <span>Male Athletic</span>
                   <span class="text-[10px] text-slate-400 font-normal">Fit & confident posture</span>
                 </button>
-                <button type="button" onclick="selectPersona('beauty_hands')" class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
+                <button type="button" onclick="selectPersona('beauty_hands')"
+                  class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
                   <span class="text-lg">💅</span>
                   <span>Beauty & Hands</span>
                   <span class="text-[10px] text-slate-400 font-normal">Jewelry & cosmetics</span>
                 </button>
-                <button type="button" onclick="selectPersona('ghost_mannequin')" class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
+                <button type="button" onclick="selectPersona('ghost_mannequin')"
+                  class="persona-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex flex-col gap-1.5 shadow-sm">
                   <span class="text-lg">👻</span>
                   <span>Ghost 3D Fit</span>
                   <span class="text-[10px] text-slate-400 font-normal">Hollow mannequin</span>
@@ -362,24 +436,31 @@
 
             <!-- STEP 3: STUDIO SCENE & LIGHTING -->
             <div class="space-y-2.5">
-              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelScene">3. Select Commercial Studio Scene</label>
+              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelScene">3. Select Commercial
+                Studio Scene</label>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                <button type="button" onclick="selectScene('luxury_marble')" class="scene-btn active p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-left text-xs font-bold text-white transition flex items-center gap-2">
+                <button type="button" onclick="selectScene('luxury_marble')"
+                  class="scene-btn active p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-left text-xs font-bold text-white transition flex items-center gap-2">
                   <span>🏛️</span> Luxury Marble
                 </button>
-                <button type="button" onclick="selectScene('sunlit_loft')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                <button type="button" onclick="selectScene('sunlit_loft')"
+                  class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
                   <span>☀️</span> Sunlit Modern Loft
                 </button>
-                <button type="button" onclick="selectScene('parisian_street')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                <button type="button" onclick="selectScene('parisian_street')"
+                  class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
                   <span>☕</span> Parisian Cafe
                 </button>
-                <button type="button" onclick="selectScene('amazon_white')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                <button type="button" onclick="selectScene('amazon_white')"
+                  class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
                   <span>📦</span> Amazon Pure White
                 </button>
-                <button type="button" onclick="selectScene('nature_garden')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                <button type="button" onclick="selectScene('nature_garden')"
+                  class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
                   <span>🌿</span> Botanical Garden
                 </button>
-                <button type="button" onclick="selectScene('cyber_vogue')" class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
+                <button type="button" onclick="selectScene('cyber_vogue')"
+                  class="scene-btn p-3 rounded-2xl border border-white/10 bg-dark-800 hover:border-white/20 text-left text-xs font-bold text-slate-300 transition flex items-center gap-2">
                   <span>🌃</span> Neon Cyber Studio
                 </button>
               </div>
@@ -387,19 +468,24 @@
 
             <!-- STEP 4: ASPECT RATIO SELECTOR -->
             <div class="space-y-2.5">
-              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelRatio">4. Commercial Aspect Ratio</label>
+              <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelRatio">4. Commercial Aspect
+                Ratio</label>
               <div class="grid grid-cols-3 gap-3">
-                <label class="ratio-label active flex items-center justify-center gap-2 p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-xs font-bold text-white cursor-pointer transition shadow-sm">
-                  <input type="radio" name="ratio" value="square_hd" checked class="hidden" onchange="updateRatio(this)">
+                <label
+                  class="ratio-label active flex items-center justify-center gap-2 p-3 rounded-2xl border border-brand-accent bg-brand-accent/15 text-xs font-bold text-white cursor-pointer transition shadow-sm">
+                  <input type="radio" name="ratio" value="square_hd" checked class="hidden"
+                    onchange="updateRatio(this)">
                   <span>1:1</span>
                   <span class="text-[10px] text-slate-400 font-normal">Amazon / Shopify</span>
                 </label>
-                <label class="ratio-label flex items-center justify-center gap-2 p-3 rounded-2xl border border-white/10 bg-dark-800 text-xs font-bold text-slate-300 cursor-pointer transition shadow-sm">
+                <label
+                  class="ratio-label flex items-center justify-center gap-2 p-3 rounded-2xl border border-white/10 bg-dark-800 text-xs font-bold text-slate-300 cursor-pointer transition shadow-sm">
                   <input type="radio" name="ratio" value="portrait_4_3" class="hidden" onchange="updateRatio(this)">
                   <span>4:5</span>
                   <span class="text-[10px] text-slate-400 font-normal">Instagram Feed</span>
                 </label>
-                <label class="ratio-label flex items-center justify-center gap-2 p-3 rounded-2xl border border-white/10 bg-dark-800 text-xs font-bold text-slate-300 cursor-pointer transition shadow-sm">
+                <label
+                  class="ratio-label flex items-center justify-center gap-2 p-3 rounded-2xl border border-white/10 bg-dark-800 text-xs font-bold text-slate-300 cursor-pointer transition shadow-sm">
                   <input type="radio" name="ratio" value="portrait_16_9" class="hidden" onchange="updateRatio(this)">
                   <span>9:16</span>
                   <span class="text-[10px] text-slate-400 font-normal">Reels & TikTok Ads</span>
@@ -413,29 +499,36 @@
                 <label class="text-xs md:text-sm font-bold text-slate-200" data-i18n="labelPrompt">
                   5. Commercial Prompt & Details
                 </label>
-                <button type="button" onclick="enhancePrompt()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 font-bold transition">
+                <button type="button" onclick="enhancePrompt()"
+                  class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 font-bold transition">
                   <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Auto-Generate Prompt
                 </button>
               </div>
-              <textarea id="promptInput" rows="3" class="w-full bg-dark-900 border border-white/15 focus:border-brand-accent rounded-2xl p-4 text-xs md:text-sm text-white placeholder-slate-500 outline-none transition resize-none leading-relaxed"></textarea>
+              <textarea id="promptInput" rows="3"
+                class="w-full bg-dark-900 border border-white/15 focus:border-brand-accent rounded-2xl p-4 text-xs md:text-sm text-white placeholder-slate-500 outline-none transition resize-none leading-relaxed"></textarea>
             </div>
 
             <!-- GENERATE BUTTON (GATED) -->
-            <button id="btnGenerate" onclick="handleGenerateClick()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-accent via-indigo-600 to-purple-600 hover:opacity-95 text-white font-black text-sm md:text-base flex items-center justify-center gap-2.5 shadow-xl shadow-brand-accent/35 transition transform active:scale-[0.99]">
+            <button id="btnGenerate" onclick="handleGenerateClick()"
+              class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-accent via-indigo-600 to-purple-600 hover:opacity-95 text-white font-black text-sm md:text-base flex items-center justify-center gap-2.5 shadow-xl shadow-brand-accent/35 transition transform active:scale-[0.99]">
               <i data-lucide="sparkles" class="w-5 h-5 fill-white"></i>
               <span id="btnGenerateText" data-i18n="btnGenerateText">Generate High-Converting AI Model Shot</span>
             </button>
 
             <!-- GENERATION STATUS BAR -->
-            <div id="genStatusContainer" class="hidden space-y-2 bg-dark-900/90 border border-brand-accent/50 rounded-2xl p-4 shadow-xl">
+            <div id="genStatusContainer"
+              class="hidden space-y-2 bg-dark-900/90 border border-brand-accent/50 rounded-2xl p-4 shadow-xl">
               <div class="flex items-center justify-between text-xs font-bold">
                 <span id="genStatusText" class="text-indigo-400 flex items-center gap-2">
-                  <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-brand-accent"></i> Dispatching to fal.ai Flux.1 Schnell Cloud...
+                  <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-brand-accent"></i> Dispatching to fal.ai
+                  Flux.1 Schnell Cloud...
                 </span>
                 <span id="genProgressPercent" class="text-slate-300 font-mono">45%</span>
               </div>
               <div class="w-full h-2.5 rounded-full bg-dark-800 overflow-hidden">
-                <div id="genProgressBar" class="h-full bg-gradient-to-r from-brand-accent via-indigo-500 to-emerald-400 transition-all duration-300" style="width: 45%"></div>
+                <div id="genProgressBar"
+                  class="h-full bg-gradient-to-r from-brand-accent via-indigo-500 to-emerald-400 transition-all duration-300"
+                  style="width: 45%"></div>
               </div>
             </div>
 
@@ -445,22 +538,25 @@
         <!-- RIGHT LIVE PREVIEW CANVAS (5 COLS) -->
         <div class="lg:col-span-5 space-y-5">
           <div class="glass-card rounded-3xl p-6 space-y-4 sticky top-24 shadow-2xl">
-            
+
             <div class="flex items-center justify-between border-b border-white/10 pb-3.5">
               <h3 class="text-sm font-bold text-white flex items-center gap-2" data-i18n="resultCanvasTitle">
                 <i data-lucide="eye" class="w-4 h-4 text-emerald-400"></i> Live Commercial Canvas
               </h3>
-              <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30">
+              <span
+                class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30">
                 8K Commercial Export
               </span>
             </div>
 
             <!-- CANVAS BOX -->
-            <div id="resultCanvasBox" class="relative rounded-2xl overflow-hidden bg-dark-950 border border-white/10 aspect-square flex items-center justify-center shadow-inner group">
-              
+            <div id="resultCanvasBox"
+              class="relative rounded-2xl overflow-hidden bg-dark-950 border border-white/10 aspect-square flex items-center justify-center shadow-inner group">
+
               <!-- EMPTY STATE -->
               <div id="canvasEmptyState" class="text-center p-8 space-y-3.5">
-                <div class="w-20 h-20 mx-auto rounded-3xl bg-dark-800/90 border border-white/10 flex items-center justify-center text-slate-500 shadow-lg">
+                <div
+                  class="w-20 h-20 mx-auto rounded-3xl bg-dark-800/90 border border-white/10 flex items-center justify-center text-slate-500 shadow-lg">
                   <i data-lucide="image" class="w-10 h-10"></i>
                 </div>
                 <div class="space-y-1.5">
@@ -477,26 +573,33 @@
               <img id="resultImage" src="" alt="AI Model Shot" class="hidden w-full h-full object-cover">
 
               <!-- BADGE -->
-              <div id="canvasBadge" class="hidden absolute top-4 left-4 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-xs font-bold text-emerald-400 shadow-lg">
+              <div id="canvasBadge"
+                class="hidden absolute top-4 left-4 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-xs font-bold text-emerald-400 shadow-lg">
                 ✨ Ready for Amazon & Shopify
               </div>
             </div>
 
             <!-- ACTION BUTTONS -->
             <div id="resultActions" class="hidden grid grid-cols-2 gap-3 pt-2">
-              <button id="btnDownloadMain" onclick="handleDownloadClick()" class="py-3 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/25 transition">
+              <button id="btnDownloadMain" onclick="handleDownloadClick()"
+                class="py-3 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/25 transition">
                 <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="btnDownloadClean">Download 8K</span>
               </button>
-              <button onclick="copyPromptToClipboard()" class="py-3 rounded-xl bg-dark-800 hover:bg-dark-750 border border-white/15 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition">
+              <button onclick="copyPromptToClipboard()"
+                class="py-3 rounded-xl bg-dark-800 hover:bg-dark-750 border border-white/15 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition">
                 <i data-lucide="copy" class="w-4 h-4"></i> <span data-i18n="btnCopyPrompt">Copy Prompt</span>
               </button>
             </div>
 
             <!-- SPECS CARD -->
-            <div class="rounded-2xl bg-dark-900/80 p-3.5 border border-white/5 space-y-1.5 text-xs text-slate-400 font-medium">
-              <div class="flex justify-between"><span>Inference Engine:</span> <strong class="text-slate-200 font-mono">fal.ai Flux.1 Schnell</strong></div>
-              <div class="flex justify-between"><span>Generation Speed:</span> <strong class="text-emerald-400 font-mono">~2.8 seconds</strong></div>
-              <div class="flex justify-between"><span>Commercial Rights:</span> <strong class="text-slate-200">100% Royalty-Free</strong></div>
+            <div
+              class="rounded-2xl bg-dark-900/80 p-3.5 border border-white/5 space-y-1.5 text-xs text-slate-400 font-medium">
+              <div class="flex justify-between"><span>Inference Engine:</span> <strong
+                  class="text-slate-200 font-mono">fal.ai Flux.1 Schnell</strong></div>
+              <div class="flex justify-between"><span>Generation Speed:</span> <strong
+                  class="text-emerald-400 font-mono">~2.8 seconds</strong></div>
+              <div class="flex justify-between"><span>Commercial Rights:</span> <strong class="text-slate-200">100%
+                  Royalty-Free</strong></div>
             </div>
 
           </div>
@@ -508,60 +611,77 @@
 
     <!-- ==================== VIEW 2: BEFORE & AFTER COMPARISON ==================== -->
     <div id="viewShowcase" class="hidden space-y-10">
-      
+
       <div class="text-center max-w-2xl mx-auto space-y-3">
-        <span class="px-3.5 py-1.5 rounded-full bg-brand-accent/15 border border-brand-accent/30 text-indigo-400 text-xs font-bold">
+        <span
+          class="px-3.5 py-1.5 rounded-full bg-brand-accent/15 border border-brand-accent/30 text-indigo-400 text-xs font-bold">
           High-Converting Comparison
         </span>
         <h2 class="text-3xl md:text-4xl font-black text-white" data-i18n="showcaseTitle">
           Compare the Difference: Raw Product vs AI Model Studio
         </h2>
         <p class="text-xs md:text-sm text-slate-400 leading-relaxed" data-i18n="showcaseDesc">
-          Slide the bar below to see how ordinary flat lay or mannequin shots are transformed into Vogue-level studio model photography.
+          Slide the bar below to see how ordinary flat lay or mannequin shots are transformed into Vogue-level studio
+          model photography.
         </p>
       </div>
 
       <!-- INTERACTIVE COMPARISON SLIDER -->
       <div class="max-w-4xl mx-auto glass-card rounded-3xl p-5 md:p-8 space-y-7 shadow-2xl">
-        
-        <div class="relative w-full aspect-[4/3] md:aspect-[16/9] rounded-2xl overflow-hidden select-none border border-white/15 shadow-2xl">
-          
+
+        <div
+          class="relative w-full aspect-[4/3] md:aspect-[16/9] rounded-2xl overflow-hidden select-none border border-white/15 shadow-2xl">
+
           <!-- AFTER IMAGE (BOTTOM LAYER) -->
-          <img id="sliderAfterImg" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80" alt="After AI Studio" class="absolute inset-0 w-full h-full object-cover">
-          <div class="absolute top-4 right-4 px-3.5 py-1.5 rounded-xl bg-indigo-600/90 text-white font-extrabold text-xs shadow-lg backdrop-blur-md">
+          <img id="sliderAfterImg"
+            src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80"
+            alt="After AI Studio" class="absolute inset-0 w-full h-full object-cover">
+          <div
+            class="absolute top-4 right-4 px-3.5 py-1.5 rounded-xl bg-indigo-600/90 text-white font-extrabold text-xs shadow-lg backdrop-blur-md">
             ✨ AFTER: AI Studio Model (+340% CTR)
           </div>
 
           <!-- BEFORE IMAGE (TOP CLIPPED LAYER) -->
           <div id="sliderBeforeClip" class="absolute inset-0 w-full h-full overflow-hidden" style="width: 50%;">
-            <img id="sliderBeforeImg" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80" alt="Before Raw" class="absolute inset-0 w-full h-full object-cover" style="max-width: none; width: 100%; height: 100%;">
-            <div class="absolute top-4 left-4 px-3.5 py-1.5 rounded-xl bg-dark-900/90 text-slate-300 font-bold text-xs border border-white/20 shadow-lg backdrop-blur-md">
+            <img id="sliderBeforeImg"
+              src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80"
+              alt="Before Raw" class="absolute inset-0 w-full h-full object-cover"
+              style="max-width: none; width: 100%; height: 100%;">
+            <div
+              class="absolute top-4 left-4 px-3.5 py-1.5 rounded-xl bg-dark-900/90 text-slate-300 font-bold text-xs border border-white/20 shadow-lg backdrop-blur-md">
               📷 BEFORE: Flat Lay / Mannequin
             </div>
           </div>
 
           <!-- DRAGGABLE DIVIDER LINE -->
-          <div id="sliderDividerLine" class="absolute top-0 bottom-0 w-1 bg-white shadow-2xl pointer-events-none" style="left: 50%;">
-            <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-brand-accent text-white border-2 border-white flex items-center justify-center shadow-2xl">
+          <div id="sliderDividerLine" class="absolute top-0 bottom-0 w-1 bg-white shadow-2xl pointer-events-none"
+            style="left: 50%;">
+            <div
+              class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-brand-accent text-white border-2 border-white flex items-center justify-center shadow-2xl">
               <i data-lucide="chevrons-left-right" class="w-4 h-4"></i>
             </div>
           </div>
 
-          <input type="range" min="0" max="100" value="50" oninput="updateComparisonSlider(this.value)" class="comparison-slider absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20">
+          <input type="range" min="0" max="100" value="50" oninput="updateComparisonSlider(this.value)"
+            class="comparison-slider absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20">
         </div>
 
         <!-- CATEGORY PRESETS -->
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <button onclick="loadComparisonSample('apparel')" class="comp-btn active px-4 py-2 rounded-xl border border-brand-accent bg-brand-accent/20 text-white text-xs font-bold transition">
+          <button onclick="loadComparisonSample('apparel')"
+            class="comp-btn active px-4 py-2 rounded-xl border border-brand-accent bg-brand-accent/20 text-white text-xs font-bold transition">
             👗 Fashion Dress
           </button>
-          <button onclick="loadComparisonSample('cosmetics')" class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
+          <button onclick="loadComparisonSample('cosmetics')"
+            class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
             🧴 Skincare Cosmetics
           </button>
-          <button onclick="loadComparisonSample('watch')" class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
+          <button onclick="loadComparisonSample('watch')"
+            class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
             ⌚ Luxury Watch
           </button>
-          <button onclick="loadComparisonSample('shoes')" class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
+          <button onclick="loadComparisonSample('shoes')"
+            class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
             👟 Sneakers & Shoes
           </button>
         </div>
@@ -572,77 +692,100 @@
 
     <!-- ==================== VIEW 3: 100% GATED PRICING MATRIX ==================== -->
     <div id="viewPricing" class="hidden space-y-12">
-      
+
       <div class="text-center max-w-2xl mx-auto space-y-3">
-        <span class="px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-bold">
+        <span
+          class="px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-bold"
+          data-i18n="pricingBadge">
           Zero Free Leaks • 100% Gated Subscriptions
         </span>
         <h2 class="text-3xl md:text-5xl font-black text-white" data-i18n="pricingTitle">
           High-Converting Commercial Plans
         </h2>
         <p class="text-xs md:text-sm text-slate-400 leading-relaxed" data-i18n="pricingDesc">
-          Pick your monthly quota. Powered by fal.ai serverless GPU infrastructure with verified 85%+ conservative net margin.
+          Pick your monthly quota. Powered by fal.ai serverless GPU infrastructure with verified 85%+ conservative net
+          margin.
         </p>
       </div>
 
       <!-- 3-TIER PRICING CARDS -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
-        
+
         <!-- 1. STARTER PLAN ($19) -->
         <div class="glass-card glass-card-hover rounded-3xl p-7 flex flex-col justify-between space-y-6 relative">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="px-3 py-1 rounded-lg bg-dark-750 text-slate-300 text-xs font-bold border border-white/10">Starter</span>
-              <span class="text-xs text-slate-400 font-medium">New Sellers</span>
+              <span
+                class="px-3 py-1 rounded-lg bg-dark-750 text-slate-300 text-xs font-bold border border-white/10"
+                data-i18n="starterBadge">Starter</span>
+              <span class="text-xs text-slate-400 font-medium" data-i18n="starterSub">New Sellers</span>
             </div>
             <div>
               <div class="flex items-baseline gap-1">
                 <span class="text-4xl md:text-5xl font-black text-white">$19</span>
-                <span class="text-xs text-slate-400">/ month</span>
+                <span class="text-xs text-slate-400" data-i18n="perMonth">/ month</span>
               </div>
-              <p class="text-xs text-slate-400 mt-1 font-mono">~$0.12 per commercial AI model shot</p>
+              <p class="text-xs text-slate-400 mt-1 font-mono" data-i18n="starterPerShot">~$0.12 per commercial AI model shot</p>
             </div>
             <ul class="space-y-3 text-xs text-slate-300 pt-3 border-t border-white/10">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> <strong>150 AI Model Shots</strong> / mo</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Standard Commercial Studio Scenes</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Amazon & Shopify 1:1 Export</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Standard Cloud Queue (fal.ai Schnell)</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Full Commercial Use License</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="starterF1"><strong>150 AI Model Shots</strong> / mo</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="starterF2">Standard Commercial Studio Scenes</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="starterF3">Amazon & Shopify 1:1 Export</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="starterF4">Standard Cloud Queue (fal.ai Schnell)</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="starterF5">Full Commercial Use License</span></li>
             </ul>
           </div>
-          <button onclick="startCheckout('starter', 19, 'Starter Plan', 150)" class="w-full py-3.5 rounded-2xl bg-dark-750 hover:bg-dark-700 border border-white/15 text-white font-bold text-xs md:text-sm transition">
-            Subscribe Starter ($19)
+          <button onclick="startCheckout('starter', 19, 'Starter Plan', 150)"
+            class="w-full py-3.5 rounded-2xl bg-dark-750 hover:bg-dark-700 border border-white/15 text-white font-bold text-xs md:text-sm transition">
+            <span data-i18n="btnSubscribeStarter">Subscribe Starter ($19)</span>
           </button>
         </div>
 
         <!-- 2. PRO PLAN ($39 - MOST POPULAR) -->
-        <div class="glass-card-glow rounded-3xl p-7 flex flex-col justify-between space-y-6 relative border-2 border-brand-accent shadow-2xl shadow-brand-accent/25 bg-gradient-to-b from-dark-850 to-dark-900">
-          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-brand-accent to-purple-600 text-white font-black text-[11px] shadow-lg tracking-wider uppercase">
+        <div
+          class="glass-card-glow rounded-3xl p-7 flex flex-col justify-between space-y-6 relative border-2 border-brand-accent shadow-2xl shadow-brand-accent/25 bg-gradient-to-b from-dark-850 to-dark-900">
+          <div
+            class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-brand-accent to-purple-600 text-white font-black text-[11px] shadow-lg tracking-wider uppercase"
+            data-i18n="mostPopularBadge">
             🔥 Most Popular
           </div>
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="px-3 py-1 rounded-lg bg-brand-accent/25 text-indigo-300 text-xs font-bold border border-brand-accent/40">Pro Studio</span>
-              <span class="text-xs text-indigo-300 font-bold">Top 5% Amazon Sellers</span>
+              <span
+                class="px-3 py-1 rounded-lg bg-brand-accent/25 text-indigo-300 text-xs font-bold border border-brand-accent/40"
+                data-i18n="proBadge">Pro Studio</span>
+              <span class="text-xs text-indigo-300 font-bold" data-i18n="proSub">Top 5% Amazon Sellers</span>
             </div>
             <div>
               <div class="flex items-baseline gap-1">
                 <span class="text-4xl md:text-5xl font-black text-white">$39</span>
-                <span class="text-xs text-slate-400">/ month</span>
+                <span class="text-xs text-slate-400" data-i18n="perMonth">/ month</span>
               </div>
-              <p class="text-xs text-indigo-300 mt-1 font-mono">~$0.078 per shot (Save 97% vs photoshoots)</p>
+              <p class="text-xs text-indigo-300 mt-1 font-mono" data-i18n="proPerShot">~$0.078 per shot (Save 97% vs photoshoots)</p>
             </div>
             <ul class="space-y-3 text-xs text-slate-200 pt-3 border-t border-white/10">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> <strong>500 AI Model Shots</strong> / mo</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> All Global Model Personas & Diversity</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> Luxury Marble & Parisian Street Scenes</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> Video Ad Ratio (9:16 Reels & TikTok)</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> Priority Serverless Cloud Queue</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i> 8K Commercial Resolution Export</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i>
+                <span data-i18n="proF1"><strong>500 AI Model Shots</strong> / mo</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i>
+                <span data-i18n="proF2">All Global Model Personas & Diversity</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i>
+                <span data-i18n="proF3">Luxury Marble & Parisian Street Scenes</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i>
+                <span data-i18n="proF4">Video Ad Ratio (9:16 Reels & TikTok)</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i>
+                <span data-i18n="proF5">Priority Serverless Cloud Queue</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-accent"></i>
+                <span data-i18n="proF6">8K Commercial Resolution Export</span></li>
             </ul>
           </div>
-          <button onclick="startCheckout('pro', 39, 'Pro Monthly Plan', 500)" class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-accent to-purple-600 hover:opacity-95 text-white font-black text-xs md:text-sm shadow-xl shadow-brand-accent/40 transition transform active:scale-95">
-            Upgrade to Pro ($39)
+          <button onclick="startCheckout('pro', 39, 'Pro Monthly Plan', 500)"
+            class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-accent to-purple-600 hover:opacity-95 text-white font-black text-xs md:text-sm shadow-xl shadow-brand-accent/40 transition transform active:scale-95">
+            <span data-i18n="btnSubscribePro">Upgrade to Pro ($39)</span>
           </button>
         </div>
 
@@ -650,65 +793,78 @@
         <div class="glass-card glass-card-hover rounded-3xl p-7 flex flex-col justify-between space-y-6 relative">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="px-3 py-1 rounded-lg bg-dark-750 text-amber-400 text-xs font-bold border border-amber-400/20">Pro 3-Month Pass</span>
-              <span class="text-xs text-slate-400 font-medium">Agencies & Brand Owners</span>
+              <span
+                class="px-3 py-1 rounded-lg bg-dark-750 text-amber-400 text-xs font-bold border border-amber-400/20"
+                data-i18n="passBadge">Pro 3-Month Pass</span>
+              <span class="text-xs text-slate-400 font-medium" data-i18n="passSub">Agencies & Brand Owners</span>
             </div>
             <div>
               <div class="flex items-baseline gap-1">
                 <span class="text-4xl md:text-5xl font-black text-white">$89</span>
-                <span class="text-xs text-slate-400">one-time (90 Days)</span>
+                <span class="text-xs text-slate-400" data-i18n="passPeriod">one-time (90 Days)</span>
               </div>
-              <p class="text-xs text-slate-400 mt-1 font-mono">~$0.049 per shot (Wholesale rate)</p>
+              <p class="text-xs text-slate-400 mt-1 font-mono" data-i18n="passPerShot">~$0.049 per shot (Wholesale rate)</p>
             </div>
             <ul class="space-y-3 text-xs text-slate-300 pt-3 border-t border-white/10">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> <strong>1,800 AI Model Shots</strong> for 90 days</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Multi-Brand Product Batch Processing</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> VIP Dedicated fal.ai Cloud Queue</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> One-time payment (No recurring surprises)</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Priority 1-on-1 Commercial Support</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="passF1"><strong>1,800 AI Model Shots</strong> for 90 days</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="passF2">Multi-Brand Product Batch Processing</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="passF3">VIP Dedicated fal.ai Cloud Queue</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="passF4">One-time payment (No recurring surprises)</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="passF5">Priority 1-on-1 Commercial Support</span></li>
             </ul>
           </div>
-          <button onclick="startCheckout('pro_pass_3m', 89, 'Pro 3-Month Pass', 1800)" class="w-full py-3.5 rounded-2xl bg-dark-750 hover:bg-dark-700 border border-white/15 text-white font-bold text-xs md:text-sm transition">
-            Get 3-Month Pass ($89)
+          <button onclick="startCheckout('pro_pass_3m', 89, 'Pro 3-Month Pass', 1800)"
+            class="w-full py-3.5 rounded-2xl bg-dark-750 hover:bg-dark-700 border border-white/15 text-white font-bold text-xs md:text-sm transition">
+            <span data-i18n="btnSubscribePass">Get 3-Month Pass ($89)</span>
           </button>
         </div>
 
       </div>
 
       <!-- PUBLIC CUSTOMER GUARANTEE BADGES -->
-      <div class="max-w-4xl mx-auto rounded-3xl p-6 glass-card border border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+      <div
+        class="max-w-4xl mx-auto rounded-3xl p-6 glass-card border border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
         <div class="space-y-1">
           <i data-lucide="shield-check" class="w-6 h-6 text-emerald-400 mx-auto"></i>
-          <p class="text-xs font-bold text-white">SSL 256-bit Secure</p>
-          <p class="text-[10px] text-slate-400">Bank-Grade Encryption</p>
+          <p class="text-xs font-bold text-white" data-i18n="guarantee1Title">SSL 256-bit Secure</p>
+          <p class="text-[10px] text-slate-400" data-i18n="guarantee1Sub">Bank-Grade Encryption</p>
         </div>
         <div class="space-y-1">
           <i data-lucide="zap" class="w-6 h-6 text-indigo-400 mx-auto"></i>
-          <p class="text-xs font-bold text-white">Instant 2.8s Delivery</p>
-          <p class="text-[10px] text-slate-400">Zero Wait Time</p>
+          <p class="text-xs font-bold text-white" data-i18n="guarantee2Title">Instant 2.8s Delivery</p>
+          <p class="text-[10px] text-slate-400" data-i18n="guarantee2Sub">Zero Wait Time</p>
         </div>
         <div class="space-y-1">
           <i data-lucide="award" class="w-6 h-6 text-amber-400 mx-auto"></i>
-          <p class="text-xs font-bold text-white">100% Commercial</p>
-          <p class="text-[10px] text-slate-400">Royalty-Free Resell</p>
+          <p class="text-xs font-bold text-white" data-i18n="guarantee3Title">100% Commercial</p>
+          <p class="text-[10px] text-slate-400" data-i18n="guarantee3Sub">Royalty-Free Resell</p>
         </div>
         <div class="space-y-1">
           <i data-lucide="refresh-cw" class="w-6 h-6 text-sky-400 mx-auto"></i>
-          <p class="text-xs font-bold text-white">Cancel Anytime</p>
-          <p class="text-[10px] text-slate-400">1-Click in PayPal</p>
+          <p class="text-xs font-bold text-white" data-i18n="guarantee4Title">Cancel Anytime</p>
+          <p class="text-[10px] text-slate-400" data-i18n="guarantee4Sub">1-Click in PayPal</p>
         </div>
       </div>
 
       <!-- S-PROBIZ OWNER CONFIDENTIAL MARGIN ANALYTICS (VISIBLE IN OWNER MODE ONLY) -->
-      <div id="ownerMarginTable" class="hidden max-w-4xl mx-auto glass-card rounded-3xl p-6 md:p-8 space-y-5 border-2 border-amber-500/40 bg-dark-900/90">
+      <div id="ownerMarginTable"
+        class="hidden max-w-4xl mx-auto glass-card rounded-3xl p-6 md:p-8 space-y-5 border-2 border-amber-500/40 bg-dark-900/90">
         <div class="flex items-center justify-between border-b border-white/10 pb-4">
           <div>
             <h3 class="text-base font-bold text-white flex items-center gap-2">
-              <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> S-Probiz Conservative 85%+ Net Cash Margin Math
+              <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> S-Probiz Conservative 85%+ Net Cash
+              Margin Math
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">Calculated with full PayPal fees, FX exchange buffer, and fal.ai Flux Schnell API costs</p>
+            <p class="text-xs text-slate-400 mt-0.5">Calculated with full PayPal fees, FX exchange buffer, and fal.ai
+              Flux Schnell API costs</p>
           </div>
-          <span class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-black">
+          <span
+            class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-black">
             Conservative ~85% Net
           </span>
         </div>
@@ -754,7 +910,8 @@
           </table>
         </div>
         <p class="text-[11px] text-slate-500 italic pt-1">
-          * Factoring in international currency buffers (~3%) and operational hosting, net cash margin firmly stays above 85%+.
+          * Factoring in international currency buffers (~3%) and operational hosting, net cash margin firmly stays
+          above 85%+.
         </p>
       </div>
 
@@ -772,7 +929,8 @@
       </div>
       <div class="flex items-center gap-5 text-slate-400 font-medium">
         <a href="#" onclick="openLegalModal('terms')" class="hover:text-white transition">Terms of Service</a>
-        <a href="#" onclick="openLegalModal('refund')" class="hover:text-white transition">Refund Policy (5-Shot Limit)</a>
+        <a href="#" onclick="openLegalModal('refund')" class="hover:text-white transition">Refund Policy (5-Shot
+          Limit)</a>
       </div>
     </div>
     <p class="text-[11px] text-slate-600 text-center">
@@ -783,15 +941,18 @@
   <!-- ==================== MODALS ==================== -->
 
   <!-- 1. CHECKOUT / PAYPAL PAYMENT MODAL -->
-  <div id="checkoutModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-5 border border-white/20 relative animate-in fade-in zoom-in duration-200 shadow-2xl">
-      
+  <div id="checkoutModal"
+    class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div
+      class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-5 border border-white/20 relative animate-in fade-in zoom-in duration-200 shadow-2xl">
+
       <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
       <div>
-        <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-accent/25 text-indigo-300 uppercase tracking-wide">
+        <span
+          class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-accent/25 text-indigo-300 uppercase tracking-wide">
           S-Probiz Checkout
         </span>
         <h3 class="text-xl font-black text-white mt-1.5" id="checkoutPlanTitle">Activate Pro Plan</h3>
@@ -801,12 +962,17 @@
       <!-- LEGAL CONSENT CHECKBOX -->
       <div class="rounded-2xl bg-dark-900/90 border border-amber-500/30 p-4 space-y-2.5">
         <label class="flex items-start gap-3 text-xs text-slate-300 cursor-pointer select-none">
-          <input type="checkbox" id="legalConsentCheckbox" class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-0 bg-dark-800 border-white/20">
+          <input type="checkbox" id="legalConsentCheckbox"
+            class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-0 bg-dark-800 border-white/20">
           <span class="leading-relaxed">
-            I agree to the <a href="#" onclick="openLegalModal('terms')" class="text-indigo-400 underline font-bold">Terms</a> and understand the <a href="#" onclick="openLegalModal('refund')" class="text-amber-400 underline font-bold">Refund Policy</a>. Digital compute is non-refundable once over 5 shots are generated.
+            I agree to the <a href="#" onclick="openLegalModal('terms')"
+              class="text-indigo-400 underline font-bold">Terms</a> and understand the <a href="#"
+              onclick="openLegalModal('refund')" class="text-amber-400 underline font-bold">Refund Policy</a>. Digital
+            compute is non-refundable once over 5 shots are generated.
           </span>
         </label>
-        <p id="consentError" class="hidden text-[11px] text-rose-400 font-bold">⚠️ You must check the agreement box before proceeding to payment.</p>
+        <p id="consentError" class="hidden text-[11px] text-rose-400 font-bold">⚠️ You must check the agreement box
+          before proceeding to payment.</p>
       </div>
 
       <!-- PAYPAL BUTTON CONTAINER -->
@@ -816,7 +982,8 @@
 
       <!-- INSTANT TEST APPROVAL BUTTON -->
       <div class="border-t border-white/10 pt-3 text-center">
-        <button onclick="simulateSuccessfulPayment()" class="text-xs text-slate-400 hover:text-emerald-400 font-bold flex items-center justify-center gap-1.5 mx-auto transition">
+        <button onclick="simulateSuccessfulPayment()"
+          class="text-xs text-slate-400 hover:text-emerald-400 font-bold flex items-center justify-center gap-1.5 mx-auto transition">
           <i data-lucide="terminal" class="w-3.5 h-3.5"></i> [Staging/Test] 1-Sec Instant Approval
         </button>
       </div>
@@ -825,8 +992,10 @@
   </div>
 
   <!-- 2. PAYPAL CLIENT ID CONFIG MODAL -->
-  <div id="paypalConfigModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-4 border border-sky-500/30 relative shadow-2xl">
+  <div id="paypalConfigModal"
+    class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div
+      class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-4 border border-sky-500/30 relative shadow-2xl">
       <button onclick="closePaypalModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
@@ -837,14 +1006,17 @@
         <h3 class="text-base font-bold text-white">PayPal Live Client ID Settings</h3>
       </div>
       <p class="text-xs text-slate-400 leading-relaxed">
-        Pre-configured with S-Probiz merchant credentials. You can update your Live Client ID anytime without redeploying code.
+        Pre-configured with S-Probiz merchant credentials. You can update your Live Client ID anytime without
+        redeploying code.
       </p>
       <div class="space-y-2">
         <label class="text-xs font-bold text-slate-300">PayPal Client ID</label>
-        <input type="text" id="paypalClientIdInput" class="w-full bg-dark-900 border border-white/15 focus:border-sky-400 rounded-xl p-3 text-xs text-white font-mono outline-none">
+        <input type="text" id="paypalClientIdInput"
+          class="w-full bg-dark-900 border border-white/15 focus:border-sky-400 rounded-xl p-3 text-xs text-white font-mono outline-none">
       </div>
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="savePaypalClientId()" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition">
+        <button onclick="savePaypalClientId()"
+          class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition">
           Save Client ID
         </button>
       </div>
@@ -852,8 +1024,10 @@
   </div>
 
   <!-- 3. FAL.AI API KEY CONFIG MODAL -->
-  <div id="falKeyModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-4 border border-emerald-500/30 relative shadow-2xl">
+  <div id="falKeyModal"
+    class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div
+      class="glass-card max-w-md w-full rounded-3xl p-6 md:p-7 space-y-4 border border-emerald-500/30 relative shadow-2xl">
       <button onclick="closeFalKeyModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
@@ -864,18 +1038,23 @@
         <h3 class="text-base font-bold text-white">fal.ai Serverless Cloud Engine</h3>
       </div>
       <p class="text-xs text-slate-400 leading-relaxed">
-        Powers 1~3s 8K commercial rendering with Flux.1 Schnell (~$0.003/shot). Your API key is stored safely in your browser localStorage.
+        Powers 1~3s 8K commercial rendering with Flux.1 Schnell (~$0.003/shot). Your API key is stored safely in your
+        browser localStorage.
       </p>
       <div class="space-y-2">
         <label class="text-xs font-bold text-slate-300 flex justify-between">
           <span>fal.ai API Key</span>
-          <a href="https://fal.ai/dashboard/keys" target="_blank" class="text-emerald-400 underline text-[11px] font-bold">Get Key (Free $10) &rarr;</a>
+          <a href="https://fal.ai/dashboard/keys" target="_blank"
+            class="text-emerald-400 underline text-[11px] font-bold">Get Key (Free $10) &rarr;</a>
         </label>
-        <input type="password" id="falApiKeyInput" placeholder="falkey_..." class="w-full bg-dark-900 border border-white/15 focus:border-emerald-400 rounded-xl p-3 text-xs text-white font-mono outline-none">
+        <input type="password" id="falApiKeyInput" placeholder="falkey_..."
+          class="w-full bg-dark-900 border border-white/15 focus:border-emerald-400 rounded-xl p-3 text-xs text-white font-mono outline-none">
       </div>
       <div class="flex items-center justify-between pt-2">
-        <button onclick="clearFalApiKey()" class="text-xs text-slate-400 hover:text-rose-400 font-semibold">Remove Key</button>
-        <button onclick="saveFalApiKey()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition">
+        <button onclick="clearFalApiKey()" class="text-xs text-slate-400 hover:text-rose-400 font-semibold">Remove
+          Key</button>
+        <button onclick="saveFalApiKey()"
+          class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition">
           Save fal.ai Key
         </button>
       </div>
@@ -883,15 +1062,18 @@
   </div>
 
   <!-- 4. LEGAL MODAL -->
-  <div id="legalModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="glass-card max-w-lg w-full rounded-3xl p-6 md:p-8 space-y-4 border border-white/20 relative max-h-[85vh] overflow-y-auto shadow-2xl">
+  <div id="legalModal"
+    class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div
+      class="glass-card max-w-lg w-full rounded-3xl p-6 md:p-8 space-y-4 border border-white/20 relative max-h-[85vh] overflow-y-auto shadow-2xl">
       <button onclick="closeLegalModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
       <h3 class="text-lg font-bold text-white" id="legalModalTitle">Terms of Service & Refund Policy</h3>
       <div class="text-xs text-slate-300 space-y-3 leading-relaxed" id="legalModalBody"></div>
       <div class="pt-3 text-right">
-        <button onclick="closeLegalModal()" class="px-5 py-2.5 rounded-xl bg-dark-750 hover:bg-dark-700 text-white font-bold text-xs">Close</button>
+        <button onclick="closeLegalModal()"
+          class="px-5 py-2.5 rounded-xl bg-dark-750 hover:bg-dark-700 text-white font-bold text-xs">Close</button>
       </div>
     </div>
   </div>
@@ -899,4 +1081,5 @@
   <!-- ==================== CORE JAVASCRIPT (SINGLE SOURCE OF TRUTH) ==================== -->
   <script src="app.js"></script>
 </body>
+
 </html>
