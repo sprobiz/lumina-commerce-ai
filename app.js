@@ -49,6 +49,8 @@ const i18n = {
     btnFalKey: "fal.ai Key",
     heroTitle: "Turn Flat Product Shots into <span class='gradient-text-indigo'>High-Converting</span> AI Model Photoshoots",
     heroDesc: "Eliminate $3,000 studio photoshoot fees. Upload a raw product or mannequin photo and generate commercial-grade AI model wearing shots in 3 seconds for Amazon, Shopify, and TikTok Shop.",
+    heroCtaBtn: "📸 Upload My Product & Get 1 Free Shot",
+    heroSecondaryBtn: "✨ See Before & After Comparison",
     stat1: "+340% Higher CTR on Ads",
     stat2: "99.9% Enterprise Cloud Uptime SLA",
     stat3: "100% Commercial Use & Resell Rights",
@@ -79,8 +81,36 @@ const i18n = {
     pricingBadge: "Zero Free Leaks • 100% Gated Subscriptions",
     pricingTitle: "High-Converting Commercial Plans",
     pricingDesc: "Select your monthly commercial quota. 100% royalty-free rights, dedicated cloud queue, cancel anytime.",
+    roiHeaderBadge: "Cost Reduction Analysis",
+    roiHeaderTitle: "Traditional Agency Photoshoot vs Lumina AI",
+    roiHeaderDesc: "Save over 99% in cost and reduce turnaround from 2 weeks to 3 seconds.",
+    roiCol1: "Comparison Metric",
+    roiCol2: "Traditional Studio Shoot",
+    roiCol3: "Lumina Commerce AI",
+    roiRow1Metric: "Cost Per Shoot / Session",
+    roiRow1Trad: "$2,500 ~ $4,000+ (Model + Studio + Retouch)",
+    roiRow1Lumina: "Starts at $4.99 (From ~$0.08 per shot)",
+    roiRow2Metric: "Turnaround Time",
+    roiRow2Trad: "10 ~ 14 Days (Scheduling, shoot, editing)",
+    roiRow2Lumina: "Instant 2.8 Seconds (Real-time cloud)",
+    roiRow3Metric: "Model & Scene Diversity",
+    roiRow3Trad: "1 Model, 1 Fixed Location",
+    roiRow3Lumina: "Unlimited Global Models & Luxury Scenes",
+    roiRow4Metric: "Reshoots & Angle Variations",
+    roiRow4Trad: "Additional fee ($500+ / session)",
+    roiRow4Lumina: "Unlimited instant variations on demand",
     starterBadge: "Starter",
     starterSub: "New Sellers",
+    testPackBadge: "⚡ Starter Test Pack",
+    testPackSub: "1st Time Sellers",
+    testPackPeriod: "one-time (30 shots)",
+    testPackPerShot: "~$0.16 per shot (No subscription)",
+    testPackF1: "<strong>30 Commercial AI Model Shots</strong>",
+    testPackF2: "All Amazon & Shopify Formats (1:1, 4:5, 9:16)",
+    testPackF3: "Standard Cloud GPU Queue",
+    testPackF4: "Full Commercial License & Royalty-Free",
+    testPackF5: "One-Time Payment (Zero Recurring)",
+    btnSubscribeTestPack: "Try 30 Shots for $4.99",
     perMonth: "/ month",
     starterPerShot: "~$0.12 per commercial AI model shot",
     starterF1: "<strong>150 AI Model Shots</strong> / mo",
@@ -128,6 +158,8 @@ const i18n = {
     btnFalKey: "fal.ai 키",
     heroTitle: "바닥에 놓인 제품 사진, 5초 만에 아마존·쇼피파이 글로벌 1등 상세페이지 <span class='gradient-text-indigo'>고전환 AI 럭셔리 모델 컷</span>으로 완성",
     heroDesc: "회당 300~500만 원 드는 스튜디오 촬영비 전면 제로화. 마네킹 또는 바닥에 둔 제품 사진만 올리면 글로벌 톱 모델 착용 컷과 럭셔리 스튜디오 컷이 3초 만에 생성됩니다.",
+    heroCtaBtn: "📸 내 상품 사진 넣고 첫 컷 무료 확인하기",
+    heroSecondaryBtn: "✨ Before & After 럭셔리 비교 예시 보기",
     stat1: "상세페이지/광고 클릭률(CTR) +340% 상승",
     stat2: "99.9% 엔터프라이즈 클라우드 SLA 보증",
     stat3: "100% 상업적 이용 및 재판매 권한 포함",
@@ -158,8 +190,36 @@ const i18n = {
     pricingBadge: "100% 상업용 전용 • 고마진 정기 구독 플랜",
     pricingTitle: "압도적 마진의 커머스 전용 요금제",
     pricingDesc: "스토어 규모에 맞는 상업용 쿼터를 선택하세요. 100% 상업적 이용 및 재판매 권한 포함, 언제든 해지 가능.",
+    roiHeaderBadge: "스튜디오 촬영 비용 혁신",
+    roiHeaderTitle: "기존 오프라인 스튜디오 촬영 vs Lumina Commerce AI",
+    roiHeaderDesc: "촬영 회당 300만 원 vs 장당 100원대 3초 완성! 99% 비용 절감과 폭발적 마진율을 경험하세요.",
+    roiCol1: "비교 항목",
+    roiCol2: "기존 오프라인 스튜디오 외주",
+    roiCol3: "Lumina Commerce AI",
+    roiRow1Metric: "1회 촬영 비용",
+    roiRow1Trad: "300만 ~ 500만 원 (모델료+대관료+보정)",
+    roiRow1Lumina: "테스트팩 $4.99부터 (장당 100원대)",
+    roiRow2Metric: "납기 소요 시간",
+    roiRow2Trad: "최소 10일 ~ 2주 (예약/촬영/셀렉/보정)",
+    roiRow2Lumina: "단 2.8초 즉시 완성 (서버리스 실시간)",
+    roiRow3Metric: "모델 & 배경 다양성",
+    roiRow3Trad: "단일 모델 1명, 1개 스튜디오 배경",
+    roiRow3Lumina: "전 세계 다국적 톱모델 & 럭셔리 배경 무제한",
+    roiRow4Metric: "재촬영 및 추가 컷 수정",
+    roiRow4Trad: "추가 비용 발생 (회당 수십만 원)",
+    roiRow4Lumina: "프롬프트 원클릭으로 무제한 즉시 재배치",
     starterBadge: "스타터",
     starterSub: "신규 입점 셀러",
+    testPackBadge: "⚡ 체험 스타터 팩",
+    testPackSub: "첫 구매 셀러 전용",
+    testPackPeriod: "1회 결제 (총 30장)",
+    testPackPerShot: "컷당 약 200원 (구독 부담 제로)",
+    testPackF1: "<strong>상업용 AI 모델 컷 30장</strong>",
+    testPackF2: "아마존·쇼피파이 전 규격 (1:1, 4:5, 9:16)",
+    testPackF3: "표준 초고속 클라우드 GPU 렌더링",
+    testPackF4: "100% 상업적 이용 및 저작권 프리",
+    testPackF5: "단 1회 일회성 결제 (자동 구독 해지 걱정 없음)",
+    btnSubscribeTestPack: "30장 $4.99로 가볍게 시작하기",
     perMonth: "/ 월",
     starterPerShot: "상업용 컷당 약 160원 수준",
     starterF1: "<strong>월 150장</strong> 상업용 AI 모델 컷",
@@ -201,6 +261,18 @@ const i18n = {
 };
 
 // ==================== 초기화 및 이벤트 리스너 ====================
+function scrollToDropzone() {
+  switchNav('studio');
+  const dropzone = document.getElementById('dropzone');
+  if (dropzone) {
+    dropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    dropzone.classList.add('ring-4', 'ring-brand-accent', 'animate-pulse');
+    setTimeout(() => {
+      dropzone.classList.remove('ring-4', 'ring-brand-accent', 'animate-pulse');
+    }, 2500);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   if (window.lucide) {
     lucide.createIcons();
@@ -915,9 +987,17 @@ function loadComparisonSample(category) {
       before: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80",
       after: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=80"
     },
+    suit: {
+      before: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1400&q=80",
+      after: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1400&q=80"
+    },
     cosmetics: {
       before: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1400&q=80",
       after: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=1400&q=80"
+    },
+    bag: {
+      before: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1400&q=80",
+      after: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1400&q=80"
     },
     watch: {
       before: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1400&q=80",

@@ -324,6 +324,19 @@
           AI model wearing shots in 3 seconds for Amazon, Shopify, and TikTok Shop.
         </p>
 
+        <!-- HERO CTA ACTION BUTTON (FREE TRIAL HOOK) -->
+        <div class="pt-2 flex flex-wrap items-center gap-3.5">
+          <button onclick="scrollToDropzone()" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-brand-accent via-indigo-600 to-purple-600 hover:opacity-95 text-white font-black text-sm md:text-base flex items-center gap-2.5 shadow-xl shadow-brand-accent/35 transition transform hover:scale-[1.02] active:scale-95 group">
+            <i data-lucide="camera" class="w-5 h-5 group-hover:rotate-12 transition"></i>
+            <span data-i18n="heroCtaBtn">📸 내 상품 사진 넣고 첫 컷 무료 확인하기</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition"></i>
+          </button>
+          <button onclick="switchNav('showcase')" class="px-5 py-3.5 rounded-2xl bg-dark-800/80 hover:bg-dark-750 text-slate-300 hover:text-white font-bold text-xs md:text-sm border border-white/10 flex items-center gap-2 transition">
+            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+            <span data-i18n="heroSecondaryBtn">✨ Before & After 럭셔리 비교 예시 보기</span>
+          </button>
+        </div>
+
         <!-- STATS PILLS -->
         <div class="flex flex-wrap items-center gap-5 pt-3 text-xs text-slate-300 font-semibold">
           <div class="flex items-center gap-2 bg-dark-900/60 px-3 py-1.5 rounded-lg border border-white/5">
@@ -538,6 +551,21 @@
               <span id="btnGenerateText" data-i18n="btnGenerateText">Generate High-Converting AI Model Shot</span>
             </button>
 
+            <!-- TRUST & COMMERCIAL COMPATIBILITY BADGE -->
+            <div class="p-3 rounded-2xl bg-dark-900/70 border border-white/10 flex flex-wrap items-center justify-around gap-2 text-[11px] text-slate-300">
+              <span class="flex items-center gap-1.5 font-semibold text-emerald-400">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> Amazon & Shopify 100% Certified
+              </span>
+              <span class="text-slate-600">•</span>
+              <span class="flex items-center gap-1.5 font-semibold text-indigo-300">
+                <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-400"></i> 8K Royalty-Free Commercial License
+              </span>
+              <span class="text-slate-600">•</span>
+              <span class="flex items-center gap-1.5 font-semibold text-amber-300">
+                <i data-lucide="crop" class="w-3.5 h-3.5 text-amber-400"></i> 1:1 • 4:5 • 9:16 Ready
+              </span>
+            </div>
+
             <!-- GENERATION STATUS BAR -->
             <div id="genStatusContainer"
               class="hidden space-y-2 bg-dark-900/90 border border-brand-accent/50 rounded-2xl p-4 shadow-xl">
@@ -616,13 +644,21 @@
 
             <!-- SPECS CARD -->
             <div
-              class="rounded-2xl bg-dark-900/80 p-3.5 border border-white/5 space-y-1.5 text-xs text-slate-400 font-medium">
+              class="rounded-2xl bg-dark-900/80 p-3.5 border border-white/5 space-y-2 text-xs text-slate-400 font-medium">
               <div class="flex justify-between"><span>Inference Engine:</span> <strong
                   class="text-slate-200 font-mono">fal.ai Flux.1 Schnell</strong></div>
               <div class="flex justify-between"><span>Generation Speed:</span> <strong
                   class="text-emerald-400 font-mono">~2.8 seconds</strong></div>
               <div class="flex justify-between"><span>Commercial Rights:</span> <strong class="text-slate-200">100%
                   Royalty-Free</strong></div>
+              
+              <!-- COMMERCIAL COMPLIANCE CERTIFICATION BADGE -->
+              <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
+                <span class="flex items-center gap-1 text-emerald-400 font-bold">
+                  <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Commercial Safe
+                </span>
+                <span class="text-slate-400 font-mono">Amazon TOS & FTC Compliant</span>
+              </div>
             </div>
 
           </div>
@@ -693,19 +729,27 @@
         <div class="flex flex-wrap items-center justify-center gap-3">
           <button onclick="loadComparisonSample('apparel')"
             class="comp-btn active px-4 py-2 rounded-xl border border-brand-accent bg-brand-accent/20 text-white text-xs font-bold transition">
-            👗 Fashion Dress
+            👗 Women's Fashion
+          </button>
+          <button onclick="loadComparisonSample('suit')"
+            class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
+            👔 Men's Luxury Suit
           </button>
           <button onclick="loadComparisonSample('cosmetics')"
             class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
-            🧴 Skincare Cosmetics
+            🧴 Cosmetics & Skincare
+          </button>
+          <button onclick="loadComparisonSample('bag')"
+            class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
+            👜 Luxury Bags & Leather
           </button>
           <button onclick="loadComparisonSample('watch')"
             class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
-            ⌚ Luxury Watch
+            ⌚ Watches & Jewelry
           </button>
           <button onclick="loadComparisonSample('shoes')"
             class="comp-btn px-4 py-2 rounded-xl border border-white/10 bg-dark-800 text-slate-300 text-xs font-bold hover:border-white/20 transition">
-            👟 Sneakers & Shoes
+            👟 Sneakers & Footwear
           </button>
         </div>
 
@@ -715,6 +759,62 @@
 
     <!-- ==================== VIEW 3: 100% GATED PRICING MATRIX ==================== -->
     <div id="viewPricing" class="hidden space-y-12">
+
+      <!-- ROI COST REDUCTION COMPARISON INFOGRAPHIC TABLE -->
+      <div class="max-w-4xl mx-auto glass-card rounded-3xl p-6 md:p-8 space-y-6 border-2 border-indigo-500/30 bg-gradient-to-b from-dark-850 to-dark-900 shadow-2xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-5">
+          <div class="space-y-1">
+            <span class="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-black uppercase tracking-wider"
+              data-i18n="roiHeaderBadge">
+              Cost Reduction Analysis
+            </span>
+            <h3 class="text-xl md:text-2xl font-black text-white" data-i18n="roiHeaderTitle">
+              Traditional Agency Photoshoot vs Lumina AI
+            </h3>
+            <p class="text-xs text-slate-400" data-i18n="roiHeaderDesc">
+              Save over 99% in cost and reduce turnaround from 2 weeks to 3 seconds.
+            </p>
+          </div>
+          <div class="shrink-0 bg-emerald-500/15 border border-emerald-500/30 px-4 py-2 rounded-2xl text-center">
+            <p class="text-lg md:text-xl font-black text-emerald-400 font-mono">99.7% ROI</p>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Cost Reduction</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs md:text-sm">
+            <thead>
+              <tr class="border-b border-white/10 text-slate-400 font-mono text-xs">
+                <th class="py-3 px-3.5" data-i18n="roiCol1">Comparison Metric</th>
+                <th class="py-3 px-3.5 text-rose-400/90" data-i18n="roiCol2">Traditional Studio Shoot</th>
+                <th class="py-3 px-3.5 text-emerald-400 font-bold" data-i18n="roiCol3">Lumina Commerce AI</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5 text-slate-200">
+              <tr>
+                <td class="py-3.5 px-3.5 font-bold text-slate-300" data-i18n="roiRow1Metric">Cost Per Session</td>
+                <td class="py-3.5 px-3.5 text-rose-300/80 font-mono" data-i18n="roiRow1Trad">$2,500 ~ $4,000+ (Shoot+Model+Studio)</td>
+                <td class="py-3.5 px-3.5 font-extrabold text-emerald-400 font-mono" data-i18n="roiRow1Lumina">From $4.99 (From ~$0.08 / shot)</td>
+              </tr>
+              <tr>
+                <td class="py-3.5 px-3.5 font-bold text-slate-300" data-i18n="roiRow2Metric">Turnaround Time</td>
+                <td class="py-3.5 px-3.5 text-rose-300/80 font-mono" data-i18n="roiRow2Trad">10 ~ 14 Days (Booking, shoot, retoucher)</td>
+                <td class="py-3.5 px-3.5 font-extrabold text-emerald-400 font-mono" data-i18n="roiRow2Lumina">Instant 2.8 Seconds (fal.ai Cloud)</td>
+              </tr>
+              <tr>
+                <td class="py-3.5 px-3.5 font-bold text-slate-300" data-i18n="roiRow3Metric">Model & Scene Diversity</td>
+                <td class="py-3.5 px-3.5 text-slate-400" data-i18n="roiRow3Trad">1 Model, 1 Fixed Location</td>
+                <td class="py-3.5 px-3.5 font-bold text-indigo-300" data-i18n="roiRow3Lumina">Unlimited Global Personas & Luxury Scenes</td>
+              </tr>
+              <tr>
+                <td class="py-3.5 px-3.5 font-bold text-slate-300" data-i18n="roiRow4Metric">Angle & Re-shoot Cost</td>
+                <td class="py-3.5 px-3.5 text-slate-400" data-i18n="roiRow4Trad">Paid Re-shoots ($500+ / day)</td>
+                <td class="py-3.5 px-3.5 font-bold text-emerald-400" data-i18n="roiRow4Lumina">1-Click Instant Variations at $0 Extra</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <div class="text-center max-w-2xl mx-auto space-y-3">
         <span
@@ -732,7 +832,41 @@
       </div>
 
       <!-- 3-TIER PRICING CARDS -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
+
+        <!-- 0. STARTER TEST PACK ($4.99 - ONE-TIME LOW-BARRIER CONVERSION) -->
+        <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between space-y-5 relative border border-emerald-500/30 bg-emerald-950/10">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30"
+                data-i18n="testPackBadge">⚡ Starter Test Pack</span>
+              <span class="text-xs text-emerald-400/90 font-medium" data-i18n="testPackSub">1st Time Sellers</span>
+            </div>
+            <div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-4xl font-black text-white">$4.99</span>
+                <span class="text-xs text-slate-400" data-i18n="testPackPeriod">one-time (30 shots)</span>
+              </div>
+              <p class="text-xs text-emerald-400 mt-1 font-mono" data-i18n="testPackPerShot">~$0.16 per shot (No subscription)</p>
+            </div>
+            <ul class="space-y-2.5 text-xs text-slate-300 pt-3 border-t border-white/10">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="testPackF1"><strong>30 Commercial AI Model Shots</strong></span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="testPackF2">All Amazon & Shopify Formats</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="testPackF3">Standard Cloud GPU Queue</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="testPackF4">Full Commercial License & Royalty-Free</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                <span data-i18n="testPackF5">One-Time Payment (Zero Recurring)</span></li>
+            </ul>
+          </div>
+          <button onclick="startCheckout('starter_test_pack', 4.99, 'Starter Test Pack', 30)"
+            class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs md:text-sm shadow-lg shadow-emerald-600/30 transition transform active:scale-95">
+            <span data-i18n="btnSubscribeTestPack">Try 30 Shots for $4.99</span>
+          </button>
+        </div>
 
         <!-- 1. STARTER PLAN ($19) -->
         <div class="glass-card glass-card-hover rounded-3xl p-7 flex flex-col justify-between space-y-6 relative">
@@ -905,6 +1039,14 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-white/5 text-slate-200 font-mono">
+              <tr>
+                <td class="py-3.5 px-3 font-bold text-emerald-400 font-sans">Starter Test Pack (30 shots)</td>
+                <td class="py-3.5 px-3 font-bold">$4.99</td>
+                <td class="py-3.5 px-3 text-slate-400">$0.09</td>
+                <td class="py-3.5 px-3 text-slate-400">~$0.49</td>
+                <td class="py-3.5 px-3 font-extrabold text-emerald-400">$4.41</td>
+                <td class="py-3.5 px-3 font-extrabold text-emerald-400">88.4%</td>
+              </tr>
               <tr>
                 <td class="py-3.5 px-3 font-bold font-sans">Starter (150 shots)</td>
                 <td class="py-3.5 px-3 font-bold">$19.00</td>
