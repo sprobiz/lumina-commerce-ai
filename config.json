@@ -4,7 +4,7 @@
     "port": 8000
   },
   "fal_ai": {
-    "api_key": "YOUR_FAL_AI_KEY",
+    "api_key": "fal_sk_564ebe6268aa4161a8db300acd30bbd1:0d2ea1e8c508ecf2049af9b3eb96eda4",
     "model_endpoint": "fal-ai/flux/schnell",
     "tryon_endpoint": "fal-ai/fashn-tryon",
     "biremove_endpoint": "fal-ai/bria/background/remove",
